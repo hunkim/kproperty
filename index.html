@@ -64,7 +64,7 @@ fjs.parentNode.insertBefore(js, fjs);
 </canvas>
 
 <!--
-<table>
+<table class="table">
   <tr ng-repeat="stat in statArr">
     <td>{{ stat.year }}</td>
     <td>{{ stat.month }}</td>
@@ -74,6 +74,7 @@ fjs.parentNode.insertBefore(js, fjs);
 </tr>
 </table>
 -->
+
 <div class="panel panel-default">
   <!-- Default panel contents -->
   <div class="panel-heading">거래 정보 (최대 500개까지만 보여줍니다. 지역과 년도를 선택하세요.)</div>
@@ -181,10 +182,13 @@ app.controller('customersCtrl',
   });
 
   $scope.mapEncode = function($sale) {
+    if ($sale==null) {
+      return "";
+    }
     return $sale.fullCity + " " + $sale.avenue;
   };
 
-  $scope.$watch('loc.endYear', function() {
+    $scope.$watch('loc.endYear', function() {
     $scope.startYears=[];
 
     for (i=$scope.minYear; i<=$scope.loc.endYear; i++) {
@@ -199,14 +203,17 @@ app.controller('customersCtrl',
 
     // update graph array
     $scope.labels = [];
-    $scope.data[0]=[];$scope.data[1]=[];
+    $scope.data[0]=[];
+    $scope.data[1]=[];
+    $scope.data[2]=[];
 
     var statLen = $scope.statArr.length;
+
     for (var i = 0; i < statLen; i++) {
       $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[i].month;
-      $scope.data[2][i] = $scope.statArr[i].c;
       $scope.data[0][i] = $scope.statArr[i].avgAmtArea; // 평당가격
       $scope.data[1][i] = $scope.statArr[i].avgAmtLand; // 평당가격
+      $scope.data[2][i] = $scope.statArr[i].c;
     }
   }, true);
 
