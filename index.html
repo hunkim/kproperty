@@ -22,11 +22,11 @@
   </select>
 
   구/시 <select name="county" ng-model="loc.county" ng-change="getRegion()">
-    <option ng-repeat="county in countyArr" value="{{county}}">{{county}}</option>
+    <option ng-repeat="county in countyArr | orderBy" value="{{county}}">{{county}}</option>
   </select>
 
   동/읍 <select name="region" ng-model="loc.region" ng-change="upAll()">
-    <option ng-repeat="region in regionArr" value="{{region}}">{{region}}</option>
+    <option ng-repeat="region in regionArr | orderBy" value="{{region}}">{{region}}</option>
   </select>
   <!--
 </div>
@@ -73,7 +73,7 @@
   <table class="table">
     <tr><th>#</th><th>년도</th><th>월</th><th>계약일(~10)</th>
     <th>지역명</th><th>가격 (만원)</th><th>연면적(㎡)</th>
-    <th>대지면적(㎡)</th><th>구분</th><th>건축년도</th><th>도로명</th></tr>
+    <th>대지면적(㎡)</th><th>구분</th><th>건축년도</th><th>도로명 (지도링크)</th></tr>
   <tr ng-repeat="sale in saleArr">
     <td>{{$index+1}}</td>
     <td>{{sale.year}}</td>
@@ -85,9 +85,13 @@
     <td aligh="right">{{sale.landArea}}</td>
     <td>{{sale.type}}</td>
     <td>{{sale.builtYear}}</td>
-    <td>{{sale.avenue}}</td>
+    <td><A href="http://map.daum.net/?q='{{mapEncode(sale)}}'">{{sale.avenue}}</a></td>
   </tr>
 </table>
+
+<div class="alert alert-danger" role="alert">
+  <a href="#" class="alert-link">이 사이트의 자료는 프로그램의 버그로 인해 정확하지 않을수 있습니다. 정확한 자료는 국토부 자료를 확인하세요.</a>
+</div>
 
 <p><center>
 
@@ -164,6 +168,10 @@ app.controller('customersCtrl',
         $scope.endYears.push(i);
     }
   });
+
+  $scope.mapEncode = function($sale) {
+    $sale.fullCity + " " + $sale.avenue;
+  };
 
   $scope.$watch('loc.endYear', function() {
     $scope.startYears=[];
