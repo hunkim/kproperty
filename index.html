@@ -181,7 +181,7 @@ app.controller('customersCtrl',
   });
 
   $scope.mapEncode = function($sale) {
-    $sale.fullCity + " " + $sale.avenue;
+    return $sale.fullCity + " " + $sale.avenue;
   };
 
   $scope.$watch('loc.endYear', function() {
