@@ -162,7 +162,7 @@ app.controller('customersCtrl',
    };
 
    // Chart Data
-  $scope.series = ['연면적(㎡)당 가격', '대지면적(㎡)당 가격', '거래량'];
+  $scope.series = ['건물총면적 평당 가격', '대지면적 평당 가격', '거래량'];
 
   $scope.labels = [];
   $scope.data = [
@@ -205,8 +205,8 @@ app.controller('customersCtrl',
     for (var i = 0; i < statLen; i++) {
       $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[i].month;
       $scope.data[2][i] = $scope.statArr[i].c;
-      $scope.data[0][i] = $scope.statArr[i].avgAmtArea;
-      $scope.data[1][i] = $scope.statArr[i].avgAmtLand;
+      $scope.data[0][i] = $scope.statArr[i].avgAmtArea; // 평당가격
+      $scope.data[1][i] = $scope.statArr[i].avgAmtLand; // 평당가격
     }
   }, true);
 
