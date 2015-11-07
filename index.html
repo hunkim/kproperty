@@ -10,20 +10,8 @@
     <script src="js/bootstrap-select.js"></script>
     <link rel="stylesheet" href="css/angular-chart.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
-
   </head>
-
 <body>
-<div id="fb-root"></div>
-<script>(function(d, s, id) {
-var js, fjs = d.getElementsByTagName(s)[0];
-if (d.getElementById(id)) return;
-js = d.createElement(s); js.id = id;
-js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=591819294280029";
-fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
-
-  <div class="page-header">
   <h2>  <span class="glyphicon glyphicon-home" aria-hidden="true"></span> 전국 실거래가 연립/다세세대 매매 정보</h2>
   <div class="fb-like" data-href="http://kproperty.xyz/" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
 </div>
@@ -58,6 +46,10 @@ fjs.parentNode.insertBefore(js, fjs);
 </form>
 <div class="alert alert-info" role="alert">선택된 지역: {{loc.city + " " + loc.county + " " + loc.region}} 을(를)
   {{loc.startYear}} 부터 {{loc.endYear}} 까지 봅니다.
+<!--  <A href=#list> -->
+ &nbsp;<a class="btn btn-primary" role="button" href="#list">
+  <span class="badge">{{saleListCount()}}</span> 건의 거래 정보</a> 가 있습니다.
+
 </div>
 
 <canvas id="line" class="chart chart-line" chart-data="data"
@@ -76,13 +68,14 @@ fjs.parentNode.insertBefore(js, fjs);
 </tr>
 </table>
 -->
-
+<a name="list"></a>
 <div class="panel panel-default">
   <!-- Default panel contents -->
-  <div class="panel-heading">거래 정보 (최대 500개까지만 보여줍니다. 지역과 년도를 선택하세요.)</div>
-  <div class="panel-body">
-  </div>
-
+  <div class="panel-heading" ng-show="saleArr.length>=500">{{loc.city + " " + loc.county + " " + loc.region}}
+    {{loc.startYear}} 부터 {{loc.endYear}}의 자세한 거래 정보 (최대 500개까지만 보여줍니다. 지역과 년도를 선택하세요.)</div>
+  <div class="panel-heading" ng-hide="saleArr.length>=500">{{loc.city + " " + loc.county + " " + loc.region}}
+    {{loc.startYear}} 부터 {{loc.endYear}}의 자세한 거래 정보 (총 {{saleArr.length}} 건)</div>
+</div>
   <!-- Table -->
   <table class="table">
     <tr><th>#</th><th>년도</th><th>월</th><th>계약일(~10)</th>
@@ -117,6 +110,16 @@ fjs.parentNode.insertBefore(js, fjs);
 <button class="btn btn-sucess" type="button">
 자료: <span class="badge">국토교통부 실거래 파일</span>
 </button>
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+var js, fjs = d.getElementsByTagName(s)[0];
+if (d.getElementById(id)) return;
+js = d.createElement(s); js.id = id;
+js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.5&appId=591819294280029";
+fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
 
 </body>
 </html>
@@ -267,6 +270,14 @@ app.controller('customersCtrl',
      $scope.upAll = function () {
        $scope.getSales();
        $scope.getStat();
+     };
+
+     $scope.saleListCount = function () {
+       if ($scope.saleArr.length>=500) {
+         return "500+"
+       }
+
+       return $scope.saleArr.length;
      };
 
      $scope.getSales = function() {
