@@ -1,0 +1,258 @@
+<!doctype html>
+<html ng-app="myApp" ng-controller="customersCtrl">
+  <head>
+    <title>전국 실거래가 연립/다세세대 매매 정보</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+    <script src="Chart.js"></script>
+    <script src="angular-chart.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="bootstrap-select.js"></script>
+    <link rel="stylesheet" href="angular-chart.css">
+    <link rel="stylesheet" href="bootstrap.min.css">
+  </head>
+
+<body>
+  <div class="page-header">
+  <h1>전국 실거래가 연립/다세세대 매매 정보</small></h1>
+</div>
+<form>
+  <div class="alert alert-success" role="alert">지역을 선택하세요.
+   시/도 <select name="city" ng-model="loc.city" ng-change="getCounty()">
+    <option ng-repeat="city in cityArr" value="{{city}}">{{city}}</option>
+  </select>
+
+  구/시 <select name="county" ng-model="loc.county" ng-change="getRegion()">
+    <option ng-repeat="county in countyArr" value="{{county}}">{{county}}</option>
+  </select>
+
+  동/읍 <select name="region" ng-model="loc.region" ng-change="upAll()">
+    <option ng-repeat="region in regionArr" value="{{region}}">{{region}}</option>
+  </select>
+  <!--
+</div>
+<div class="alert alert-warning" role="alert">
+-->
+  년도를 선택하세요.
+  <select name="startYear" ng-model="loc.startYear" ng-change="upAll()">
+   <option ng-repeat="start in startYears" value="{{start}}">{{start}}</option>
+ </select>
+  부터
+  <select name="endYear" ng-model="loc.endYear" ng-change="upAll()">
+   <option ng-repeat="end in endYears" value="{{end}}">{{end}}</option>
+ </select>
+  까지
+</div>
+</form>
+<div class="alert alert-info" role="alert">선택된 지역: {{loc.city + " " + loc.county + " " + loc.region}} 을(를)
+  {{loc.startYear}} 부터 {{loc.endYear}} 까지 봅니다.
+</div>
+
+<canvas id="line" class="chart chart-line" chart-data="data"
+  chart-labels="labels" chart-legend="true" chart-series="series"
+  chart-click="onClick" >
+</canvas>
+
+<!--
+<table>
+  <tr ng-repeat="stat in statArr">
+    <td>{{ stat.year }}</td>
+    <td>{{ stat.month }}</td>
+    <td>{{ stat.c }}</td>
+    <td>{{ stat.avgAmtArea }}</td>
+    <td>{{ stat.avgAmtLand }}</td>
+</tr>
+</table>
+-->
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading">거래 정보 (최대 500개까지만 보여줍니다. 지역과 년도를 선택하세요.)</div>
+  <div class="panel-body">
+  </div>
+
+  <!-- Table -->
+  <table class="table">
+    <tr><th>#</th><th>년도</th><th>월</th><th>계약일(~10)</th>
+    <th>지역명</th><th>가격 (만원)</th><th>연면적(㎡)</th>
+    <th>대지면적(㎡)</th><th>구분</th><th>건축년도</th><th>도로명</th></tr>
+  <tr ng-repeat="sale in saleArr">
+    <td>{{$index+1}}</td>
+    <td>{{sale.year}}</td>
+    <td>{{sale.month}}</td>
+    <td>{{sale.date}}</td>
+    <td>{{sale.fullCity}}</td>
+    <td align="right">{{sale.amount | currency:"":0 }}</td>
+    <td align="right">{{sale.area}}</td>
+    <td aligh="right">{{sale.landArea}}</td>
+    <td>{{sale.type}}</td>
+    <td>{{sale.builtYear}}</td>
+    <td>{{sale.avenue}}</td>
+  </tr>
+</table>
+
+<p><center>
+
+  <button class="btn btn-primary" type="button">
+  Created by  <span class="badge">hunkim@gmail.com</span>
+</button>
+
+<button class="btn btn-sucess" type="button">
+자료:  <span class="badge">국토교통부 실거래 파일</span>
+</button>
+
+</body>
+</html>
+
+<script>
+var app = angular.module('myApp', ['chart.js']);
+
+app.controller('customersCtrl',
+    function($scope, $http) {
+
+    $rhost = "http://ec2-52-26-83-194.us-west-2.compute.amazonaws.com";
+    $regionUrl = $rhost + "/trend/regions.php";
+    $saleUrl = $rhost + "/trend/query.php";
+    $statUrl = $rhost + "/trend/stat.php";
+
+    // default action
+    $scope.cityArr = [
+    "",
+    "서울특별시",
+    "부산광역시",
+    "대구광역시",
+    "인천광역시",
+    "광주광역시",
+    "대전광역시",
+    "울산광역시",
+    "세종특별자치시",
+    "경기도",
+    "강원도",
+    "충청북도",
+    "충청남도",
+    "전라북도",
+    "전라남도",
+    "경상북도",
+    "경상남도",
+    "제주특별자치도"
+   ];
+
+   $scope.minYear = 2006;
+   $scope.maxYear = 2015;
+
+    $scope.loc = {
+    city: "",
+    county: "",
+    region: "",
+    startYear: $scope.minYear,
+    endYear: $scope.maxYear
+   };
+
+   // Chart Data
+  $scope.series = ['연면적(㎡)당 가격', '대지면적(㎡)당 가격', '거래량'];
+
+  $scope.labels = [];
+  $scope.data = [
+    [],
+    [],
+    []
+  ];
+
+  $scope.statArr = null;
+
+  $scope.$watch('loc.startYear', function() {
+    $scope.endYears=[];
+    for (i=$scope.loc.startYear; i<=$scope.maxYear; i++) {
+        $scope.endYears.push(i);
+    }
+  });
+
+  $scope.$watch('loc.endYear', function() {
+    $scope.startYears=[];
+
+    for (i=$scope.minYear; i<=$scope.loc.endYear; i++) {
+        $scope.startYears.push(i);
+    }
+  });
+
+  $scope.$watchCollection('statArr', function() {
+    if($scope.statArr==null || $scope.statArr[0]==null) {
+      return;
+    }
+
+    // update graph array
+    $scope.labels = [];
+    $scope.data[0]=[];$scope.data[1]=[];
+
+    var statLen = $scope.statArr.length;
+    for (var i = 0; i < statLen; i++) {
+      $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[i].month;
+      $scope.data[2][i] = $scope.statArr[i].c;
+      $scope.data[0][i] = $scope.statArr[i].avgAmtArea;
+      $scope.data[1][i] = $scope.statArr[i].avgAmtLand;
+    }
+  }, true);
+
+  $scope.onClick = function (points, evt) {
+    console.log(points, evt);
+  };
+
+  $scope.getStat = function() {
+    $scope.statArr=null;
+     $http.get($statUrl + "?city=" + $scope.loc.city +
+       "&county=" + $scope.loc.county +
+       "&region=" + $scope.loc.region +
+       "&startyear=" + $scope.loc.startYear +
+       "&endyear=" + $scope.loc.endYear
+       )
+     .success(function (response) {$scope.statArr = response;});
+   };
+
+   // get county array
+   $scope.getCounty = function() {
+       // clear region
+       $scope.countyArr = null;
+       $scope.regionArr = null;
+
+       $scope.loc.county = "";
+       $scope.loc.region = "";
+
+       $http.get($regionUrl + "?city=" + $scope.loc.city)
+      .success(function (response) {$scope.countyArr = response;});
+
+      // update sales information
+      $scope.upAll();
+    };
+
+    // get region array
+    $scope.getRegion = function() {
+       $scope.regionArr = null;
+
+       $scope.loc.region = "";
+
+       $http.get($regionUrl + "?city=" + $scope.loc.city + "&county=" + $scope.loc.county)
+       .success(function (response) {$scope.regionArr = response;});
+
+       // update sales information
+       $scope.upAll();
+     };
+
+     $scope.upAll = function () {
+       $scope.getSales();
+       $scope.getStat();
+     };
+
+     $scope.getSales = function() {
+       $scope.saleArr=null;
+        $http.get($saleUrl + "?city=" + $scope.loc.city +
+          "&county=" + $scope.loc.county +
+          "&region=" + $scope.loc.region +
+          "&startyear=" + $scope.loc.startYear +
+          "&endyear=" + $scope.loc.endYear)
+        .success(function (response) {$scope.saleArr = response;});
+      };
+
+    // Show all
+    $scope.getStat();
+    $scope.getSales();
+
+});
+</script>
