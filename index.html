@@ -112,7 +112,7 @@ var app = angular.module('myApp', ['chart.js']);
 app.controller('customersCtrl',
     function($scope, $http) {
 
-    $rhost = "http://ec2-52-26-83-194.us-west-2.compute.amazonaws.com";
+    $rhost = "http://api.kproperty.xyz/";
     $regionUrl = $rhost + "/trend/regions.php";
     $saleUrl = $rhost + "/trend/query.php";
     $statUrl = $rhost + "/trend/stat.php";
