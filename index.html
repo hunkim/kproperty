@@ -131,15 +131,10 @@ app.controller('customersCtrl',
 
     $rhost = "http://api.kproperty.xyz/";
 
-    if(false) {
     $regionUrl = $rhost + "/trend/regions.php";
     $saleUrl = $rhost + "/trend/query.php";
     $statUrl = $rhost + "/trend/stat.php";
-    } else {
-      $regionUrl = $rhost + "/trend/_regions.php";
-      $saleUrl = $rhost + "/trend/_query.php";
-      $statUrl = $rhost + "/trend/_stat.php";
-    }
+
     // show count in the graph
     $scope.showCount = true;
 
@@ -234,7 +229,7 @@ app.controller('customersCtrl',
     if ($sale==null) {
       return "";
     }
-    return "''" + $sale.fullCity + " " + $sale.avenue + "'";
+    return "'" + $sale.fullCity + " " + $sale.avenue + "'";
   };
 
     $scope.$watch('loc.endYear', function() {
