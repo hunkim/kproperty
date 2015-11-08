@@ -102,7 +102,7 @@
     <td class="text-right">{{sale.landArea}}</td>
     <td>{{sale.type}}</td>
     <td>{{sale.builtYear}}</td>
-    <td><A target="_blank" href="http://map.daum.net/?q='{{mapEncode(sale)}}'">{{sale.avenue}}</a></td>
+    <td><A target="_blank" href="http://map.daum.net/?q={{mapEncode(sale)}}">{{sale.avenue}}</a></td>
   </tr>
 </table>
 
@@ -130,10 +130,16 @@ app.controller('customersCtrl',
     function($scope, $http) {
 
     $rhost = "http://api.kproperty.xyz/";
+
+    if(false) {
     $regionUrl = $rhost + "/trend/regions.php";
     $saleUrl = $rhost + "/trend/query.php";
     $statUrl = $rhost + "/trend/stat.php";
-
+    } else {
+      $regionUrl = $rhost + "/trend/_regions.php";
+      $saleUrl = $rhost + "/trend/_query.php";
+      $statUrl = $rhost + "/trend/_stat.php";
+    }
     // show count in the graph
     $scope.showCount = true;
 
@@ -216,11 +222,19 @@ app.controller('customersCtrl',
     }
   });
 
+  // local function
+  koEncode = function($s) {
+    if ($s==null || $s=="") {
+      return $s;
+    }
+    return encodeURI(encodeURIComponent($s));
+  };
+
   $scope.mapEncode = function($sale) {
     if ($sale==null) {
       return "";
     }
-    return decodeURIComponent($sale.fullCity + " " + $sale.avenue);
+    return "''" + $sale.fullCity + " " + $sale.avenue + "'";
   };
 
     $scope.$watch('loc.endYear', function() {
@@ -275,9 +289,9 @@ app.controller('customersCtrl',
 
   $scope.getStat = function() {
     $scope.statArr=[];
-     $http.get($statUrl + "?city=" + decodeURIComponent($scope.loc.city) +
-       "&county=" + decodeURIComponent($scope.loc.county) +
-       "&region=" + decodeURIComponent($scope.loc.region) +
+     $http.get($statUrl + "?city=" + koEncode($scope.loc.city) +
+       "&county=" + koEncode($scope.loc.county) +
+       "&region=" + koEncode($scope.loc.region) +
        "&startyear=" + $scope.loc.startYear +
        "&endyear=" + $scope.loc.endYear
        )
@@ -294,7 +308,7 @@ app.controller('customersCtrl',
        $scope.loc.county = "";
        $scope.loc.region = "";
 
-       $http.get($regionUrl + "?city=" + decodeURIComponent($scope.loc.city))
+       $http.get($regionUrl + "?city=" + koEncode($scope.loc.city))
       .success(function (response) {$scope.countyArr = response;})
       .error(function (response) {$scope.errorFlag=true;});
 
@@ -307,8 +321,8 @@ app.controller('customersCtrl',
        $scope.regionArr = [];
        $scope.loc.region = "";
 
-       $http.get($regionUrl + "?city=" + decodeURIComponent($scope.loc.city) +
-            "&county=" + decodeURIComponent($scope.loc.county))
+       $http.get($regionUrl + "?city=" + koEncode($scope.loc.city) +
+            "&county=" + koEncode($scope.loc.county))
        .success(function (response) {$scope.regionArr = response;})
        .error(function (response) {$scope.errorFlag=true;});
 
@@ -335,9 +349,9 @@ app.controller('customersCtrl',
 
      $scope.getSales = function() {
        $scope.saleArr=[];
-        $http.get($saleUrl + "?city=" + decodeURIComponent($scope.loc.city) +
-          "&county=" + decodeURIComponent($scope.loc.county) +
-          "&region=" + decodeURIComponent($scope.loc.region) +
+        $http.get($saleUrl + "?city=" + koEncode($scope.loc.city) +
+          "&county=" + koEncode($scope.loc.county) +
+          "&region=" + koEncode($scope.loc.region) +
           "&startyear=" + $scope.loc.startYear +
           "&endyear=" + $scope.loc.endYear)
         .success(function (response) {$scope.saleArr = response;})
