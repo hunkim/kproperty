@@ -1,6 +1,8 @@
 <!doctype html>
 <html ng-app="myApp" ng-controller="customersCtrl">
   <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
     <title>전국 실거래가 단독/다가구 매매 정보</title>
     <script src="js/angular.1.4.7.min.js"></script>
     <script src="js/jquery-2.1.4.min.js"></script>
@@ -42,10 +44,12 @@
    <option ng-repeat="end in endYears" value="{{end}}">{{end}}</option>
  </select>
   까지
+  &nbsp;<span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+  거래량 그래프 보이기: <input type="checkbox" ng-model="showCount" ng-change="updateGraph()">
 </div>
 </form>
 <div class="alert alert-info" role="alert">선택된 지역: {{loc.city + " " + loc.county + " " + loc.region}} 을(를)
-  {{loc.startYear}} 부터 {{loc.endYear}} 까지 봅니다.
+  {{loc.startYear}} 부터 {{loc.endYear}} 까지.
 <!--  <A href=#list> -->
  &nbsp;<a class="btn btn-primary" role="button" href="#list">
   <span class="badge">{{saleListCount()}}</span> 건의 거래 정보</a> 가 있습니다.
@@ -135,6 +139,9 @@ app.controller('customersCtrl',
     $saleUrl = $rhost + "/trend/query.php";
     $statUrl = $rhost + "/trend/stat.php";
 
+    // show count in the graph
+    $scope.showCount = true;
+
     // default action
     $scope.cityArr = [
     "",
@@ -202,25 +209,41 @@ app.controller('customersCtrl',
     }
   });
 
-  $scope.$watchCollection('statArr', function() {
+  $scope.updateGraph = function() {
     if($scope.statArr==null || $scope.statArr[0]==null) {
       return;
     }
 
+    if ($scope.showCount) {
+      $scope.series = ['건물총면적 평당 가격', '대지면적 평당 가격', '거래량'];
+    } else {
+      $scope.series = ['건물총면적 평당 가격', '대지면적 평당 가격'];
+    }
     // update graph array
     $scope.labels = [];
+
+    $scope.data=[];
+
     $scope.data[0]=[];
     $scope.data[1]=[];
-    $scope.data[2]=[];
 
+    if ($scope.showCount) {
+      $scope.data[2]=[];
+    }
     var statLen = $scope.statArr.length;
 
     for (var i = 0; i < statLen; i++) {
       $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[i].month;
       $scope.data[0][i] = $scope.statArr[i].avgAmtArea; // 평당가격
       $scope.data[1][i] = $scope.statArr[i].avgAmtLand; // 평당가격
-      $scope.data[2][i] = $scope.statArr[i].c;
+      if ($scope.showCount) {
+        $scope.data[2][i] = $scope.statArr[i].c;
+      }
     }
+  };
+
+  $scope.$watchCollection('statArr', function() {
+    $scope.updateGraph();
   }, true);
 
   $scope.onClick = function (points, evt) {
@@ -273,6 +296,10 @@ app.controller('customersCtrl',
      };
 
      $scope.saleListCount = function () {
+       if ($scope.saleArr==null) {
+         return 0;
+       }
+
        if ($scope.saleArr.length>=500) {
          return "500+"
        }
