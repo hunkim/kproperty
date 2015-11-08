@@ -9,9 +9,10 @@
     <script src="js/Chart.js"></script>
     <script src="js/angular-chart.js"></script>
     <script src="js/bootstrap.min.js"></script>
-    <script src="js/bootstrap-select.js"></script>
+    <script src="js/angular-busy.min.js"></script>
     <link rel="stylesheet" href="css/angular-chart.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/angular-busy.min.css">
   </head>
 <body>
   <h2>  <span class="glyphicon glyphicon-home" aria-hidden="true"></span> 전국 실거래가 단독/다가구 매매 정보</h2>
@@ -47,6 +48,7 @@
 </div>
 </form>
 <!-- info block -->
+<div cg-busy="{promise:statPromise,message:'통계 정보를 읽고 있습니다...'}"></div>
 <div ng-hide="errorFlag" class="alert alert-info" role="alert">선택된 지역: {{loc.city + " " + loc.county + " " + loc.region}} 을(를)
   {{loc.startYear}} 부터 {{loc.endYear}} 까지.
 <!--  <A href=#list> -->
@@ -78,6 +80,7 @@
 </table>
 -->
 <a name="list"></a>
+<div cg-busy="{promise:salePromise,message:'계약 정보를 읽고 있습니다...'}"></div>
 <div class="panel panel-default">
   <!-- Default panel contents -->
   <div class="panel-heading" ng-show="saleArr.length>=500">{{loc.city + " " + loc.county + " " + loc.region}}
@@ -102,7 +105,7 @@
     <td class="text-right">{{sale.landArea}}</td>
     <td>{{sale.type}}</td>
     <td>{{sale.builtYear}}</td>
-    <td><A target="_blank" href="http://map.daum.net/?q={{mapEncode(sale)}}">{{sale.avenue}}</a></td>
+    <td><A target="_blank" href="{{mapEncode(sale)}}">{{sale.avenue}}</a></td>
   </tr>
 </table>
 
@@ -124,18 +127,19 @@
 </html>
 
 <script>
-var app = angular.module('myApp', ['chart.js']);
+var app = angular.module('myApp', ['chart.js', 'cgBusy']);
 
 app.controller('customersCtrl',
-    function($scope, $http) {
+  function($scope, $http) {
+    // API Host
+    $rhost = "http://api.kproperty.xyz";
 
-    $rhost = "http://api.kproperty.xyz/";
-
+    // API URLs
     $regionUrl = $rhost + "/trend/regions.php";
     $saleUrl = $rhost + "/trend/query.php";
     $statUrl = $rhost + "/trend/stat.php";
 
-    // show count in the graph
+    // show count option in the graph
     $scope.showCount = true;
 
     // http error flag
@@ -143,127 +147,105 @@ app.controller('customersCtrl',
 
     // default action
     $scope.cityArr = [
-    "",
-    "서울특별시",
-    "부산광역시",
-    "대구광역시",
-    "인천광역시",
-    "광주광역시",
-    "대전광역시",
-    "울산광역시",
-    "세종특별자치시",
-    "경기도",
-    "강원도",
-    "충청북도",
-    "충청남도",
-    "전라북도",
-    "전라남도",
-    "경상북도",
-    "경상남도",
-    "제주특별자치도"
-   ];
+      "","서울특별시","부산광역시","대구광역시","인천광역시","광주광역시","대전광역시","울산광역시","세종특별자치시",
+      "경기도","강원도","충청북도","충청남도","전라북도","전라남도","경상북도","경상남도","제주특별자치도"];
 
-   $scope.minYear = 2006;
-   $scope.maxYear = 2015;
+    // year min and max
+    $scope.minYear = 2006;
+    $scope.maxYear = 2015;
 
-    $scope.loc = {
-    city: "",
-    county: "",
-    region: "",
-    startYear: $scope.minYear,
-    endYear: $scope.maxYear
-   };
+    // loc selection
+    $scope.loc = {city: "", county: "", region: "", startYear: $scope.minYear, endYear: $scope.maxYear};
 
-   // Chart Data
-  $scope.series = ['건물총면적 평당 가격', '대지면적 평당 가격', '거래량'];
+    // Chart Data
+    $scope.series = ['건물총면적 평당 가격', '대지면적 평당 가격', '거래량'];
+    $scope.labels = [];
+    $scope.data = [[],[],[]];
 
-  $scope.labels = [];
-  $scope.data = [
-    [],
-    [],
-    []
-  ];
+    // stat and sale array
+    $scope.statArr = [];
+    $scope.saleArr=[];
 
+    // county and region array
+    $scope.countyArr = [];
+    $scope.regionArr = [];
 
-  $scope.statArr = [];
-  $scope.saleArr=[];
-
-  $scope.countyArr = [];
-  $scope.regionArr = [];
-
+    // recovering from network error
     $scope.reconnect = function() {
-      $scope.errorFlag = false;
+        $scope.errorFlag = false;  //reset the flag and let's hope
 
-      // check if county is loaded
-      if ($scope.regionArr.length==0 && $scope.loc.county!="") {
-        $scope.getRegion();
-      } else if ($scope.countyArr.length==0 && $scope.loc.city!="") {
-        $scope.getCounty();
-      }
+        // check if county is loaded
+        if ($scope.regionArr.length==0 && $scope.loc.county!="") {
+          $scope.getRegion();
+        } else if ($scope.countyArr.length==0 && $scope.loc.city!="") {
+          $scope.getCounty();
+        }
 
-      if ($scope.statArr.length == 0) {
-        $scope.getStat();
-      }
+        // no statdate? reload!
+        if ($scope.statArr.length == 0) {
+          $scope.getStat();
+        }
 
-      if ($scope.saleArr.length == 0) {
-        $scope.getSales();
-      }
+        // no sale array? reload!
+        if ($scope.saleArr.length == 0) {
+          $scope.getSales();
+        }
+      };
+
+      // local function for KR URL encodning
+      koEncode = function($s) {
+        if ($s==null || $s=="") {
+          return $s;
+        }
+        return encodeURI(encodeURIComponent($s));
+      };
+
+      // return information for daum map
+      $scope.mapEncode = function($sale) {
+        if ($sale==null) {
+          return "";
+        }
+        return "http://map.daum.net/?q='" + $sale.fullCity + " " + $sale.avenue + "'";
     };
 
-  $scope.$watch('loc.startYear', function() {
-    $scope.endYears=[];
-    for (i=$scope.loc.startYear; i<=$scope.maxYear; i++) {
+    // based on the startYear selection, we adjust the endYear list
+    $scope.$watch('loc.startYear', function() {
+      $scope.endYears=[];
+      for (i=$scope.loc.startYear; i<=$scope.maxYear; i++) {
         $scope.endYears.push(i);
-    }
-  });
+      }
+    });
 
-  // local function
-  koEncode = function($s) {
-    if ($s==null || $s=="") {
-      return $s;
-    }
-    return encodeURI(encodeURIComponent($s));
-  };
-
-  $scope.mapEncode = function($sale) {
-    if ($sale==null) {
-      return "";
-    }
-    return "'" + $sale.fullCity + " " + $sale.avenue + "'";
-  };
-
+    // based on the end year selecion, we adjust the start year list
     $scope.$watch('loc.endYear', function() {
-    $scope.startYears=[];
-
-    for (i=$scope.minYear; i<=$scope.loc.endYear; i++) {
+      $scope.startYears=[];
+      for (i=$scope.minYear; i<=$scope.loc.endYear; i++) {
         $scope.startYears.push(i);
-    }
-  });
+      }
+    });
 
-  $scope.updateGraph = function() {
+    // update the graph (based on watch statArr)
+    $scope.updateGraph = function() {
     // nothing to update
     if($scope.statArr.length==0) {
       return;
     }
 
+    // show count? Then, three series. Otherwise, two
     if ($scope.showCount) {
       $scope.series = ['건물총면적 평당 가격 (만원)', '대지면적 평당 가격 (만원)', '거래량'];
     } else {
       $scope.series = ['건물총면적 평당 가격 (만원)', '대지면적 평당 가격 (만원)'];
     }
-    // update graph array
+
+    // reset graph array
     $scope.labels = [];
-
     $scope.data=[];
-
     $scope.data[0]=[];
     $scope.data[1]=[];
+    $scope.data[2]=[];
 
-    if ($scope.showCount) {
-      $scope.data[2]=[];
-    }
     var statLen = $scope.statArr.length;
-
     for (var i = 0; i < statLen; i++) {
       $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[i].month;
       $scope.data[0][i] = $scope.statArr[i].avgAmtArea; // 평당가격
@@ -274,25 +256,15 @@ app.controller('customersCtrl',
     }
   };
 
+  // watch stat array
   $scope.$watchCollection('statArr', function() {
     $scope.updateGraph();
-  }, true);
+  }, true); // deep checking
 
+  // greaph on click. TODO: what should we do?
   $scope.onClick = function (points, evt) {
     //console.log(points, evt);
   };
-
-  $scope.getStat = function() {
-    $scope.statArr=[];
-     $http.get($statUrl + "?city=" + koEncode($scope.loc.city) +
-       "&county=" + koEncode($scope.loc.county) +
-       "&region=" + koEncode($scope.loc.region) +
-       "&startyear=" + $scope.loc.startYear +
-       "&endyear=" + $scope.loc.endYear
-       )
-     .success(function (response) {$scope.statArr = response;})
-     .error(function (response) {$scope.errorFlag=true;});
-   };
 
    // get county array
    $scope.getCounty = function() {
@@ -303,11 +275,11 @@ app.controller('customersCtrl',
        $scope.loc.county = "";
        $scope.loc.region = "";
 
-       $http.get($regionUrl + "?city=" + koEncode($scope.loc.city))
-      .success(function (response) {$scope.countyArr = response;})
-      .error(function (response) {$scope.errorFlag=true;});
+       $scope.countyPromise = $http.get($regionUrl + "?city=" + koEncode($scope.loc.city))
+        .success(function (response) {$scope.countyArr = response;})
+        .error(function (response) {$scope.errorFlag=true;});
 
-      // update sales information
+       // update sales information
       $scope.upAll();
     };
 
@@ -316,7 +288,7 @@ app.controller('customersCtrl',
        $scope.regionArr = [];
        $scope.loc.region = "";
 
-       $http.get($regionUrl + "?city=" + koEncode($scope.loc.city) +
+       $scope.regionPromise = $http.get($regionUrl + "?city=" + koEncode($scope.loc.city) +
             "&county=" + koEncode($scope.loc.county))
        .success(function (response) {$scope.regionArr = response;})
        .error(function (response) {$scope.errorFlag=true;});
@@ -342,9 +314,21 @@ app.controller('customersCtrl',
        return $scope.saleArr.length;
      };
 
+     $scope.getStat = function() {
+         $scope.statArr=[];
+         $scope.statPromise = $http.get($statUrl + "?city=" + koEncode($scope.loc.city) +
+          "&county=" + koEncode($scope.loc.county) +
+          "&region=" + koEncode($scope.loc.region) +
+          "&startyear=" + $scope.loc.startYear +
+          "&endyear=" + $scope.loc.endYear
+          )
+        .success(function (response) {$scope.statArr = response;})
+        .error(function (response) {$scope.errorFlag=true;});
+      };
+
      $scope.getSales = function() {
        $scope.saleArr=[];
-        $http.get($saleUrl + "?city=" + koEncode($scope.loc.city) +
+       $scope.salePromise = $http.get($saleUrl + "?city=" + koEncode($scope.loc.city) +
           "&county=" + koEncode($scope.loc.county) +
           "&region=" + koEncode($scope.loc.region) +
           "&startyear=" + $scope.loc.startYear +
@@ -353,9 +337,7 @@ app.controller('customersCtrl',
         .error(function (response) {$scope.errorFlag=true;});
       };
 
-    // Show all
-    $scope.getStat();
-    $scope.getSales();
-
+    // Show all for the initial screen
+    $scope.upAll();
 });
 </script>
