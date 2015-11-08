@@ -25,7 +25,7 @@
   </select>
 
   구/시 <select name="county" ng-model="loc.county" ng-change="getRegion()">
-    <option ng-repeat="county in countyArr | orderBy" value="{{county}}">{{county}}</option>
+    <option ng-repeat="county in countyArr" value="{{county}}">{{county}}</option>
   </select>
 
   동/읍 <select name="region" ng-model="loc.region" ng-change="upAll()">
