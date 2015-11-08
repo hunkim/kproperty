@@ -17,7 +17,7 @@
   <h2>  <span class="glyphicon glyphicon-home" aria-hidden="true"></span> 전국 실거래가 단독/다가구 매매 정보</h2>
 <form>
   <div class="alert alert-success" role="alert">
-    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>지역을 선택하세요.
+    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>지역 선택:
    시/도 <select name="city" ng-model="loc.city" ng-change="getCounty()">
     <option ng-repeat="city in cityArr" value="{{city}}">{{city}}</option>
   </select>
@@ -33,7 +33,7 @@
 </div>
 <div class="alert alert-warning" role="alert">
 -->
-  &nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>년도를 선택하세요.
+  &nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>년도 선택:
   <select name="startYear" ng-model="loc.startYear" ng-change="upAll()">
    <option ng-repeat="start in startYears" value="{{start}}">{{start}}</option>
  </select>
@@ -43,7 +43,7 @@
  </select>
   까지
   &nbsp;<span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-  거래량 그래프 보이기: <input type="checkbox" ng-model="showCount" ng-change="updateGraph()">
+  거래량 보기: <input type="checkbox" ng-model="showCount" ng-change="updateGraph()">
 </div>
 </form>
 <div class="alert alert-info" role="alert">선택된 지역: {{loc.city + " " + loc.county + " " + loc.region}} 을(를)
@@ -51,7 +51,6 @@
 <!--  <A href=#list> -->
  &nbsp;<a class="btn btn-primary" role="button" href="#list">
   <span class="badge">{{saleListCount()}}</span> 건의 거래 정보</a> 가 있습니다.
-
 </div>
 
 <canvas id="line" class="chart chart-line" chart-data="data"
