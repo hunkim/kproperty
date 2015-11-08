@@ -220,7 +220,7 @@ app.controller('customersCtrl',
     if ($sale==null) {
       return "";
     }
-    return $sale.fullCity + " " + $sale.avenue;
+    return decodeURIComponent($sale.fullCity + " " + $sale.avenue);
   };
 
     $scope.$watch('loc.endYear', function() {
@@ -275,9 +275,9 @@ app.controller('customersCtrl',
 
   $scope.getStat = function() {
     $scope.statArr=[];
-     $http.get($statUrl + "?city=" + $scope.loc.city +
-       "&county=" + $scope.loc.county +
-       "&region=" + $scope.loc.region +
+     $http.get($statUrl + "?city=" + decodeURIComponent($scope.loc.city) +
+       "&county=" + decodeURIComponent($scope.loc.county) +
+       "&region=" + decodeURIComponent($scope.loc.region) +
        "&startyear=" + $scope.loc.startYear +
        "&endyear=" + $scope.loc.endYear
        )
@@ -294,7 +294,7 @@ app.controller('customersCtrl',
        $scope.loc.county = "";
        $scope.loc.region = "";
 
-       $http.get($regionUrl + "?city=" + $scope.loc.city)
+       $http.get($regionUrl + "?city=" + decodeURIComponent($scope.loc.city))
       .success(function (response) {$scope.countyArr = response;})
       .error(function (response) {$scope.errorFlag=true;});
 
@@ -307,7 +307,8 @@ app.controller('customersCtrl',
        $scope.regionArr = [];
        $scope.loc.region = "";
 
-       $http.get($regionUrl + "?city=" + $scope.loc.city + "&county=" + $scope.loc.county)
+       $http.get($regionUrl + "?city=" + decodeURIComponent($scope.loc.city) +
+            "&county=" + decodeURIComponent($scope.loc.county))
        .success(function (response) {$scope.regionArr = response;})
        .error(function (response) {$scope.errorFlag=true;});
 
@@ -334,9 +335,9 @@ app.controller('customersCtrl',
 
      $scope.getSales = function() {
        $scope.saleArr=[];
-        $http.get($saleUrl + "?city=" + $scope.loc.city +
-          "&county=" + $scope.loc.county +
-          "&region=" + $scope.loc.region +
+        $http.get($saleUrl + "?city=" + decodeURIComponent($scope.loc.city) +
+          "&county=" + decodeURIComponent($scope.loc.county) +
+          "&region=" + decodeURIComponent($scope.loc.region) +
           "&startyear=" + $scope.loc.startYear +
           "&endyear=" + $scope.loc.endYear)
         .success(function (response) {$scope.saleArr = response;})
