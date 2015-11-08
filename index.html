@@ -18,15 +18,15 @@
 <form>
   <div class="alert alert-success" role="alert">
     <span class="glyphicon glyphicon-search" aria-hidden="true"></span>지역 선택:
-   시/도 <select name="city" ng-model="loc.city" ng-change="getCounty()">
+   시/도 <select name="city" ng-model="loc.city" ng-change="getCounty();">
     <option ng-repeat="city in cityArr" value="{{city}}">{{city}}</option>
   </select>
 
-  구/시 <select name="county" ng-model="loc.county" ng-change="getRegion()">
+  구/시 <select name="county" ng-model="loc.county" ng-change="getRegion();">
     <option ng-repeat="county in countyArr | orderBy" value="{{county}}">{{county}}</option>
   </select>
 
-  동/읍 <select name="region" ng-model="loc.region" ng-change="upAll()">
+  동/읍 <select name="region" ng-model="loc.region" ng-change="upAll();">
     <option ng-repeat="region in regionArr | orderBy" value="{{region}}">{{region}}</option>
   </select>
   <!--
@@ -34,23 +34,31 @@
 <div class="alert alert-warning" role="alert">
 -->
   &nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>년도 선택:
-  <select name="startYear" ng-model="loc.startYear" ng-change="upAll()">
+  <select name="startYear" ng-model="loc.startYear" ng-change="upAll();">
    <option ng-repeat="start in startYears" value="{{start}}">{{start}}</option>
  </select>
   부터
-  <select name="endYear" ng-model="loc.endYear" ng-change="upAll()">
+  <select name="endYear" ng-model="loc.endYear" ng-change="upAll();">
    <option ng-repeat="end in endYears" value="{{end}}">{{end}}</option>
  </select>
   까지
   &nbsp;<span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-  거래량 보기: <input type="checkbox" ng-model="showCount" ng-change="updateGraph()">
+  거래량 보기: <input type="checkbox" ng-model="showCount" ng-change="updateGraph();">
 </div>
 </form>
-<div class="alert alert-info" role="alert">선택된 지역: {{loc.city + " " + loc.county + " " + loc.region}} 을(를)
+<!-- info block -->
+<div ng-hide="errorFlag" class="alert alert-info" role="alert">선택된 지역: {{loc.city + " " + loc.county + " " + loc.region}} 을(를)
   {{loc.startYear}} 부터 {{loc.endYear}} 까지.
 <!--  <A href=#list> -->
  &nbsp;<a class="btn btn-primary" role="button" href="#list">
   <span class="badge">{{saleListCount()}}</span> 건의 거래 정보</a> 가 있습니다.
+</div>
+
+<!-- error block -->
+<div ng-show="errorFlag" class="alert alert-danger text-center" role="error">
+  <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
+  인터넷 연결이 불안정 하나거 저희 서버가 이상합니다.
+  <a class="btn btn-primary" role="button" ng-click="reconnect();"> 다시 연결 시도하기</a>
 </div>
 
 <canvas id="line" class="chart chart-line" chart-data="data"
@@ -79,16 +87,19 @@
 </div>
   <!-- Table -->
   <table class="table">
-    <tr><th>#</th><th>년월</th>
-    <th>지역명</th><th>가격 (만원)</th><th>연면적(㎡)</th>
-    <th>대지면적(㎡)</th><th>구분</th><th>건축년도</th><th>도로명 (지도링크)</th></tr>
+    <tr>
+      <th>#</th><th>년월</th>
+      <th>지역명</th><th align="right">가격 (만원)</th>
+      <th align="right">연면적(㎡)</th><th align="right">대지면적(㎡)</th>
+      <th>구분</th><th>건축년도</th><th>도로명 (지도링크)</th>
+    </tr>
   <tr ng-repeat="sale in saleArr">
     <td>{{$index+1}}</td>
     <td>{{sale.year}}/{{sale.month}}</td>
     <td>{{sale.fullCity}}</td>
-    <td align="right">{{sale.amount | currency:"":0 }}</td>
-    <td align="right">{{sale.area}}</td>
-    <td aligh="right">{{sale.landArea}}</td>
+    <td class="text-right">{{sale.amount | currency:"":0 }}</td>
+    <td class="text-right">{{sale.area}}</td>
+    <td class="text-right">{{sale.landArea}}</td>
     <td>{{sale.type}}</td>
     <td>{{sale.builtYear}}</td>
     <td><A target="_blank" href="http://map.daum.net/?q='{{mapEncode(sale)}}'">{{sale.avenue}}</a></td>
@@ -96,11 +107,11 @@
 </table>
 
 <div class="alert alert-danger" role="alert">
-  <a href="http://rt.molit.go.kr/" class="alert-link"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+  <a href="http://rt.molit.go.kr/" class="alert-link text-center"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
     이 사이트가 보여주는 자료는 프로그램의 버그등으로 인해 오류가 있을수 있습니다. 정확한 자료는 국토부 홈페이지에서 한번더 확인하세요.</a>
 </div>
 
-<p><center>
+<p class="text-center">
 
   <button class="btn btn-primary" type="button">
   만든이: <span class="badge">hunkim+kp@gmail.com</span>
@@ -125,6 +136,9 @@ app.controller('customersCtrl',
 
     // show count in the graph
     $scope.showCount = true;
+
+    // http error flag
+    $scope.errorFlag = false;
 
     // default action
     $scope.cityArr = [
@@ -169,7 +183,31 @@ app.controller('customersCtrl',
     []
   ];
 
+
   $scope.statArr = [];
+  $scope.saleArr=[];
+
+  $scope.countyArr = [];
+  $scope.regionArr = [];
+
+    $scope.reconnect = function() {
+      $scope.errorFlag = false;
+
+      // check if county is loaded
+      if ($scope.regionArr.length==0 && $scope.loc.county!="") {
+        $scope.getRegion();
+      } else if ($scope.countyArr.length==0 && $scope.loc.city!="") {
+        $scope.getCounty();
+      }
+
+      if ($scope.statArr.length == 0) {
+        $scope.getStat();
+      }
+
+      if ($scope.saleArr.length == 0) {
+        $scope.getSales();
+      }
+    };
 
   $scope.$watch('loc.startYear', function() {
     $scope.endYears=[];
@@ -232,7 +270,7 @@ app.controller('customersCtrl',
   }, true);
 
   $scope.onClick = function (points, evt) {
-    console.log(points, evt);
+    //console.log(points, evt);
   };
 
   $scope.getStat = function() {
@@ -243,7 +281,8 @@ app.controller('customersCtrl',
        "&startyear=" + $scope.loc.startYear +
        "&endyear=" + $scope.loc.endYear
        )
-     .success(function (response) {$scope.statArr = response;});
+     .success(function (response) {$scope.statArr = response;})
+     .error(function (response) {$scope.errorFlag=true;});
    };
 
    // get county array
@@ -256,7 +295,8 @@ app.controller('customersCtrl',
        $scope.loc.region = "";
 
        $http.get($regionUrl + "?city=" + $scope.loc.city)
-      .success(function (response) {$scope.countyArr = response;});
+      .success(function (response) {$scope.countyArr = response;})
+      .error(function (response) {$scope.errorFlag=true;});
 
       // update sales information
       $scope.upAll();
@@ -268,7 +308,8 @@ app.controller('customersCtrl',
        $scope.loc.region = "";
 
        $http.get($regionUrl + "?city=" + $scope.loc.city + "&county=" + $scope.loc.county)
-       .success(function (response) {$scope.regionArr = response;});
+       .success(function (response) {$scope.regionArr = response;})
+       .error(function (response) {$scope.errorFlag=true;});
 
        // update sales information
        $scope.upAll();
@@ -298,7 +339,8 @@ app.controller('customersCtrl',
           "&region=" + $scope.loc.region +
           "&startyear=" + $scope.loc.startYear +
           "&endyear=" + $scope.loc.endYear)
-        .success(function (response) {$scope.saleArr = response;});
+        .success(function (response) {$scope.saleArr = response;})
+        .error(function (response) {$scope.errorFlag=true;});
       };
 
     // Show all
