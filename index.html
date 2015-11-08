@@ -15,7 +15,9 @@
     <link rel="stylesheet" href="css/angular-busy.min.css">
   </head>
 <body>
-  <h2>  <span class="glyphicon glyphicon-home" aria-hidden="true"></span> 전국 실거래가 단독/다가구 매매 정보</h2>
+  <h2>  <span class="glyphicon glyphicon-home" aria-hidden="true"></span> 전국 실거래가 단독/다가구 매매 정보
+    <small>지원 브라우즈: <img src="no_ie.png"> (IE와는 잘 호환되지 않습니다.)</small>
+  </h2>
 <form>
   <div class="alert alert-success" role="alert">
     <span class="glyphicon glyphicon-search" aria-hidden="true"></span>지역 선택:
@@ -27,9 +29,13 @@
     <option ng-repeat="county in countyArr | orderBy" value="{{county}}">{{county}}</option>
   </select>
 
-  동/읍 <select name="region" ng-model="loc.region" ng-change="upAll();">
+  동/읍 <select name="region" ng-model="loc.region" ng-change="getRegion1();">
     <option ng-repeat="region in regionArr | orderBy" value="{{region}}">{{region}}</option>
   </select>
+
+  <span ng-show="region1Arr.length>1">리/기타 <select name="region1" ng-model="loc.region1" ng-change="upAll();">
+    <option ng-repeat="region1 in region1Arr | orderBy" value="{{region1}}">{{region1}}</option>
+  </select></span>
   <!--
 </div>
 <div class="alert alert-warning" role="alert">
@@ -115,7 +121,6 @@
 </div>
 
 <p class="text-center">
-
   <button class="btn btn-primary" type="button">
   만든이: <span class="badge">hunkim+kp@gmail.com</span>
 </button>
@@ -135,9 +140,9 @@ app.controller('customersCtrl',
     $rhost = "http://api.kproperty.xyz";
 
     // API URLs
-    $regionUrl = $rhost + "/trend/regions.php";
-    $saleUrl = $rhost + "/trend/query.php";
-    $statUrl = $rhost + "/trend/stat.php";
+    $regionUrl = $rhost + "/trend/_regions.php";
+    $saleUrl = $rhost + "/trend/q.php";
+    $statUrl = $rhost + "/trend/q.php/stat";
 
     // show count option in the graph
     $scope.showCount = true;
@@ -155,7 +160,7 @@ app.controller('customersCtrl',
     $scope.maxYear = 2015;
 
     // loc selection
-    $scope.loc = {city: "", county: "", region: "", startYear: $scope.minYear, endYear: $scope.maxYear};
+    $scope.loc = {city: "", county: "", region: "", region1: "", startYear: $scope.minYear, endYear: $scope.maxYear};
 
     // Chart Data
     $scope.series = ['건물총면적 평당 가격', '대지면적 평당 가격', '거래량'];
@@ -169,6 +174,7 @@ app.controller('customersCtrl',
     // county and region array
     $scope.countyArr = [];
     $scope.regionArr = [];
+    $scope.region1Arr = [];
 
     // recovering from network error
     $scope.reconnect = function() {
@@ -271,9 +277,11 @@ app.controller('customersCtrl',
        // clear region
        $scope.countyArr = [];
        $scope.regionArr = [];
+       $scope.region1Arr = [];
 
        $scope.loc.county = "";
        $scope.loc.region = "";
+       $scope.loc.region1 = "";
 
        $scope.countyPromise = $http.get($regionUrl + "?city=" + koEncode($scope.loc.city))
         .success(function (response) {$scope.countyArr = response;})
@@ -286,7 +294,10 @@ app.controller('customersCtrl',
     // get region array
     $scope.getRegion = function() {
        $scope.regionArr = [];
+       $scope.region1Arr = [];
+
        $scope.loc.region = "";
+       $scope.loc.region1 = "";
 
        $scope.regionPromise = $http.get($regionUrl + "?city=" + koEncode($scope.loc.city) +
             "&county=" + koEncode($scope.loc.county))
@@ -296,6 +307,23 @@ app.controller('customersCtrl',
        // update sales information
        $scope.upAll();
      };
+
+     // get region array
+     $scope.getRegion1 = function() {
+        $scope.region1Arr = [];
+
+        $scope.loc.region1 = "";
+
+        $scope.regionPromise = $http.get($regionUrl + "?city=" + koEncode($scope.loc.city) +
+             "&county=" + koEncode($scope.loc.county) +
+             "&region=" + koEncode($scope.loc.region)
+           )
+        .success(function (response) {$scope.region1Arr = response;})
+        .error(function (response) {$scope.errorFlag=true;});
+
+        // update sales information
+        $scope.upAll();
+      };
 
      $scope.upAll = function () {
        $scope.getSales();
@@ -319,6 +347,7 @@ app.controller('customersCtrl',
          $scope.statPromise = $http.get($statUrl + "?city=" + koEncode($scope.loc.city) +
           "&county=" + koEncode($scope.loc.county) +
           "&region=" + koEncode($scope.loc.region) +
+          "&region1=" + koEncode($scope.loc.region1) +
           "&startyear=" + $scope.loc.startYear +
           "&endyear=" + $scope.loc.endYear
           )
@@ -331,6 +360,7 @@ app.controller('customersCtrl',
        $scope.salePromise = $http.get($saleUrl + "?city=" + koEncode($scope.loc.city) +
           "&county=" + koEncode($scope.loc.county) +
           "&region=" + koEncode($scope.loc.region) +
+          "&region1=" + koEncode($scope.loc.region1) +
           "&startyear=" + $scope.loc.startYear +
           "&endyear=" + $scope.loc.endYear)
         .success(function (response) {$scope.saleArr = response;})
