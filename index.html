@@ -16,7 +16,7 @@
   </head>
 <body>
   <h2>  <span class="glyphicon glyphicon-home" aria-hidden="true"></span> 전국 실거래가 단독/다가구 매매 정보
-    <small>지원 브라우즈: <img src="no_ie.png"> (IE와는 잘 호환되지 않습니다.)</small>
+    <small>지원 브라우즈: <img src="no_ie.png"> (IE는 잘안됩니다.)</small>
   </h2>
 <form>
   <div class="alert alert-success" role="alert">
@@ -89,10 +89,10 @@
 <div cg-busy="{promise:salePromise,message:'계약 정보를 읽고 있습니다...'}"></div>
 <div class="panel panel-default">
   <!-- Default panel contents -->
-  <div class="panel-heading" ng-show="saleArr.length>=500">{{loc.city + " " + loc.county + " " + loc.region}}
-    {{loc.startYear}} 부터 {{loc.endYear}}의 자세한 거래 정보 (최대 500건만 보여줍니다. 지역과 년도를 선택하세요.)</div>
-  <div class="panel-heading" ng-hide="saleArr.length>=500">{{loc.city + " " + loc.county + " " + loc.region}}
-    {{loc.startYear}} 부터 {{loc.endYear}}의 자세한 거래 정보 (총 {{saleArr.length}} 건)</div>
+  <div class="panel-heading" ng-show="saleArr.length>=500"><strong>{{loc.city + " " + loc.county + " " + loc.region}}
+    {{loc.startYear}} 부터 {{loc.endYear}}의 자세한 거래 정보 (최대 500건만 보여줍니다. 지역과 년도를 선택하세요.)</strong></div>
+  <div class="panel-heading" ng-hide="saleArr.length>=500"><strong>{{loc.city + " " + loc.county + " " + loc.region}}
+    {{loc.startYear}} 부터 {{loc.endYear}}의 자세한 거래 정보 (총 {{saleArr.length}} 건)</strong></div>
 </div>
   <!-- Table -->
   <table class="table">
