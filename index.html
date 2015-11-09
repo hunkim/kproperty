@@ -249,7 +249,11 @@ app.controller('customersCtrl',
     $scope.data=[];
     $scope.data[0]=[];
     $scope.data[1]=[];
-    $scope.data[2]=[];
+
+    // Init if nedded
+    if ($scope.showCount) {
+      $scope.data[2]=[];
+    }
 
     var statLen = $scope.statArr.length;
     for (var i = 0; i < statLen; i++) {
