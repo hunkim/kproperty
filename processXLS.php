@@ -3,7 +3,7 @@
 
 $dir = "./xls/";
 
-$xlsx_njs = "/home/ubuntu/workspace/khometrend/js/node_modules/xlsx/bin/xlsx.njs";
+$xlsx_njs = "/home/ubuntu/workspace/kproperty/js/node_modules/xlsx/bin/xlsx.njs";
 
 $d = dir($dir);
 while (false !== ($entry = $d->read())) {
