@@ -98,19 +98,21 @@
   <table class="table">
     <tr>
       <th>#</th><th>년월</th>
-      <th>지역명</th><th align="right">가격 (만원)</th>
-      <th align="right">연면적(㎡)</th><th align="right">대지면적(㎡)</th>
-      <th>구분</th><th>건축년도</th><th>도로명 (지도링크)</th>
+      <th>지역명</th>
+      <th class="text-right">가격 (만원)</th>
+      <th class="text-right">건물총면적(㎡)/건축연도</th>
+      <th class="text-right">대지면적(㎡)</th>
+      <th>구분</th>
+      <th>도로명 (지도링크)</th>
     </tr>
   <tr ng-repeat="sale in saleArr">
     <td>{{$index+1}}</td>
     <td>{{sale.year}}/{{sale.month}}</td>
     <td>{{sale.fullCity}}</td>
     <td class="text-right">{{sale.amount | currency:"":0 }}</td>
-    <td class="text-right">{{sale.area}}</td>
+    <td class="text-right">{{sale.area}}(㎡)/{{sale.builtYear}}</td>
     <td class="text-right">{{sale.landArea}}</td>
     <td>{{sale.type}}</td>
-    <td>{{sale.builtYear}}</td>
     <td><A target="_blank" href="{{mapEncode(sale)}}">{{sale.avenue}}</a></td>
   </tr>
 </table>
