@@ -9,8 +9,8 @@
 건축년도 => 1973
 도로명 => 동제원길
 */
-class HouseDeal { 
-    	public $fullCity;
+class HouseSale { 
+    public $fullLoc;
 	public $type;
 	public $area;
 	public $landArea;
@@ -30,16 +30,62 @@ class HouseDeal {
 	public $region1;
 	public $region2;
 	
+	// parsing full location to city, etc.
 	function setDetailedCityNames() {
 		//list ($this->city, $this->county, $this->region)
 		list ($this->city, $this->county, $this->region, $this->region1, $this->region2)
-			= split(" ", $this->fullCity);
+			= split(" ", $this->fullLoc);
 	}
 
-    	function toString() { 
+	function parseCSV($year, $month, $data) {
+        $this->fullLoc = trim($data[0]);
+        $this->type = $data[1];
+        $this->area = $data[2];
+        $this->landArea = $data[3];
+        $this->date = intval($data[4]); //11~20 .. use the first one
+        $this->amount = str_replace( ',', '', $data[5]);
+        $this->builtYear = $data[6];
+        $this->avenue = $data[7];
+
+		$this->year = $year;
+		$this->month = $month;
+}
+	function insertDB($conn) {
+
+		$stmt = $conn->prepare(
+			"INSERT INTO HouseSale (fullLoc, type, area, landArea, 
+				date, amount, builtYear, avenue, 
+				year, month, city, county, region, 
+				region1, region2) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+		$stmt->bind_param("ssiisiisiisssss", 
+  			$this->fullLoc,
+  			$this->type,
+  			$this->area,
+  			$this->landArea, 
+  			$this->date,
+  			$this->amount, 
+  			$this->builtYear,
+  			$this->avenue,
+  			$this->year,
+  			$this->month,
+  			$this->city,
+  			$this->county,
+  			$this->region,
+  			$this->region1,
+  			$this->region2);
+
+		// eecute SQL
+		$stmt->execute();
+		$stmt->close();
+	}
+	
+	
+	// Testing
+    function toString() { 
 		$this->setDetailedCityNames();
 
-        	return "fullCity: " .  $this->fullCity
+        return "fullLoc: " .  $this->fullLoc
         	. "\n\t city: " .  $this->city
         	. "\n\t county: " .  $this->county
         	. "\n\t region: " .  $this->region
@@ -54,5 +100,5 @@ class HouseDeal {
         	. "\n amount: " .  $this->amount
         	. "\n buildYear: " .  $this->builtYear
         	. "\n avenue: " .  $this->avenue;
-    	} 
+    } 
 } 

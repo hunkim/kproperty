@@ -3,36 +3,41 @@
 
 $dir = "./xls/";
 
-$xlsx_njs = "/home/ubuntu/workspace/khometrend/js/node_modules/xlsx/bin/xlsx.njs";
+$xlsx_njs = "./js/node_modules/xlsx/bin/xlsx.njs";
 
 $d = dir($dir);
 while (false !== ($entry = $d->read())) {
   if(!is_dir($dir.$entry) && endsWith($entry, ".xls")) {
-    $csvFile =  $entry .".csv" ;
-    echo "working on ..." . $csvFile . "\n";
-    if (file_exists($dir . $csvFile)) {
-	echo "Skipping ". $csvFile . "\n";
-    } else {
-      $regions = getSheetNames($xlsx_njs, $dir, $entry);
-      foreach($regions as $key=>$sname) {
-        $sysStr = "js ";
-        $sysStr .= $xlsx_njs;
-        $sysStr .=  " '" . $dir. $entry . "'";
-	$sysStr .=  " '" . $sname . "' ";
-	if ($key==0) {
-  	  $sysStr .= ">";
-	} else {
-  	  $sysStr .= ">>";
-	}
-	$sysStr .= " '" . $dir.  $csvFile ."'" ;
-	system ($sysStr);
-     }
+      $csvFile =  $entry .".csv" ;
+
+      if (file_exists($dir . $csvFile)) {
+        echo "$csvFile already exist. Skip it!\n";
+      } else {
+        echo "working on $csvFile...\n";
+
+        $regions = getSheetNames($xlsx_njs, $dir, $entry);
+        
+        foreach($regions as $key=>$sname) {
+          $sysStr = "js ";
+          $sysStr .= $xlsx_njs;
+          $sysStr .=  " '" . $dir. $entry . "'";
+          $sysStr .=  " '" . $sname . "' ";
+	
+          if ($key==0) {
+            $sysStr .= ">";
+           } else {
+  	         $sysStr .= ">>";
+	         }
+
+	         $sysStr .= " '" . $dir.  $csvFile ."'" ;
+	         system ($sysStr);
+        }
      processCSV($dir, $csvFile);
     }
   }
 }
 
- $d->close();
+$d->close();
 
 function getSheetNames($cmd, $dir, $xlsName) {
 	$out = exec("js " . $cmd . " -l '" . $dir . $xlsName . "'", $outArr);
@@ -41,13 +46,7 @@ function getSheetNames($cmd, $dir, $xlsName) {
 }
 
 function processCSV($dir, $fname) {
-	list ($year, $month, $rest) = split("_", $fname, 3);
-	$year = intval($year);
-	$month = intval($month);
-
-	echo "Working on " . $year . "/" . $month . "\n";
-	$sysStr = "./readcsv.php " . $year . " " . $month . " '" . $dir . $fname ."' ";  
-	system ($sysStr);
+	
 }
 
 
