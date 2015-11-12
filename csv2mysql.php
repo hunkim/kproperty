@@ -62,21 +62,23 @@ function endsWith($haystack, $needle) {
     return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== FALSE);
 }
 
-function insertDB($db, $tableName, $fieldNameArr, $type, $CSVdata) {
+function insertDB($db, $tableName, $fieldTypeArr, $CSVdata) {
+    $fieldArr = array_keys($fieldTypeArr);
+
     $sql = "INSERT INTO ";
     $sql .= $tableName;
     $sql .= " (";
 
-    for (...) {
-        if ($index != 0) {
+    foreach ($fieldArr as $i => $field) {
+        if ($i != 0) {
             $sql.= ",";
         }
-        $sql .= name;
+        $sql .= $field;
     }
 
     $sql .=  " ) VALUES (";
-    for (...) {
-        if ($index != 0) {
+    foreach ($fieldArr as $i => $field) {
+        if ($i != 0) {
             $sql.= ",";
         }
         $sql .= "?";
@@ -88,16 +90,14 @@ function insertDB($db, $tableName, $fieldNameArr, $type, $CSVdata) {
     $values = array();
     $tmpVal = array();
 
-    for (...) {
-        $tmpVal[i] = str_replace( ',', '', trim($CSVdata[i]);
-        $values[]= &$tmpVal[i];
+    foreach ($CSVdata as $i => $value) {
+        $tmpVal[$i] = str_replace( ',', '', trim($value);
+        $values[]= &$tmpVal[$i];
     }
 
-        // eecute SQL
-        $stmt->execute();
-        $stmt->close();
-
-
+    // eecute SQL
+    $stmt->execute();
+    $stmt->close();
 } 
 
 function readCSV($dir, $csvFile) {
