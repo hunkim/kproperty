@@ -1,6 +1,7 @@
 #!/usr/bin/php
 <?php
 
+assert_options(ASSERT_BAIL,     true);
 if (count($argv) != 2) {
     echo "Usage: $argv[0] <xls_dir>\n\n";
     exit;
@@ -29,20 +30,20 @@ function main($dir) {
             } else {
                 echo "working on $csvFile...\n";
 
-                $sName = getSheetNames($xlsx_njs, $dir, $entry);
+                $snames = getSheetNames($xlsx_njs, $dir, $entry);
         
-                foreach($sName as $key=>$sname) {
+                foreach($snames as $key=>$sname) {
                     if ($key == 0) {
                         $sysStr = "$xlsx_njs '$dir/$entry' $sname > '$dir/$csvFile'";
                     } else {
                         $sysStr = "$xlsx_njs '$dir/$entry' $sname >> '$dir/$csvFile'";
                     }
-
+                    echo ("Writing CSV for $sname \n");
                     system ($sysStr);
                 }
 
                 // process generated CSV
-                processCSV($dir, $csvFile);
+                readCSV($dir, $csvFile);
             }
         }
     }
@@ -51,9 +52,9 @@ function main($dir) {
 
 
 function getSheetNames($cmd, $dir, $xlsName) {
-    $cmdStr = "$cmd  -l  '$dir$xlsName' $outArr";
+    $cmdStr = "$cmd  -l  '$dir$xlsName'";
     echo("Executing $cmdStr ...");
-    $out = exec($cmdStr);
+    $out = exec($cmdStr, $outArr);
 
     assert(count($outArr));
     print_r($outArr);
@@ -203,8 +204,6 @@ function readCSV($dir, $csvFile) {
     fclose($handle);
 
     echo "<!> Inserted $row rows!\n";
-
-    $db->close();
 }
 
 
@@ -274,7 +273,7 @@ function getTypes($data) {
     return $types;
 } 
 
-function getTableName($csvFile) {
+function getTableName($a) {
     if (strpos($a,'단독-다가구(전월세)') !== false) {
         return "houserent";
     }
@@ -299,7 +298,8 @@ function getTableName($csvFile) {
         return "flatsale";
     }
 
-    assert(true);
+    assert(false);
+    return false;
 }
 
 ?>
