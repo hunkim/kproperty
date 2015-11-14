@@ -92,11 +92,13 @@ function insertDB($db, $collection, $types, $fields, $data) {
 function makeDBIndex($db, $collection, $fields, $data) {
     $dbData = array();
     foreach ($fields as $i => $field) {
-        $dbData[$field] = 1;
+        if (shouldIndex($field)) {
+            $dbData[$field] = 1;
+        }
     }
 
     // Insert it to DB
-    $r = $collection->createIndex($dbData, array ('name'=> 'all', 'unique'=> 'true'));
+    $r = $collection->createIndex($dbData, ['name'=> 'all']);
     echo $r;
 } 
 
@@ -145,7 +147,7 @@ function readCSV($dir, $csvFile) {
             $fields[] = "county";
             $fields[] = "region";
 
-            $fields[] = "xlsrow";
+            //$fields[] = "xlsrow";
 
              // types
             $types[] = "i";
@@ -156,7 +158,7 @@ function readCSV($dir, $csvFile) {
             $types[] = "s";
             $types[] = "s";
 
-            $types[] = "i";
+            //$types[] = "i";
             
             print_r($fields);
 
@@ -206,7 +208,20 @@ function readCSV($dir, $csvFile) {
     echo "<!> Inserted $row rows!\n";
 }
 
+function shouldIndex($field) {
+    $index = ['amount',
+        'aptName',
+        'monthlyType',  
+        'usedArea',
+        'year',
+        'month',
+        'state',
+        'city',
+        'county',
+        'region'];
 
+        return in_array($field, $index);
+}
 
 function getFields($data) {
     $namemap = array('시군구'=>'fullLoc', 
