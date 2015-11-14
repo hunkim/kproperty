@@ -227,6 +227,7 @@ function getFields($data) {
     $namemap = array('시군구'=>'fullLoc', 
     '주택유형'=>'type',    
     '연면적(㎡)'=>'area',
+    '연면적(m2)'=>'area',
     '대지면적(㎡)' => 'landArea',
     '계약일' => 'day', 
     '거래금액(만원)' => 'amount',
@@ -313,8 +314,9 @@ function getTableName($a) {
         return "flatsale";
     }
 
-    assert(false);
-    return false;
+    //assert(false);
+    //return false;
+    return "housesale";
 }
 
 ?>
