@@ -134,7 +134,7 @@ function readCSV($dir, $csvFile) {
 
             $fields = getFields($data);
 
-            $types = getTypes($data);
+            $types = getTypes($fields);
             // Num of Fields
             $numFields = count($fields);
 
@@ -224,11 +224,13 @@ function shouldIndex($field) {
 }
 
 function getFields($data) {
-    $namemap = array('시군구'=>'fullLoc', 
+    $namemap = array(
+    '시군구'=>'fullLoc', 
     '주택유형'=>'type',    
     '연면적(㎡)'=>'area',
     '연면적(m2)'=>'area',
     '대지면적(㎡)' => 'landArea',
+    '대지면적(m2)' => 'landArea',
     '계약일' => 'day', 
     '거래금액(만원)' => 'amount',
 
@@ -238,12 +240,16 @@ function getFields($data) {
     '단지명' => 'aptName',
     '전월세구분' => 'monthlyType',  
     '전용면적(㎡)' => 'usedArea',
+    '전용면적(m2)' => 'usedArea',
     '보증금(만원)' => 'deposit',
     '월세(만원)' => 'monthlyPay',
     '층' => 'floor',
 
     '계약면적(㎡)' => 'contractArea',
     '대지권면적(㎡)' => 'landArea',
+
+    '계약면적(m2)' => 'contractArea',
+    '대지권면적(m2)' => 'landArea',
 
     '건축년도'=>'builtYear',    
     '도로명'=>'avenue');
@@ -258,29 +264,28 @@ function getFields($data) {
     return $fields;
 }
 
-function getTypes($data) {
-    $namemap = array('시군구'=>'s', 
-    '주택유형'=>'s',    
-    '연면적(㎡)'=>'f',
-    '대지면적(㎡)' => 'f',
-    '계약일' => 'i', 
-    '거래금액(만원)' => 'i',
-    '건축년도'=>'i',  
-    '본번' => 's',
-    '부번' => 's',
-    '단지명' => 's',
-    '전월세구분' => 's',  
-    '전용면적(㎡)' => 'f',
-    '보증금(만원)' => 'i',
-    '월세(만원)' => 'i',
-    '층' => 'i',
+function getTypes($fields) {
+    $typeArr = array('fullLoc'=>'s', 
+    'type'=>'s',    
+    'area'=>'f',
+    'landArea' => 'f',
+    'day' => 'i', 
+    'amount' => 'i',
+    'builtYear'=>'i',  
+    'num1' => 's',
+    'num2' => 's',
+    'aptName' => 's',
+    'monthlyType' => 's',  
+    'usedArea' => 'f',
+    'deposit' => 'i',
+    'monthlyPay' => 'i',
+    'floor' => 'i',
 
-    '계약면적(㎡)' => 'f',
-    '대지권면적(㎡)' => 'f',  
-    '도로명'=>'s');
+    'contractArea' => 'f',
+    'avenue'=>'s');
 
     $types = array();
-    foreach ($data as $value) {
+    foreach ($fields as $value) {
         $th = trim($value);
         assert ($namemap[$th]!='');
         $types[] = $namemap[$th];
