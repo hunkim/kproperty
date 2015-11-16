@@ -70,7 +70,7 @@ switch ($colname) {
 case 'aptsale':
 case 'flatsale':
   $query['usedArea'] = ['$gt' => 0] ;
-  $grouparr['avgAmtUsed'] = ['$avg' => ['$divide' => [ '$amount', '$usedArea' ] ] ];
+  $grouparr['avgAmtUsed'] = ['$avg' => ['$divide' => [ '$amount', '$area' ] ] ];
   break;
 
 case 'housesale':
@@ -83,14 +83,14 @@ case 'housesale':
 case 'aptrent':
 case 'flatrent':
   $query['usedArea'] = ['$gt' => 0] ;
-  $grouparr['avgAptRent'] = ['$avg' => ['$divide' => [ '$monthlyPay', '$usedArea' ] ]];
-  $grouparr['avgAptDeposit'] = ['$avg' => ['$divide' => [ '$deposit', '$usedArea' ] ] ];
+  $grouparr['avgAptRent'] = ['$avg' => ['$divide' => [ '$monthlyPay', '$area' ] ]];
+  $grouparr['avgAptDeposit'] = ['$avg' => ['$divide' => [ '$deposit', '$area' ] ] ];
   break;
 
 case 'flatrent':
   $query['contractArea'] = ['$gt' => 0] ;
-  $grouparr['avgHouseDeposit'] = ['$avg' => ['$divide' => [ '$deposit', '$contractArea' ] ] ];
-  $grouparr['avgHouseRent'] = ['$avg' => ['$divide' => [ '$monthlyPay', '$contractArea' ] ] ];
+  $grouparr['avgHouseDeposit'] = ['$avg' => ['$divide' => [ '$deposit', '$area' ] ] ];
+  $grouparr['avgHouseRent'] = ['$avg' => ['$divide' => [ '$monthlyPay', '$area' ] ] ];
   break;
 }
 
