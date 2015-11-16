@@ -1,0 +1,47 @@
+db.housesale.aggregate(
+   [
+   { $match: { 'state': '서울특별시', year: { $gt: 2000 } } },
+      {
+        $group : {
+           _id : { "state": "$state", "city":"$city"},
+          
+           avgAmtArea: { $avg: { $divide: [ "$amount", "$area" ] } },
+           avgAmtLand: { $avg: { $divide: [ "$amount", "$landArea" ] } },
+          
+           avgAmt: { $avg: "$amount" },
+           count: { $sum: 1 }
+        }
+      }
+   ]
+)
+
+
+db.housesale.aggregate(
+   [
+      {
+        $group : {
+           _id : { "state": "$state", "city":"$city"},
+           key: { state: 1, city: 1 },
+           avgAmtArea: { $avg: { $divide: [ "$amount", "$area" ] } },
+           avgAmtLand: { $multi: {$avg: { $divide: [ "$amount", "$landArea" ]}, 3.3 },
+
+           cond: { state: '서울특별시'},
+          
+
+           avgAmt: { $avg: "$amount" },
+           count: { $sum: 1 }
+        }
+      }
+   ]
+)
+
+ cond: {$and : [ { $eq: [ "$state", "서울특별시"] },
+                             { $eq: [ "$city","강남"] }
+                 ]},
+
+"$group": {
+        "_id": {
+            "addr": "$addr",
+            "book": "$book"
+        },
+        "bookCount": { "$sum": 1 }
