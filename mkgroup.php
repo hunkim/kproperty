@@ -16,11 +16,7 @@ $collection = new MongoCollection($db, $colname);
 
 $query = [];
 
-$grouparr['_id'] = ['year' => '$year', 'month'=>'$month', 'state'=>'$state',
-'city'=>'$city', 'county'=>'$county', 'region'=>'$region', 'aptName'=>'$aptName',
-'area'=>'$area',
-'monthType'=>'$monthType'
- ];
+
 
 $grouparr['count'] = ['$sum' =>  1];
 
@@ -29,6 +25,12 @@ case 'aptsale':
 case 'flatsale':
   $query['usedArea'] = ['$gt' => 0] ;
   $grouparr['avgAmtUsed'] = ['$avg' => ['$divide' => [ '$amount', '$area' ] ] ];
+
+  $grouparr['_id'] = ['year' => '$year', 'month'=>'$month', 'state'=>'$state',
+    'city'=>'$city', 'county'=>'$county', 'region'=>'$region', 'aptName'=>'$aptName',
+    'area'=>'$area'
+  ];
+
   break;
 
 case 'housesale':
@@ -36,6 +38,10 @@ case 'housesale':
   $query['landArea'] = ['$gt' => 0] ;
   $grouparr['avgAmtArea'] = ['$avg' => ['$divide' => [ '$amount', '$area' ] ] ];
   $grouparr['avgAmtLand'] = ['$avg' => ['$divide' => [ '$amount', '$landArea' ] ] ];
+
+  $grouparr['_id'] = ['year' => '$year', 'month'=>'$month', 'state'=>'$state',
+    'city'=>'$city', 'county'=>'$county', 'region'=>'$region'
+  ];
   break;
 
 case 'aptrent':
@@ -43,12 +49,24 @@ case 'flatrent':
   $query['usedArea'] = ['$gt' => 0] ;
   $grouparr['avgAptRent'] = ['$avg' => ['$divide' => [ '$monthlyPay', '$area' ] ]];
   $grouparr['avgAptDeposit'] = ['$avg' => ['$divide' => [ '$deposit', '$area' ] ] ];
+
+
+  $grouparr['_id'] = ['year' => '$year', 'month'=>'$month', 'state'=>'$state',
+    'city'=>'$city', 'county'=>'$county', 'region'=>'$region', 'aptName'=>'$aptName',
+    'area'=>'$area', 'monthlyType' => '$monthlyType'
+  ];
   break;
 
-case 'flatrent':
+case 'houserent':
   $query['contractArea'] = ['$gt' => 0] ;
   $grouparr['avgHouseDeposit'] = ['$avg' => ['$divide' => [ '$deposit', '$area' ] ] ];
   $grouparr['avgHouseRent'] = ['$avg' => ['$divide' => [ '$monthlyPay', '$area' ] ] ];
+
+   $grouparr['_id'] = ['year' => '$year', 'month'=>'$month', 'state'=>'$state',
+    'city'=>'$city', 'county'=>'$county', 'region'=>'$region', 
+    'monthlyType' => '$monthlyType'
+  ];
+
   break;
 }
 

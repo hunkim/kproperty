@@ -87,7 +87,7 @@ case 'flatrent':
   $grouparr['avgAptDeposit'] = ['$avg' => ['$divide' => [ '$deposit', '$area' ] ] ];
   break;
 
-case 'flatrent':
+case 'houserent':
   $query['contractArea'] = ['$gt' => 0] ;
   $grouparr['avgHouseDeposit'] = ['$avg' => ['$divide' => [ '$deposit', '$area' ] ] ];
   $grouparr['avgHouseRent'] = ['$avg' => ['$divide' => [ '$monthlyPay', '$area' ] ] ];
