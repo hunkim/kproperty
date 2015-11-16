@@ -211,7 +211,6 @@ function shouldIndex($field) {
     $index = ['amount',
         'aptName',
         'monthlyType',  
-        'usedArea',
         'year',
         'month',
         'state',
