@@ -84,9 +84,8 @@ function insertDB($db, $collection, $types, $fields, $data) {
     // Insert it to DB
     $collection->insert($dbData);
 
-
-    $cursor = $collection->find();
-    echo json_encode(iterator_to_array($cursor), JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE) ;
+//    $cursor = $collection->find();
+//    echo json_encode(iterator_to_array($cursor), JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE) ;
 } 
 
 function makeDBIndex($db, $collection, $fields, $data) {
@@ -284,8 +283,8 @@ function getTypes($fields) {
     $types = array();
     foreach ($fields as $value) {
         $th = trim($value);
-        assert ($namemap[$th]!='');
-        $types[] = $namemap[$th];
+        assert ($typeArr[$th]!='');
+        $types[] = $typeArr[$th];
     }
 
     return $types;
@@ -316,7 +315,7 @@ function getTableName($a) {
         return "flatsale";
     }
 
-    //assert(false);
+    // assert(false);
     //return false;
     return "housesale";
 }

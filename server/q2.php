@@ -8,24 +8,44 @@ $m = new MongoClient();
 // select a database
 $db = $m->selectDB('trend');
 // select a collection (analogous to a relational database's table)
-$colname = substr($_SERVER['PATH_INFO'], 1);
-$collection = new MongoCollection($db, 'aptsale');
+$colname = str_replace( '/', '',trim($_SERVER['PATH_INFO']));
+$collection = new MongoCollection($db, $colname);
 
 $query = array();
 // TODO: later need to handle key
 foreach ($_GET as $key => $value) {
-  //echo "Key: $key; Value: $value<br />\n";
+//echo "Key: $key; Value: $value<br />\n";
+  if ($value == '') {
+    continue;
+  }
+
+  if ($key == 'debug') {
+    $debug = true;
+    continue;
+  }  
+
+  if ($key == 'usedArea') {
+    $query['usedArea'] = floatval($value);
+    continue;
+  }
+
   if ($key == 'startyear') {
-    $query[$key] = array('$gte', $value);
+    $endyear = $_GET['endyear'];
+    $query['year'] = ['$gte' => intval($value), '$lte' => intval($endyear)];
   } else if ($key == 'endyear') {
-    $query[$key] = array('$lte', $value);
+    //
   } else {
     $query[$key] = urldecode($value);
   }
 }
 
+if ($debug) {
+  print_r($query);
+}
+
 // find everything in the collection
-$cursor = $collection->find();
+$cursor = $collection->find($query);
+//->sort(['year'=>1, 'month'=>1]);
 $cursor->limit(500);
 
 //echo json_encode(iterator_to_array($cursor), 	

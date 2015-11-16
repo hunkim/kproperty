@@ -12,23 +12,28 @@ $colname = substr($_SERVER['PATH_INFO'], 1);
 $collection = $db->$colname;
 
 $query = array();
+$dquery = "state";
 // TODO: later need to handle key
 foreach ($_GET as $key => $value) {
-//  echo "Key: $key; Value: $value<br />\n";
+  if ($value == '') {
+    continue;
+  }
+
+  if ($key == 'debug') {
+    $debug = true;
+    continue;
+  }
+  
+  if ($key=='query') {
+    $dquery = $value;
+    continue;
+  }
   $query[$key] = urldecode($value);
 }
 
-// find everything in the collection
-$dquery = "state";
-
-if ($_GET["state"]) {
-  $dquery = "city";
-  if ($_GET["city"]) {
-    $dquery = "county";
-    if ($_GET["county"]) {
-      $dquery = "region";
-    }
-  }
+if ($debug) {
+  echo($dquery);
+  print_r($query);
 }
 
 $cursor = $collection->distinct($dquery, $query);
