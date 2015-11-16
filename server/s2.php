@@ -10,10 +10,11 @@ $db = $m->selectDB('trend');
 // select a collection (analogous to a relational database's table)
 $colname = str_replace( '/', '',trim($_SERVER['PATH_INFO']));
 if (!$colname) {
-  $colname = 'flatsale';
+  $debug = true;
+  $colname = 'housesale';
 }
 
-$collection = new MongoCollection($db, $colname);
+$collection = new MongoCollection($db, $colname . "_agg");
 
 //$query = ['amount'=>['$gt' => 0]] ;
 // TODO: later need to handle key
@@ -64,7 +65,7 @@ db.housesale.aggregate(
 //$query = ['state'=> '서울특별시'];
 
 $grouparr['_id'] = ['year' => '$year', 'month'=>'$month'];
-$grouparr['count'] = ['$sum' =>  1];
+$grouparr['count'] = ['$sum' =>  '$count'];
 
 switch ($colname) {
 case 'aptsale':
@@ -74,10 +75,8 @@ case 'flatsale':
   break;
 
 case 'housesale':
-  $query['area'] = ['$gt' => 0] ;
-  $query['landArea'] = ['$gt' => 0] ;
-  $grouparr['avgAmtArea'] = ['$avg' => ['$divide' => [ '$amount', '$area' ] ] ];
-  $grouparr['avgAmtLand'] = ['$avg' => ['$divide' => [ '$amount', '$landArea' ] ] ];
+  $grouparr['avgAmtArea'] = ['$avg' =>  '$avgAmtArea' ] ;
+  $grouparr['avgAmtLand'] = ['$avg' =>  '$avgAmtLand' ] ;
   break;
 
 case 'aptrent':
@@ -99,7 +98,7 @@ $ops[] = ['$match' => $query];
 $ops[] = ['$sort' => ['year'=> -1, 'month'=> -1]];
 $ops[] = ['$group' => $grouparr];
 
-$option = [allowDiskUse => true];
+$option = ['allowDiskUse' => true];
 
 if($debug) {
   print_r($ops);

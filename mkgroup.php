@@ -6,17 +6,19 @@ $m = new MongoClient();
 // select a database
 $db = $m->selectDB('trend');
 // select a collection (analogous to a relational database's table)
-$colname = 'housesale';
+$colnames = ['housesale', 'aptsale', 'flatsale', 'houserent', 'aptrent', 'flatrent'];
 
-mkgrp($db, $colname);
-
+foreach ($colnames as $colname) {
+  mkgrp($db, $colname);
+}
 
 function mkgrp($db, $colname) {
+$col2name = $colname."_agg";
+echo("working on: $col2name ...");
+
 $collection = new MongoCollection($db, $colname);
 
 $query = [];
-
-
 
 $grouparr['count'] = ['$sum' =>  1];
 
@@ -75,11 +77,9 @@ $ops[] = ['$match' => $query];
 $ops[] = ['$sort' => ['year'=> -1, 'month'=> -1]];
 $ops[] = ['$group' => $grouparr];
 
-$option = [allowDiskUse => true];
+$option = ['allowDiskUse' => true];
 
-if($debug) {
-  print_r($ops);
-}
+print_r($ops);
 
 try {
  $cursor = $collection->aggregate($ops, $option);
@@ -89,8 +89,47 @@ try {
   exit(1);
 }
 
+/*
+[1243] => Array
+                (
+                    [_id] => Array
+                        (
+                            [year] => 2006
+                            [month] => 3
+                            [state] => 경상북도
+                            [city] => 영주시
+                            [county] => 봉현면
+                            [region] => 오현리
+                        )
+
+                    [count] => 1
+                    [avgAmtArea] => 62.351914203766
+                    [avgAmtLand] => 14.409221902017
+                )
+*/
 //echo json_encode(iterator_to_array($cursor), 	
-echo json_encode($cursor, 	
-	JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
+$col2 = new MongoCollection($db, $col2name);
+
+// Let's remove all first
+$col2->remove([]);
+
+$results = $cursor['result'];
+
+foreach ($results as $key => $val) {
+  foreach($val as $skey=> $sval) {
+    if ($skey == '_id') {
+      $r = $sval;
+    } else {
+      $r[$skey] = $sval;
+    }
+  }
+  //print_r($r);
+  $col2->insert($r);
+}
+
+//  print_r($result);
+
+
+//echo json_encode($cursor, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
 }
 ?>
