@@ -239,16 +239,16 @@ function getFields($data) {
     '부번' => 'num2',
     '단지명' => 'aptName',
     '전월세구분' => 'monthlyType',  
-    '전용면적(㎡)' => 'usedArea',
-    '전용면적(m2)' => 'usedArea',
+    '전용면적(㎡)' => 'area',
+    '전용면적(m2)' => 'area',
     '보증금(만원)' => 'deposit',
     '월세(만원)' => 'monthlyPay',
     '층' => 'floor',
 
-    '계약면적(㎡)' => 'contractArea',
+    '계약면적(㎡)' => 'area',
     '대지권면적(㎡)' => 'landArea',
 
-    '계약면적(m2)' => 'contractArea',
+    '계약면적(m2)' => 'area',
     '대지권면적(m2)' => 'landArea',
 
     '건축년도'=>'builtYear',    
@@ -276,12 +276,9 @@ function getTypes($fields) {
     'num2' => 's',
     'aptName' => 's',
     'monthlyType' => 's',  
-    'usedArea' => 'f',
     'deposit' => 'i',
     'monthlyPay' => 'i',
     'floor' => 'i',
-
-    'contractArea' => 'f',
     'avenue'=>'s');
 
     $types = array();
