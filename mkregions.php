@@ -88,7 +88,7 @@ function mkonereg($db, $colname, $grouparr) {
 
   //print_r($ops);
   try {
-    $cursor = $collection->aggregate($ops, $option);
+    $cursor = $collection->aggregateCursor($ops, $option);
   } catch (MongoException $e) {
     echo "error message: ".$e->getMessage()."\n";
     echo "error code: ".$e->getCode()."\n";
@@ -98,10 +98,10 @@ function mkonereg($db, $colname, $grouparr) {
   $col2name = $colname."_reg";
   $col2 = new MongoCollection($db, $col2name);
 
-  $results = $cursor['result'];
-
-  foreach ($results as $key => $val) {
-    foreach($val as $skey=> $sval) {
+  //$results = $cursor['result'];
+ foreach ($cursor as $result) {
+   print_r($result);
+      foreach($result->result as $skey=> $sval) {
       if ($skey == '_id') {
         $r = $sval;
       } else {
@@ -109,7 +109,7 @@ function mkonereg($db, $colname, $grouparr) {
       }
     }
     //print_r($r);
-    $col2->insert($r);
+    //$col2->insert($r);
   }
 }
 ?>

@@ -1,6 +1,7 @@
 How to update?
   - copy file to xls
-  - run process.php
+  - run 1. csv2mongo: add documents and make aggregation
+        2. mkregions.php: update region information
 
 INSTALL
  1. LAMP
@@ -25,7 +26,7 @@ sudo apt-get install libcurl3-openssl-dev
 
 sudo pecl install mongo
 
-add: 
+add:
 extension=mongo.so
 
 vi /etc/php5/apache2/php.ini
@@ -35,4 +36,3 @@ vi /etc/php5/cli/php.ini
 sudo apt-get install nodejs
 
 5. Git remote setup
-
