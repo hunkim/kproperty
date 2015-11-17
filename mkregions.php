@@ -40,7 +40,7 @@ function mkreg($db, $colname) {
       $grouparr['_id'] = ['state'=>'$state',
         'city'=>'$city', 'county'=>'$county', 'region'=>'$region'];
 
-      mkonegrp($db, $colname, $grouparr);
+      mkonereg($db, $colname, $grouparr);
       break;
 
 case 'aptrent':
@@ -49,12 +49,12 @@ case 'flatrent':
         'city'=>'$city', 'county'=>'$county', 'region'=>'$region', 'aptName'=>'$aptName',
         'area'=>'$area'];
 
-      mkonegrp($db, $colname, $grouparr);
+      mkonereg($db, $colname, $grouparr);
       break;
 
 case 'houserent':
       $grouparr['_id'] = ['state'=>'$state','city'=>'$city', 'county'=>'$county', 'region'=>'$region'];
-      mkonegrp($db, $colname, $grouparr);
+      mkonereg($db, $colname, $grouparr);
       break;
   }
 }
@@ -68,10 +68,10 @@ function makegrpIndex($db, $collection, $ids) {
     // Insert it to DB
     //$r = $collection->createIndex($dbData, ['name'=> 'all']);
     $r = $collection->createIndex($dbData);
-    echo $r;
+    print_r($r);
 }
 
-function mkonegrp($db, $colname, $grouparr) {
+function mkonereg($db, $colname, $grouparr) {
   $ops = array();
 //  $ops[] = ['$match' => $query];
 //  $ops[] = ['$sort' => ['year'=> -1, 'month'=> -1]];
