@@ -1,11 +1,11 @@
 <?php
 
-// connect
-$m = new MongoClient();
-// select a database
-$db = $m->selectDB('trend');
+function testreg() {  
+  // connect
+  $m = new MongoClient();
+  // select a database
+  $db = $m->selectDB('trend');
 
-function testgrp() {
   // select a collection (analogous to a relational database's table)
   $colnames = ['housesale', 'aptsale', 'flatsale', 'houserent', 'aptrent', 'flatrent'];
 
@@ -105,7 +105,7 @@ function mkonegrp($db, $colname, $grouparr) {
         $r[$skey] = $sval;
       }
     }
-    //print_r($r);
+    print_r($r);
     $col2->insert($r);
   }
 }

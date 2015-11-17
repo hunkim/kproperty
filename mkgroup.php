@@ -1,11 +1,11 @@
 <?php
 
-// connect
-$m = new MongoClient();
-// select a database
-$db = $m->selectDB('trend');
-
 function testgrp() {
+  / connect
+  $m = new MongoClient();
+  // select a database
+  $db = $m->selectDB('trend');
+  
   // select a collection (analogous to a relational database's table)
   $colnames = ['housesale', 'aptsale', 'flatsale', 'houserent', 'aptrent', 'flatrent'];
 
