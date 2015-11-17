@@ -43,6 +43,12 @@ foreach ($_GET as $key => $value) {
   }
 }
 
+// Really no region, not null, it should be ""
+if($query['aptName']!=null) {
+  if ($query['region']==null) {
+    $query['region']="";
+  }
+}
 if($debug) {
   print_r($query);
 }
@@ -50,8 +56,8 @@ if($debug) {
 // find everything in the collection
 $cursor = $collection->find($query, ['_id'=>0])->sort(['year'=>1, 'month'=>1]);
 
-//echo json_encode(iterator_to_array($cursor),  
-echo json_encode(iterator_to_array($cursor),  
+//echo json_encode(iterator_to_array($cursor),
+echo json_encode(iterator_to_array($cursor),
   JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
 
 ?>
