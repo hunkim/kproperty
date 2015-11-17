@@ -19,7 +19,7 @@ function testreg() {
     $col2->remove([]);
 
     // add agg information
-    mkgrp($db, $colname);
+    mkreg($db, $colname);
   }
 }
 
