@@ -28,7 +28,6 @@ function mkreg($db, $colname) {
   switch ($colname) {
     case 'aptsale':
     case 'flatsale':
-      $grouparr['avgAmtArea'] = ['$avg' => ['$divide' => [ '$amount', '$area' ] ] ];
       $grouparr['_id'] = ['state'=>'$state',
         'city'=>'$city', 'county'=>'$county', 'region'=>'$region', 'aptName'=>'$aptName',
         'area'=>'$area'];
