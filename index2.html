@@ -1,0 +1,842 @@
+<!doctype html>
+<html lang='ko' ng-app="myApp" ng-controller="customersCtrl">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <title>전국 실거래가 단독/다가구 매매 정보</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/png">
+    <script src="js/angular.1.4.7.min.js"></script>
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/Chart.js"></script>
+    <script src="js/angular-chart.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/angular-busy.min.js"></script>
+    <link rel="stylesheet" href="css/angular-chart.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/angular-busy.min.css">
+  </head>
+<body>
+
+   <!-- Navbar
+    ================================================== -->
+  <ul class="nav nav-tabs">
+  <li ng-class="amIActive('aptsale')"><a ng-click="setAppType('aptsale')">아파트 매매</a></li>
+  <li ng-class="amIActive('flatsale')"><a ng-click="setAppType('flatsale')">연립-다세대 매매</a></li>
+  <li ng-class="amIActive('housesale')"><a ng-click="setAppType('housesale')">단독-다가구 매매</a></li>
+  <li ng-class="amIActive('aptrent')"><a ng-click="setAppType('aptrent')">아파트 전/월세</a></li>
+  <li ng-class="amIActive('flatrent')"><a ng-click="setAppType('flatrent')">연립-다세대 전/월세</a></li>
+  <li ng-class="amIActive('houserent')"><a ng-click="setAppType('houserent')">단독-다가구 전/월세</a></li>
+  </ul>
+
+  <h2>  <span class="glyphicon glyphicon-home" aria-hidden="true"></span> 
+    전국 실거래가 {{appNameList[appType]}} 정보
+    <!-- <small>지원 브라우즈: <img src="no_ie.png"> (IE는 잘안됩니다.)</small> -->
+  </h2>
+<form>
+  <div class="alert alert-success" role="alert">
+    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>지역 선택:
+   시도 <select name="state" ng-model="loc.state" ng-change="getCity();">
+    <option ng-repeat="state in stateArr" value="{{state}}">{{state}}</option>
+  </select>
+
+  시군구 <select name="city" ng-model="loc.city" ng-change="getCounty();">
+    <option ng-repeat="city in cityArr | orderBy" value="{{city}}">{{city}}</option>
+  </select>
+
+  읍면동 <select name="county" ng-model="loc.county" ng-change="getRegion();getAptName();">
+    <option ng-repeat="county in countyArr | orderBy" value="{{county}}">{{county}}</option>
+  </select>
+
+  <span ng-show="regionArr.length>1">기타 <select name="region" ng-model="loc.region" ng-change="upAll();getAptName();">
+    <option ng-repeat="region in regionArr | orderBy" value="{{region}}">{{region}}</option>
+  </select></span>
+
+  <!-- apt related selection -->
+   <span ng-show="isAptkind">단지명 <select name="aptName" ng-model="loc.aptName" ng-change="getAptArea();">
+    <option ng-repeat="aptName in aptNameArr | orderBy" value="{{aptName}}">{{aptName}}</option>
+  </select></span>
+
+   <span ng-show="isAptkind">전용면적(㎡) <select name="area" ng-model="loc.area" ng-change="upAll();">
+    <option ng-repeat="area in aptAreaArr | orderBy" value="{{area}}">{{area}}</option>
+  </select></span>
+
+  <span ng-show="isRentkind">전/월세 <select name="monthlyType" ng-model="loc.monthlyType" ng-change="upAll();">
+    <option ng-repeat="monthlyType in rentArr"  value="{{monthlyType}}">{{monthlyType}}</option>
+  </select></span>
+  <!--
+</div>
+<div class="alert alert-warning" role="alert">
+-->
+  &nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>년도 선택:
+  <select name="startYear" ng-model="loc.startYear" ng-change="upAll();">
+   <option ng-repeat="start in startYears" value="{{start}}">{{start}}</option>
+ </select>
+  부터
+  <select name="endYear" ng-model="loc.endYear" ng-change="upAll();">
+   <option ng-repeat="end in endYears" value="{{end}}">{{end}}</option>
+ </select>
+  까지
+  &nbsp;<span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+  거래량 보기: <input type="checkbox" ng-model="showCount" ng-change="updateGraph();">
+</div>
+</form>
+<!-- info block -->
+<div cg-busy="{promise:statPromise,message:'통계 정보를 읽고 있습니다...'}"></div>
+<div ng-hide="errorFlag" class="alert alert-info" role="alert">
+  선택된 지역: {{loc.state + " " + loc.city + " " + 
+  loc.county + " " + loc.region + " " + 
+  loc.aptName + " " + loc.area + " " +
+  loc.monthlyType}} 을(를)
+  {{loc.startYear}} 부터 {{loc.endYear}} 까지.
+<!--  <A href=#list> -->
+ &nbsp;<a class="btn btn-primary" role="button" href="#list">
+  <span class="badge">{{saleListCount()}}</span> 건의 거래 정보</a> 가 있습니다.
+</div>
+
+<!-- error block -->
+<div ng-show="errorFlag" class="alert alert-danger text-center" role="error">
+  <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
+  인터넷 연결이 불안정 합니다.
+  <a class="btn btn-primary" role="button" ng-click="reconnect();"> 다시 연결 시도하기</a>
+</div>
+
+<!-- <div ng-show="statArr.length!=0"> -->
+<canvas id="line" class="chart chart-line" chart-data="data"
+  chart-labels="labels" chart-legend="true" chart-series="series"
+  chart-click="onClick" >
+</canvas>
+<!-- </div> -->
+
+<!--
+<table class="table">
+  <tr ng-repeat="stat in statArr">
+    <td>{{ stat.year }}</td>
+    <td>{{ stat.month }}</td>
+    <td>{{ stat.c }}</td>
+    <td>{{ stat.avgAmtArea }}</td>
+    <td>{{ stat.avgAmtLand }}</td>
+</tr>
+</table>
+-->
+<a name="list"></a>
+<div cg-busy="{promise:salePromise,message:'계약 정보를 읽고 있습니다...'}"></div>
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading" ng-show="saleListCount()=='500+'">
+    <strong>{{loc.city + " " + loc.county + " " + loc.region}}
+    {{loc.startYear}} 부터 {{loc.endYear}}의 자세한 거래 정보 (최대 500건만 보여줍니다. 지역과 년도를 선택하세요.)</strong></div>
+  <div class="panel-heading" ng-hide="saleListCount()=='500+'">
+    <strong>{{loc.city + " " + loc.county + " " + loc.region}}
+    {{loc.startYear}} 부터 {{loc.endYear}}의 자세한 거래 정보 (총 {{saleListCount()}} 건)
+    </strong></div>
+</div>
+
+  <!-- Table -->
+  <!-- 단독 전/월세: 시군구  계약면적(㎡) 전월세구분 계약일 보증금(만원) 월세(만원)  건축년도  도로명-->
+<table class="table" ng-show="appType=='houserent' ">
+    <tr>
+      <th>#</th>
+      <th>년월</th>
+      <th>지역명</th>
+      <th class="text-right">계약면적(㎡)</th>
+      <th>구분</th>
+      <th class="text-right">보증금(만원)</th>
+      <th class="text-right">월세(만원)</th>
+      <th>건축연도</th>
+      <th>도로명 (지도링크)</th>
+    </tr>
+    <tr ng-repeat="sale in saleArr">
+      <td>{{$index+1}}</td>
+      <td>{{sale.year}}/{{sale.month}}</td>
+      <td>{{sale.fullLoc}}</td>
+      <td class="text-right">{{sale.area}}</td>
+      <td>{{sale.monthlyType}}</td>
+      <td class="text-right">{{sale.deposit | currency:"":0 }}</td>
+      <td class="text-right">{{sale.monthlyPay | currency:"":0 }}</td>
+      <td class="text-right">{{sale.builtYear}}</td>
+      <td><A target="_blank" href="{{mapEncode(sale)}}">{{sale.avenue}}</a></td>
+    </tr>
+  </table>
+
+  <!-- 연립 전/월세: 시군구  본번  부번  단지명 전월세구분 전용면적(㎡) 계약일 보증금(만원) 월세(만원)  층 건축년도
+    도로명 -->
+  <!-- APT 전월세: 시군구 본번  부번  단지명 전월세구분 전용면적(㎡) 계약일 보증금(만원) 월세(만원)  층 건축년도  도로명 -->
+  <table class="table" ng-show="appType=='flatrent' || appType=='aptrent' ">
+    <tr>
+      <th>#</th>
+      <th>년월</th>
+      <th>지역명</th>
+      <th>단지명</th>
+      <th class="text-right">전용면적(㎡)</th>
+      <th>구분</th>
+      <th class="text-right">보증금(만원)</th>
+      <th ng-hide="loc.monthlyType=='전세'" class="text-right">월세(만원)</th>
+      <th>층</th>
+      <th>건축연도</th>
+      <th>도로명 (지도링크)</th>
+    </tr>
+    <tr ng-repeat="sale in saleArr">
+      <td>{{$index+1}}</td>
+      <td>{{sale.year}}/{{sale.month}}</td>
+      <td>{{sale.fullLoc}}</td>
+      <td>{{sale.aptName}}</td>
+      <td class="text-right">{{sale.area}}</td>
+      <td>{{sale.monthlyType}}</td>
+      <td class="text-right">{{sale.deposit | currency:"":0 }}</td>
+      <td ng-hide="loc.monthlyType=='전세'" class="text-right">{{sale.monthlyPay | currency:"":0 }}</td>
+      <td class="text-right">{{sale.floor}}</td>
+      <td class="text-right">{{sale.builtYear}}</td>
+      <td><A target="_blank" href="{{mapEncode(sale)}}">{{sale.avenue}}</a></td>
+    </tr>
+  </table>
+
+
+  <!-- 단독/다가구 매매: 시군구 주택유형  연면적(㎡)  대지면적(㎡) 계약일 거래금액(만원)  건축년도  도로명 -->
+  <table class="table" ng-show="appType=='housesale' ">
+    <tr>
+      <th>#</th><th>년월</th>
+      <th>지역명</th>
+      <th class="text-right">거래금액(만원)</th>
+      <th class="text-right">건물총면적(㎡)/건축연도</th>
+      <th class="text-right">대지면적(㎡)</th>
+      <th>구분</th>
+      <th>도로명 (지도링크)</th>
+    </tr>
+    <tr ng-repeat="sale in saleArr">
+      <td>{{$index+1}}</td>
+      <td>{{sale.year}}/{{sale.month}}</td>
+      <td>{{sale.fullLoc}}</td>
+      <td class="text-right">{{sale.amount | currency:"":0 }}</td>
+      <td class="text-right">{{sale.area}}/{{sale.builtYear}}</td>
+      <td class="text-right">{{sale.landArea}}</td>
+      <td>{{sale.type}}</td>
+      <td><A target="_blank" href="{{mapEncode(sale)}}">{{sale.avenue}}</a></td>
+    </tr>
+  </table>
+
+  <!-- APT 매매: 시군구  본번  부번  단지명 전용면적(㎡) 계약일 거래금액(만원)  층 건축년도  도로명 -->
+  <!-- 연립 매매: 시군구 본번  부번  단지명 전용면적(㎡) 대지권면적(㎡)  계약일 거래금액(만원)  층 건축년도  도로명 -->
+  <table class="table" ng-show="appType=='aptsale' || appType=='flatsale' ">
+    <tr>
+      <th>#</th>
+      <th>년월</th>
+      <th>지역명</th>
+      <th>단지명</th>
+      <th class="text-right">거래금액(만원)</th>
+      <th class="text-right">전용면적(㎡)</th>
+      <th class="text-right" ng-show="appType=='flatsale'">대지권면적(㎡)</th>
+      <th class="text-right">층</th>
+      <th>건축연도</th>
+      <th>도로명 (지도링크)</th>
+    </tr>
+    <tr ng-repeat="sale in saleArr">
+      <td>{{$index+1}}</td>
+      <td>{{sale.year}}/{{sale.month}}</td>
+      <td>{{sale.fullLoc}}</td>
+      <td>{{sale.aptName}}</td>
+      <td class="text-right">{{sale.amount | currency:"":0 }}</td>
+      <td class="text-right">{{sale.area}}</td>
+      <td class="text-right" ng-show="appType=='flatsale'">{{sale.landArea}}</td>
+      <td class="text-right">{{sale.floor}}</td>
+      <td>{{sale.builtYear}}</td>
+      <td><A target="_blank" href="{{mapEncode(sale)}}">{{sale.avenue}}</a></td>
+    </tr>
+  </tr>
+</table>
+
+<div class="alert alert-danger" role="alert">
+  <a href="http://rt.molit.go.kr/" class="alert-link text-center"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+    이 사이트가 보여주는 자료는 프로그램의 버그등으로 인해 오류가 있을수 있습니다. 정확한 자료는 국토부 홈페이지에서 한번더 확인하세요.</a>
+</div>
+
+<p class="text-center">
+  <button class="btn btn-primary" type="button">
+  만든이: <span class="badge">hunkim+kp@gmail.com</span>
+</button>
+
+<button class="btn btn-sucess" type="button">
+자료: <span class="badge">국토교통부 실거래 파일</span>
+</button>
+</body>
+</html>
+
+<script>
+var app = angular.module('myApp', ['chart.js', 'cgBusy']);
+
+app.controller('customersCtrl',
+  function($scope, $http, $location) {
+    // API Host
+    $rhost = "http://api.kproperty.xyz";
+
+    // API URLs
+    $regionUrl = $rhost + "/trend/r2.php";
+    $saleUrl = $rhost + "/trend/q2.php";
+    $statUrl = $rhost + "/trend/s2.php";
+
+    // app type
+    $scope.appType = 'aptsale';
+
+    // show count option in the graph
+    $scope.showCount = true;
+
+    // http error flag
+    $scope.errorFlag = false;
+
+    // default action
+    $scope.stateArr = [
+      "","서울특별시","부산광역시","대구광역시","인천광역시","광주광역시","대전광역시","울산광역시","세종특별자치시",
+      "경기도","강원도","충청북도","충청남도","전라북도","전라남도","경상북도","경상남도","제주특별자치도"];
+
+    // default action
+    $scope.rentArr = ["","월세","전세"];
+
+    // year min and max
+    $scope.minYear = 2006;
+    $scope.maxYear = 2015;
+
+    // loc selection
+    $scope.loc = {state: "", 
+                  city: "", county: "", region: "", 
+                  aptName: "", area: "",
+                  monthlyType: "",
+                  startYear: $scope.minYear, endYear: $scope.maxYear};
+
+    // Chart Data
+    $scope.series = ['건물총면적 평당 가격', '대지면적 평당 가격', '거래량'];
+    $scope.labels = [];
+    $scope.data = [[],[],[]];
+
+    // stat and sale array
+    $scope.statArr = [];
+    $scope.saleArr=[];
+
+    // county and region array
+    $scope.cityArr = [];
+    $scope.countyArr = [];
+    $scope.regionArr = [];
+
+    // reset apt related array
+    $scope.aptNameArr = [];
+    $scope.aptAreaArr = [];
+
+
+    $scope.amIActive = function (name) {
+      if (name == $scope.appType) {
+        return 'active';
+      }
+
+      return '';
+    }
+    
+    $scope.appNameList = {aptsale:'아파트 매매', 
+        flatsale:'연립-다세대 매매', 
+        housesale:'단독-다가구 매매', 
+        aptrent:'아파트 전/월세',
+        flatrent:'연립-다세대 전/월세',
+        houserent:'단독-다가구 전/월세'};
+
+    $scope.setAppType = function(type) {
+      $scope.appType = type;
+      $scope.upAll();
+      if ($scope.isAptkind && $scope.loc.county!="") {
+          $scope.getAptName();
+      }
+    }
+
+     // APT?
+    $scope.getAptKind = function() {
+      if ($scope.appType=='housesale' || $scope.appType=='houserent') {
+        return false;
+      }
+
+      return true;
+    }
+
+    $scope.getRentKind = function() {
+      if ($scope.appType=='aptrent' || $scope.appType=='flatrent' 
+        || $scope.appType=='houserent') {
+        return true;
+      }
+
+      return false;
+    }
+
+    $scope.isAptkind = $scope.getAptKind();
+    $scope.isRentkind = $scope.getRentKind();
+
+
+    // recovering from network error
+    $scope.reconnect = function() {
+        $scope.errorFlag = false;  //reset the flag and let's hope
+
+        // check if county is loaded
+        if ($scope.regionArr.length==0 && $scope.loc.county!="") {
+          $scope.getRegion();
+        } else if ($scope.countyArr.length==0 && $scope.loc.city!="") {
+          $scope.getCounty();
+        }
+
+        // no statdate? reload!
+        if ($scope.statArr.length == 0) {
+          $scope.getStat();
+        }
+
+        // no sale array? reload!
+        if ($scope.saleArr.length == 0) {
+          $scope.getSales();
+        }
+      };
+
+      // local function for KR URL encodning
+      koEncode = function($s) {
+        if ($s==null || $s=="") {
+          return $s;
+        }
+        return encodeURI(encodeURIComponent($s));
+      };
+
+      // return information for daum map
+      $scope.mapEncode = function($sale) {
+        if ($sale==null) {
+          return "";
+        }
+        return "http://map.daum.net/?q='" + $sale.fullCity + " " + $sale.avenue + "'";
+    };
+
+    // based on the startYear selection, we adjust the endYear list
+    $scope.$watch('loc.startYear', function() {
+      $scope.endYears=[];
+      for (i=$scope.loc.startYear; i<=$scope.maxYear; i++) {
+        $scope.endYears.push(i);
+      }
+    });
+
+    // based on the end year selecion, we adjust the start year list
+    $scope.$watch('loc.endYear', function() {
+      $scope.startYears=[];
+      for (i=$scope.minYear; i<=$scope.loc.endYear; i++) {
+        $scope.startYears.push(i);
+      }
+    });
+
+    $scope.updateGraph = function() {
+      switch($scope.appType) {
+        case 'aptsale':
+        case 'flatsale':
+          $scope.updateAptSaleGraph();
+          break;
+
+        case 'housesale':
+          $scope.updateHouseSaleGraph();
+          break;
+
+        case 'aptrent':
+        case 'flatrent':
+          if ($scope.loc.monthlyType=="") {
+            $scope.updateAptRentAllGraph();
+          } else {
+            $scope.updateAptRentDepositGraph();
+          } 
+          break;
+
+        case 'houserent':
+          if ($scope.loc.monthlyType=="") {
+            $scope.updateHouseRentAllGraph();
+          } else {
+             $scope.updateHouseRentDepositGraph();
+          }
+          break;         
+      }
+    }
+
+    // update the graph (based on watch statArr)
+    $scope.updateHouseSaleGraph = function() {
+      // reset graph array
+      $scope.labels = [];
+      $scope.data=[];
+      $scope.data[0]=[];
+      $scope.data[1]=[];  
+
+      // Init if nedded
+      if ($scope.showCount) {
+        $scope.data[2]=[];
+      }
+
+      // show count? Then, three series. Otherwise, two
+      if ($scope.showCount) {
+        $scope.series = ['건물총면적 평당 가격 (만원)', '대지면적 평당 가격 (만원)', '거래량'];
+      } else {
+        $scope.series = ['건물총면적 평당 가격 (만원)', '대지면적 평당 가격 (만원)'];
+      }
+
+      var statLen = $scope.statArr.length;
+      for (var i = 0; i < statLen; i++) {
+        $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[i].month;
+        $scope.data[0][i] = ($scope.statArr[i].avgAmtArea*3.025).toFixed(2); // 평당가격
+        $scope.data[1][i] = ($scope.statArr[i].avgAmtLand*3.025).toFixed(2); // 평당가격
+        if ($scope.showCount) {
+          $scope.data[2][i] = $scope.statArr[i].count;
+        }
+      }
+    };
+
+    // update the graph (based on watch statArr)
+    $scope.updateAptSaleGraph = function() {
+      // reset graph array
+      $scope.labels = [];
+      $scope.data=[];
+      $scope.data[0]=[];
+
+      // Init if nedded
+      if ($scope.showCount) {
+        $scope.data[1]=[];
+      }
+
+      // show count? Then, three series. Otherwise, two
+      if ($scope.showCount) {
+        $scope.series = ['전용면적 평당 가격 (만원)', '거래량'];
+      } else {
+        $scope.series = ['전용면적 평당 가격 (만원)'];
+      }
+
+      var statLen = $scope.statArr.length;
+      for (var i = 0; i < statLen; i++) {
+        $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[i].month;
+        $scope.data[0][i] = ($scope.statArr[i].avgAmtUsed*3.025).toFixed(2); // 평당가격
+        if ($scope.showCount) {
+          $scope.data[1][i] = $scope.statArr[i].count;
+        }
+      }
+    };
+
+
+    // update the graph (based on watch statArr)
+    $scope.updateAptRentAllGraph = function() {
+      // reset graph array
+      $scope.labels = [];
+      $scope.data=[];
+      $scope.data[0]=[];
+      $scope.data[1]=[];
+
+      // Init if nedded
+      if ($scope.showCount) {
+        $scope.data[2]=[];
+      }
+
+      // show count? Then, three series. Otherwise, two
+      if ($scope.showCount) {
+        $scope.series = ['전용면적 평당 보증금(만원)', '전용면적 평당 월세(만원)', '거래량'];
+      } else {
+        $scope.series = ['전용면적 평당 보증금(만원)', '전용면적 평당 월세(만원)'];
+      }
+
+      var statLen = $scope.statArr.length;
+      for (var i = 0; i < statLen; i++) {
+        $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[i].month;
+        $scope.data[0][i] = ($scope.statArr[i].avgAptDeposit*3.025).toFixed(2); // 평당가격
+        $scope.data[0][i] = ($scope.statArr[i].avgAptRent*3.025).toFixed(2); // 평당가격
+
+        if ($scope.showCount) {
+          $scope.data[2][i] = $scope.statArr[i].count;
+        }
+      }
+    };
+
+    // update the graph (based on watch statArr)
+    $scope.updateHouseRentAllGraph = function() {
+      // reset graph array
+      $scope.labels = [];
+      $scope.data=[];
+      $scope.data[0]=[];
+      $scope.data[1]=[];
+
+      // Init if nedded
+      if ($scope.showCount) {
+        $scope.data[2]=[];
+      }
+
+      // show count? Then, three series. Otherwise, two
+      if ($scope.showCount) {
+        $scope.series = ['계약면적 평당 보증금(만원)', '계약면적 평당 월세(만원)', '거래량'];
+      } else {
+        $scope.series = ['계약면적 평당 보증금(만원)', '계약면적 평당 월세(만원)'];
+      }
+
+      var statLen = $scope.statArr.length;
+      for (var i = 0; i < statLen; i++) {
+        $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[i].month;
+        $scope.data[0][i] = ($scope.statArr[i].avgHouseDeposit*3.025).toFixed(2); // 평당가격
+        $scope.data[0][i] = ($scope.statArr[i].avgHouseRent*3.025).toFixed(2); // 평당가격
+
+        if ($scope.showCount) {
+          $scope.data[2][i] = $scope.statArr[i].count;
+        }
+      }
+    };
+    
+    // update the graph (based on watch statArr)
+    $scope.updateAptRentDepositGraph = function() {
+      isDeposit = $scope.loc.monthlyType=="전세";
+   //   console.log(isDeposit + " " + $scope.loc.monthlyType);
+      // reset graph array
+      $scope.labels = [];
+      $scope.data=[];
+      $scope.data[0]=[];
+
+      // Init if nedded
+      if ($scope.showCount) {
+        $scope.data[1]=[];
+      }
+
+      // show count? Then, three series. Otherwise, two
+      legend = '전용면적 평당 월세(만원)';
+
+      if (isDeposit) {
+        legend = '전용면적 평당 보증금(만원)';
+      }
+      if ($scope.showCount) {
+        $scope.series = [legend, '거래량'];
+      } else {
+        $scope.series = [legend];
+      }
+
+      var statLen = $scope.statArr.length;
+      for (var i = 0; i < statLen; i++) {
+        $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[i].month;
+        if (isDeposit) {
+          $scope.data[0][i] = ($scope.statArr[i].avgAptDeposit*3.025).toFixed(2); // 평당가격
+        } else {
+          $scope.data[0][i] = ($scope.statArr[i].avgAptRent*3.025).toFixed(2); // 평당가격
+        }
+
+        if ($scope.showCount) {
+          $scope.data[1][i] = $scope.statArr[i].count;
+        }
+      }
+    };
+
+// update the graph (based on watch statArr)
+    $scope.updateHouseRentDepositGraph = function() {
+      isDeposit = $scope.loc.monthlyType=="전세";
+     
+      // reset graph array
+      $scope.labels = [];
+      $scope.data=[];
+      $scope.data[0]=[];
+
+      // Init if nedded
+      if ($scope.showCount) {
+        $scope.data[1]=[];
+      }
+
+      // show count? Then, three series. Otherwise, two
+      legend = '계약면적 평당 월세(만원)';
+      if (isDeposit) {
+        legend = '계약면적 평당 보증금(만원)';
+      }
+      if ($scope.showCount) {
+        $scope.series = [legend, '거래량'];
+      } else {
+        $scope.series = [legend];
+      }
+
+      var statLen = $scope.statArr.length;
+      for (var i = 0; i < statLen; i++) {
+        $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[i].month;
+        if (isDeposit) {
+          $scope.data[0][i] = ($scope.statArr[i].avgHouseDeposit*3.025).toFixed(2); // 평당가격
+        } else {
+          $scope.data[0][i] = ($scope.statArr[i].avgHouseRent*3.025).toFixed(2); // 평당가격
+        }
+
+        if ($scope.showCount) {
+          $scope.data[2][i] = $scope.statArr[i].count;
+        }
+      }
+    };
+  // greaph on click. TODO: what should we do?
+  $scope.onClick = function (points, evt) {
+    //console.log(points, evt);
+  };
+
+  $scope.clearSelection = function(level) {
+     // clear region
+    switch(level) {
+      case 'city':
+        $scope.loc.aptName = "";
+        $scope.loc.area = "";
+        $scope.aptNameArr = [];
+        $scope.aptAreaArr = [];
+
+        $scope.cityArr = [];
+        $scope.loc.city = "";
+      case 'county':
+       $scope.countyArr = [];
+       $scope.loc.county = "";
+      case 'region':
+       $scope.regionArr = [];
+       $scope.loc.region = "";
+    }   
+  };
+
+   // get county array
+   $scope.getCity = function() {
+       // clear region
+       $scope.clearSelection('city');
+
+       $scope.countyPromise = $http.get($regionUrl + "/" + 
+                      $scope.appType + "?state=" + 
+                      koEncode($scope.loc.state) + 
+                      "&query=city")
+        .success(function (response) {$scope.cityArr = response;})
+        .error(function (response) {$scope.errorFlag=true;});
+
+       // update sales information
+      $scope.upAll();
+    };
+
+    // get region array
+    $scope.getCounty = function() {
+      $scope.clearSelection('county');
+      $scope.regionPromise = $http.get($regionUrl + "/" + 
+                      $scope.appType + "?state=" +
+                      koEncode($scope.loc.state) +
+                      "&city=" + koEncode($scope.loc.city) + 
+                      "&query=county")
+       .success(function (response) {$scope.countyArr = response;})
+       .error(function (response) {$scope.errorFlag=true;});
+
+       // update sales information
+       $scope.upAll();
+     };
+
+     // get region array
+     $scope.getRegion = function() {
+        $scope.clearSelection('region');
+
+        $scope.regionPromise = $http.get($regionUrl + "/" + 
+                      $scope.appType + 
+          "?state=" + koEncode($scope.loc.state) +
+          "&city=" + koEncode($scope.loc.city) +  
+          "&county=" + koEncode($scope.loc.county) +
+          "&query=region")
+        .success(function (response) {$scope.regionArr = response;})
+        .error(function (response) {$scope.errorFlag=true;});
+
+        // update sales information
+        $scope.upAll();
+      };
+
+
+     // get region array
+     $scope.getAptName = function() {
+        $scope.aptNameArr = [];
+        $scope.aptAreaArr = [];
+
+        $scope.loc.aptName = "";
+        $scope.loc.area = "";
+
+        $scope.regionPromise = $http.get($regionUrl + "/" + 
+                      $scope.appType + 
+          "?state=" + koEncode($scope.loc.state) +
+          "&city=" + koEncode($scope.loc.city) +  
+          "&county=" + koEncode($scope.loc.county) +
+          "&region=" + koEncode($scope.loc.region) +
+          "&query=aptName")
+        .success(function (response) {$scope.aptNameArr = response;})
+        .error(function (response) {$scope.errorFlag=true;});
+
+        // update sales information
+        //if(callUpAll) {
+         // $scope.upAll();
+        //}
+      };
+
+    // get region array
+     $scope.getAptArea = function() {
+        $scope.aptAreaArr = [];
+        $scope.loc.area = "";
+
+        $scope.regionPromise = $http.get($regionUrl + "/" + 
+                      $scope.appType + 
+          "?state=" + koEncode($scope.loc.state) +
+          "&city=" + koEncode($scope.loc.city) +  
+          "&county=" + koEncode($scope.loc.county) +
+          "&region=" + koEncode($scope.loc.region) +
+          "&aptName=" + koEncode($scope.loc.aptName) + 
+          "&query=area")
+        .success(function (response) {$scope.aptAreaArr = response;})
+        .error(function (response) {$scope.errorFlag=true;});
+
+        // update sales information
+        $scope.upAll();
+      };
+
+
+     $scope.upAll = function () {
+       $scope.getSales();
+       $scope.getStat();
+
+       $scope.isAptkind = $scope.getAptKind();
+       $scope.isRentkind = $scope.getRentKind();
+     };
+
+     $scope.saleListCount = function () {
+
+       if ($scope.saleArr==null) {
+         return 0;
+       }
+
+       s = Object.keys($scope.saleArr).length;
+
+
+       if (s>=500) {
+         return "500+";
+       }
+
+       return s;
+     };
+
+     $scope.makeURL = function($baseUrl) {
+       $url = $baseUrl + 
+          "/" + $scope.appType + 
+          "?state=" + koEncode($scope.loc.state) +
+          "&city=" + koEncode($scope.loc.city) +
+          "&county=" + koEncode($scope.loc.county) +
+          "&region=" + koEncode($scope.loc.region) +
+          "&startyear=" + $scope.loc.startYear +
+          "&endyear=" + $scope.loc.endYear;
+        if ($scope.isAptkind) {
+          $url += "&aptName=" + koEncode($scope.loc.aptName) +
+                  "&area=" + koEncode($scope.loc.area);
+        }
+
+        if ($scope.isRentkind) {
+          $url += "&monthlyType=" + koEncode($scope.loc.monthlyType);
+        }
+
+        return $url;
+     }
+
+     $scope.getStat = function() {
+         $scope.statArr=[];
+
+         $scope.statPromise = $http.get($scope.makeURL($statUrl))
+        .success(function (response) {
+          $scope.statArr = response;
+          $scope.updateGraph();})
+        .error(function (response) {$scope.errorFlag=true;});
+      };
+
+     $scope.getSales = function() {
+       $scope.saleArr=[];
+       $scope.salePromise = $http.get($scope.makeURL($saleUrl))
+        .success(function (response) {$scope.saleArr = response;})
+        .error(function (response) {$scope.errorFlag=true;});
+      };
+
+    // Show all for the initial screen
+    $scope.upAll();
+}
+);
+</script>

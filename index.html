@@ -22,15 +22,15 @@
 <form>
   <div class="alert alert-success" role="alert">
     <span class="glyphicon glyphicon-search" aria-hidden="true"></span>지역 선택:
-   시/도 <select name="city" ng-model="loc.city" ng-change="getCounty();">
+   시도 <select name="city" ng-model="loc.city" ng-change="getCounty();">
     <option ng-repeat="city in cityArr" value="{{city}}">{{city}}</option>
   </select>
 
-  구/시 <select name="county" ng-model="loc.county" ng-change="getRegion();">
+  시군구 <select name="county" ng-model="loc.county" ng-change="getRegion();">
     <option ng-repeat="county in countyArr | orderBy" value="{{county}}">{{county}}</option>
   </select>
 
-  동/읍 <select name="region" ng-model="loc.region" ng-change="getRegion1();">
+  읍면동 <select name="region" ng-model="loc.region" ng-change="getRegion1();">
     <option ng-repeat="region in regionArr | orderBy" value="{{region}}">{{region}}</option>
   </select>
 
