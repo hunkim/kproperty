@@ -1,6 +1,8 @@
 #!/usr/bin/php
 <?php
 
+include 'mkgroup.php';
+
 assert_options(ASSERT_BAIL,     true);
 if (count($argv) != 2) {
     echo "Usage: $argv[0] <xls_dir>\n\n";
@@ -8,7 +10,10 @@ if (count($argv) != 2) {
 }
 
 //main($argv[1] . "/");
-main($argv[1] . '/');
+$colnames = ['housesale', 'aptsale', 'flatsale', 'houserent', 'aptrent', 'flatrent'];
+foreach ($colnames as $name) {
+    main("$argv[1]/$name/", $name);
+}
 
 function test($dir) {
     readCSV(".", '2015_06_test.csv');
@@ -16,7 +21,7 @@ function test($dir) {
 }
 /* The main controller */
 // $dir should end with '/'
-function main($dir) {
+function main($dir, $colname) {
     $xlsx_njs = "./js/node_modules/xlsx/bin/xlsx.njs";
 
     echo ($dir);
@@ -43,7 +48,7 @@ function main($dir) {
                 }
 
                 // process generated CSV
-                readCSV($dir, $csvFile);
+                readCSV($dir, $csvFile, $colname);
             }
         }
     }
@@ -101,15 +106,12 @@ function makeDBIndex($db, $collection, $fields, $data) {
     echo $r;
 } 
 
-function readCSV($dir, $csvFile) {
+function readCSV($dir, $csvFile, $tableName) {
     // connect
     $m = new MongoClient();
 
     // select a database
     $db = $m->trend;
-
-    // get table name and table name, type
-    $tableName = getTableName($csvFile);
 
     $collection = $db->$tableName;
 
@@ -204,7 +206,11 @@ function readCSV($dir, $csvFile) {
 
     fclose($handle);
 
-    echo "<!> Inserted $row rows!\n";
+     // mk grpo
+     echo "<!> Inserted $row rows!\n";
+     echo "<!> making agg for $year/$month...\n";
+     mkgrp($db, $tableName, $year, $month);
+
 }
 
 function shouldIndex($field) {
@@ -290,6 +296,12 @@ function getTypes($fields) {
 } 
 
 function getTableName($a) {
+
+ //   $a = iconv("utf8", "euckr", $a);
+    echo(mb_internal_encoding());
+    echo(mb_internal_encoding("utf8"));
+    echo(mb_internal_encoding());
+
     if (strpos($a,'단독-다가구(전월세)') !== false) {
         return "houserent";
     }
@@ -302,9 +314,19 @@ function getTableName($a) {
         return "flatrent";
     }
 
+    if (mb_strpos($a,'단독-다가구(매매)',0, "utf8") !== false) {
+        return "housesale";
+    }
+    if (mb_strpos($a,'단독-다가구(매매)', 0, "utf16") !== false) {
+        return "housesale";
+    }
+    if (mb_strpos($a,'단독-다가구(매매)') !== false) {
+        return "housesale";
+    }
     if (strpos($a,'단독-다가구(매매)') !== false) {
         return "housesale";
     }
+
 
     if (strpos($a,'아파트(매매)') !== false) {
         return "aptsale";
@@ -314,7 +336,8 @@ function getTableName($a) {
         return "flatsale";
     }
 
-    // assert(false);
+    echo("Cannot find the type of this file: $a");
+    //assert(false);
     //return false;
     return "housesale";
 }

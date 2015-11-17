@@ -44,8 +44,7 @@ if ($debug) {
 }
 
 // find everything in the collection
-$cursor = $collection->find($query);
-//->sort(['year'=>1, 'month'=>1]);
+$cursor = $collection->find($query)->sort(['year'=>-1, 'month'=>-1]);
 $cursor->limit(500);
 
 //echo json_encode(iterator_to_array($cursor), 	

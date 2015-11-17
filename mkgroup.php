@@ -4,22 +4,25 @@
 $m = new MongoClient();
 // select a database
 $db = $m->selectDB('trend');
-// select a collection (analogous to a relational database's table)
-$colnames = ['housesale', 'aptsale', 'flatsale', 'houserent', 'aptrent', 'flatrent'];
 
-foreach ($colnames as $colname) {
-  $col2name = $colname."_agg";
-  $col2 = new MongoCollection($db, $col2name);
+function testgrp() {
+  // select a collection (analogous to a relational database's table)
+  $colnames = ['housesale', 'aptsale', 'flatsale', 'houserent', 'aptrent', 'flatrent'];
 
-  // Let's remove all first
-  $col2->remove([]);
+  foreach ($colnames as $colname) {
+    $col2name = $colname."_agg";
+    $col2 = new MongoCollection($db, $col2name);
 
-  // add agg information
-  mkgrp($db, $colname);
+    // Let's remove all first
+    $col2->remove([]);
+
+    // add agg information
+    mkgrp($db, $colname);
+  }
 }
 
-function mkgrp($db, $colname) {
-  $query = [];
+function mkgrp($db, $colname, $year, $month) {
+  $query = ['year'=>$year, 'month'=>$month]; 
 
   $grouparr['count'] = ['$sum' =>  1];
 
@@ -29,7 +32,7 @@ function mkgrp($db, $colname) {
       $query['usedArea'] = ['$gt' => 0] ;
       $grouparr['avgAmtUsed'] = ['$avg' => ['$divide' => [ '$amount', '$area' ] ] ];
 
-      $groupkey = ['year' => '$year', 'month'=>'$month', 'state'=>'$state',
+      $groupkey = ['state'=>'$state',
         'city'=>'$city', 'county'=>'$county', 'region'=>'$region', 'aptName'=>'$aptName',
         'area'=>'$area'];
 
@@ -38,7 +41,7 @@ function mkgrp($db, $colname) {
       // insert with empty
       mkonegrp($db, $colname, $query, $grouparr);
       foreach ($groupkey as $key => $value) {
-        $grouparr['_id']['$key'] = $value;
+        $grouparr['_id'][$key] = $value;
         mkonegrp($db, $colname, $query, $grouparr);
       }
     break;
@@ -49,14 +52,14 @@ function mkgrp($db, $colname) {
       $grouparr['avgAmtArea'] = ['$avg' => ['$divide' => [ '$amount', '$area' ] ] ];
       $grouparr['avgAmtLand'] = ['$avg' => ['$divide' => [ '$amount', '$landArea' ] ] ];
 
-      $groupkey = ['year' => '$year', 'month'=>'$month', 'state'=>'$state',
+      $groupkey = ['state'=>'$state',
         'city'=>'$city', 'county'=>'$county', 'region'=>'$region'];
 
       $grouparr['_id'] = ['year' => '$year', 'month'=>'$month'];
       // insert with empty
       mkonegrp($db, $colname, $query, $grouparr);
       foreach ($groupkey as $key => $value) {
-        $grouparr['_id']['$key'] = $value;
+        $grouparr['_id'][$key] = $value;
         mkonegrp($db, $colname, $query, $grouparr);
       }
       break;
@@ -74,17 +77,17 @@ case 'flatrent':
       $grouparr['_id'] = ['year' => '$year', 'month'=>'$month'];
       
       // insert with empty
-      $grouparr['id']['monthlyType'] = '$monthlyType';
+      $grouparr['_id']['monthlyType'] = '$monthlyType';
       mkonegrp($db, $colname, $query, $grouparr);
-      unset($grouparr['id']['monthlyType']);
+      unset($grouparr['_id']['monthlyType']);
       mkonegrp($db, $colname, $query, $grouparr);
       
       foreach ($groupkey as $key => $value) {
-        $grouparr['_id']['$key'] = $value;
+        $grouparr['_id'][$key] = $value;
 
-        $grouparr['id']['monthlyType'] = '$monthlyType';
+        $grouparr['_id']['monthlyType'] = '$monthlyType';
         mkonegrp($db, $colname, $query, $grouparr);
-        unset($grouparr['id']['monthlyType']);
+        unset($grouparr['_id']['monthlyType']);
         mkonegrp($db, $colname, $query, $grouparr);
       }
       break;
@@ -98,36 +101,49 @@ case 'houserent':
 
       $grouparr['_id'] = ['year' => '$year', 'month'=>'$month'];
 
-      $grouparr['id']['monthlyType'] = '$monthlyType';
+      $grouparr['_id']['monthlyType'] = '$monthlyType';
       mkonegrp($db, $colname, $query, $grouparr);
-      unset($grouparr['id']['monthlyType']);
+      unset($grouparr['_id']['monthlyType']);
       mkonegrp($db, $colname, $query, $grouparr);
       
       foreach ($groupkey as $key => $value) {
-        $grouparr['_id']['$key'] = $value;
+        $grouparr['_id'][$key] = $value;
 
-        $grouparr['id']['monthlyType'] = '$monthlyType';
+        $grouparr['_id']['monthlyType'] = '$monthlyType';
         mkonegrp($db, $colname, $query, $grouparr);
-        unset($grouparr['id']['monthlyType']);
+        unset($grouparr['_id']['monthlyType']);
         mkonegrp($db, $colname, $query, $grouparr);
       }
       break;
   }
 }
 
+function makegrpIndex($db, $collection, $ids) {
+    $dbData = array();
+    foreach ($ids as $i => $field) {
+      $dbData[$i] = 1;
+    }
+
+    // Insert it to DB
+    //$r = $collection->createIndex($dbData, ['name'=> 'all']);
+    $r = $collection->createIndex($dbData);
+    echo $r;
+} 
+
 function mkonegrp($db, $colname, $query, $grouparr) {
   $ops = array();
   $ops[] = ['$match' => $query];
-  $ops[] = ['$sort' => ['year'=> -1, 'month'=> -1]];
+//  $ops[] = ['$sort' => ['year'=> -1, 'month'=> -1]];
   $ops[] = ['$group' => $grouparr];
 
   $option = ['allowDiskUse' => true];
 
-  print_r($ops);
+  //print_r($ops);
 
   $collection = new MongoCollection($db, $colname);
-  echo("working on: $col2name ... with");
+  echo("working on: $colname ... with");
   print_r($grouparr['_id']);  
+  makegrpIndex($db, $collection, $grouparr['_id']);
 
   try {
     $cursor = $collection->aggregate($ops, $option);

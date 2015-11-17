@@ -9,6 +9,7 @@ $m = new MongoClient();
 $db = $m->selectDB('trend');
 // select a collection (analogous to a relational database's table)
 $colname = str_replace( '/', '',trim($_SERVER['PATH_INFO']));
+
 if (!$colname) {
   $debug = true;
   $colname = 'housesale';
@@ -24,6 +25,7 @@ foreach ($_GET as $key => $value) {
   //echo "Key: $key; Value: $value<br />\n";
   if ($value == '') {
     $query[$key] = null;
+    continue;
   }
 
   if ($key == 'debug') {
@@ -41,8 +43,12 @@ foreach ($_GET as $key => $value) {
   }
 }
 
+if($debug) {
+  print_r($query);
+}
+
 // find everything in the collection
-$cursor = $collection->find($query)->sort(['year'=>-11, 'month'=>-11]);
+$cursor = $collection->find($query, ['_id'=>0])->sort(['year'=>1, 'month'=>1]);
 
 //echo json_encode(iterator_to_array($cursor),  
 echo json_encode(iterator_to_array($cursor),  
