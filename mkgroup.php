@@ -22,22 +22,22 @@ function testgrp() {
 }
 
 function mkgrp($db, $colname, $year, $month) {
-  $query = ['year'=>$year, 'month'=>$month]; 
+  $query = ['year'=>$year, 'month'=>$month];
+  $query['area'] = ['$gt' => 0] ;
 
   $grouparr['count'] = ['$sum' =>  1];
 
   switch ($colname) {
     case 'aptsale':
     case 'flatsale':
-      $query['usedArea'] = ['$gt' => 0] ;
-      $grouparr['avgAmtUsed'] = ['$avg' => ['$divide' => [ '$amount', '$area' ] ] ];
+      $grouparr['avgAmtArea'] = ['$avg' => ['$divide' => [ '$amount', '$area' ] ] ];
 
       $groupkey = ['state'=>'$state',
         'city'=>'$city', 'county'=>'$county', 'region'=>'$region', 'aptName'=>'$aptName',
         'area'=>'$area'];
 
       $grouparr['_id'] = ['year' => '$year', 'month'=>'$month'];
-  
+
       // insert with empty
       mkonegrp($db, $colname, $query, $grouparr);
       foreach ($groupkey as $key => $value) {
@@ -47,7 +47,6 @@ function mkgrp($db, $colname, $year, $month) {
     break;
 
     case 'housesale':
-      $query['area'] = ['$gt' => 0] ;
       $query['landArea'] = ['$gt' => 0] ;
       $grouparr['avgAmtArea'] = ['$avg' => ['$divide' => [ '$amount', '$area' ] ] ];
       $grouparr['avgAmtLand'] = ['$avg' => ['$divide' => [ '$amount', '$landArea' ] ] ];
@@ -66,22 +65,21 @@ function mkgrp($db, $colname, $year, $month) {
 
 case 'aptrent':
 case 'flatrent':
-      $query['usedArea'] = ['$gt' => 0] ;
-      $grouparr['avgAptRent'] = ['$avg' => ['$divide' => [ '$monthlyPay', '$area' ] ]];
-      $grouparr['avgAptDeposit'] = ['$avg' => ['$divide' => [ '$deposit', '$area' ] ] ];
+      $grouparr['avgRent'] = ['$avg' => ['$divide' => [ '$monthlyPay', '$area' ] ]];
+      $grouparr['avgDeposit'] = ['$avg' => ['$divide' => [ '$deposit', '$area' ] ] ];
 
       $groupkey = ['state'=>'$state',
         'city'=>'$city', 'county'=>'$county', 'region'=>'$region', 'aptName'=>'$aptName',
         'area'=>'$area'];
 
       $grouparr['_id'] = ['year' => '$year', 'month'=>'$month'];
-      
+
       // insert with empty
       $grouparr['_id']['monthlyType'] = '$monthlyType';
       mkonegrp($db, $colname, $query, $grouparr);
       unset($grouparr['_id']['monthlyType']);
       mkonegrp($db, $colname, $query, $grouparr);
-      
+
       foreach ($groupkey as $key => $value) {
         $grouparr['_id'][$key] = $value;
 
@@ -93,9 +91,8 @@ case 'flatrent':
       break;
 
 case 'houserent':
-      $query['contractArea'] = ['$gt' => 0] ;
-      $grouparr['avgHouseDeposit'] = ['$avg' => ['$divide' => [ '$deposit', '$area' ] ] ];
-      $grouparr['avgHouseRent'] = ['$avg' => ['$divide' => [ '$monthlyPay', '$area' ] ] ];
+      $grouparr['avgDeposit'] = ['$avg' => ['$divide' => [ '$deposit', '$area' ] ] ];
+      $grouparr['avgRent'] = ['$avg' => ['$divide' => [ '$monthlyPay', '$area' ] ] ];
 
       $groupkey= ['state'=>'$state','city'=>'$city', 'county'=>'$county', 'region'=>'$region'];
 
@@ -105,7 +102,7 @@ case 'houserent':
       mkonegrp($db, $colname, $query, $grouparr);
       unset($grouparr['_id']['monthlyType']);
       mkonegrp($db, $colname, $query, $grouparr);
-      
+
       foreach ($groupkey as $key => $value) {
         $grouparr['_id'][$key] = $value;
 
@@ -128,7 +125,7 @@ function makegrpIndex($db, $collection, $ids) {
     //$r = $collection->createIndex($dbData, ['name'=> 'all']);
     $r = $collection->createIndex($dbData);
     echo $r;
-} 
+}
 
 function mkonegrp($db, $colname, $query, $grouparr) {
   $ops = array();
@@ -142,7 +139,7 @@ function mkonegrp($db, $colname, $query, $grouparr) {
 
   $collection = new MongoCollection($db, $colname);
   echo("working on: $colname ... with");
-  print_r($grouparr['_id']);  
+  print_r($grouparr['_id']);
   makegrpIndex($db, $collection, $grouparr['_id']);
 
   try {
