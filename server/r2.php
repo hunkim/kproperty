@@ -9,6 +9,7 @@ $m = new MongoClient();
 $db = $m->trend;
 // select a collection (analogous to a relational database's table)
 $colname = substr($_SERVER['PATH_INFO'], 1);
+$colname .= "_reg";
 $collection = $db->$colname;
 
 $query = array();
@@ -23,7 +24,7 @@ foreach ($_GET as $key => $value) {
     $debug = true;
     continue;
   }
-  
+
   if ($key=='query') {
     $dquery = $value;
     continue;
@@ -38,7 +39,7 @@ if ($debug) {
 
 $cursor = $collection->distinct($dquery, $query);
 
-//echo json_encode(iterator_to_array($cursor), 	
-echo json_encode(($cursor), 	
+//echo json_encode(iterator_to_array($cursor),
+echo json_encode(($cursor),
 	JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
 ?>
