@@ -94,7 +94,7 @@ function mkonereg($db, $colname, $grouparr) {
     exit(1);
   }
 
-  $col2name = $colname."_agg";
+  $col2name = $colname."_reg";
   $col2 = new MongoCollection($db, $col2name);
 
   $results = $cursor['result'];
