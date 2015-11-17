@@ -100,16 +100,8 @@ function mkonereg($db, $colname, $grouparr) {
 
   //$results = $cursor['result'];
  foreach ($cursor as $result) {
-   print_r($result);
-      foreach($result->result as $skey=> $sval) {
-      if ($skey == '_id') {
-        $r = $sval;
-      } else {
-        $r[$skey] = $sval;
-      }
-    }
-    //print_r($r);
-    //$col2->insert($r);
+   print_r($r[_id]);
+   $col2->insert($r[_id]);
   }
 }
 ?>
