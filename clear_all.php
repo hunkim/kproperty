@@ -10,12 +10,12 @@ $colnames = ['housesale', 'aptsale', 'flatsale', 'houserent', 'aptrent', 'flatre
 foreach ($colnames as $colname) {
   echo "Removing $colname...\n";
   $col = new MongoCollection($db, $colname);
-  $col->remove([])->timeout(-1);
+  $col->drop();
   $col->deleteIndexes();
 
   $col2name = $colname."_agg";
   $col2 = new MongoCollection($db, $col2name);
-  $col2->remove([])->timeout(-1);
+  $col2->drop();
   $col2->deleteIndexes();
 }
 ?>
