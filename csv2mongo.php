@@ -1,5 +1,6 @@
 #!/usr/bin/php
 <?php
+MongoCursor::$timeout = -1;
 
 include 'mkgroup.php';
 

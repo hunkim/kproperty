@@ -1,4 +1,5 @@
 <?php
+MongoCursor::$timeout = -1;
 
 function testgrp() {
   // connect
