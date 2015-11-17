@@ -87,6 +87,7 @@ function mkonereg($db, $colname, $grouparr) {
   print_r($grouparr['_id']);
   makegrpIndex($db, $collection, $grouparr['_id']);
 
+  print_r($ops);
   try {
     $cursor = $collection->aggregate($ops, $option);
   } catch (MongoException $e) {
