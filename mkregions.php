@@ -1,5 +1,6 @@
 <?php
 
+MongoCursor::$timeout = -1;
 testreg();
 
 function testreg() {
@@ -16,7 +17,7 @@ function testreg() {
     $col2 = new MongoCollection($db, $col2name);
 
     // Let's remove all first
-    $col2->remove([]);
+    $col2->drop([]);
 
     // add agg information
     mkreg($db, $colname);
