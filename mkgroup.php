@@ -14,7 +14,7 @@ function testgrp() {
     $col2 = new MongoCollection($db, $col2name);
 
     // Let's remove all first
-    $col2->remove([]);
+    $col2->drop();
 
     // add agg information
     mkgrp($db, $colname);
