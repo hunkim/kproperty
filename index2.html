@@ -28,7 +28,7 @@
   <li ng-class="amIActive('houserent')"><a ng-click="setAppType('houserent')">단독-다가구 전/월세</a></li>
   </ul>
 
-  <h2>  <span class="glyphicon glyphicon-home" aria-hidden="true"></span> 
+  <h2>  <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
     전국 실거래가 {{appNameList[appType]}} 정보
     <!-- <small>지원 브라우즈: <img src="no_ie.png"> (IE는 잘안됩니다.)</small> -->
   </h2>
@@ -47,7 +47,7 @@
     <option ng-repeat="county in countyArr | orderBy" value="{{county}}">{{county}}</option>
   </select>
 
-  <span ng-show="regionArr.length>1">기타 <select name="region" ng-model="loc.region" ng-change="upAll();getAptName();">
+  <span ng-show="regionArr.length>2">기타 <select name="region" ng-model="loc.region" ng-change="upAll();getAptName();">
     <option ng-repeat="region in regionArr | orderBy" value="{{region}}">{{region}}</option>
   </select></span>
 
@@ -83,8 +83,8 @@
 <!-- info block -->
 <div cg-busy="{promise:statPromise,message:'통계 정보를 읽고 있습니다...'}"></div>
 <div ng-hide="errorFlag" class="alert alert-info" role="alert">
-  선택된 지역: {{loc.state + " " + loc.city + " " + 
-  loc.county + " " + loc.region + " " + 
+  선택된 지역: {{loc.state + " " + loc.city + " " +
+  loc.county + " " + loc.region + " " +
   loc.aptName + " " + loc.area + " " +
   loc.monthlyType}} 을(를)
   {{loc.startYear}} 부터 {{loc.endYear}} 까지.
@@ -101,7 +101,7 @@
 </div>
 
 <!-- <div ng-show="statArr.length!=0"> -->
-<canvas id="line" class="chart chart-line" chart-data="data"
+  <canvas id="line" class="chart chart-line" chart-data="data"
   chart-labels="labels" chart-legend="true" chart-series="series"
   chart-click="onClick" >
 </canvas>
@@ -142,7 +142,6 @@
       <th>구분</th>
       <th class="text-right">보증금(만원)</th>
       <th class="text-right">월세(만원)</th>
-      <th>건축연도</th>
       <th>도로명 (지도링크)</th>
     </tr>
     <tr ng-repeat="sale in saleArr">
@@ -153,7 +152,6 @@
       <td>{{sale.monthlyType}}</td>
       <td class="text-right">{{sale.deposit | currency:"":0 }}</td>
       <td class="text-right">{{sale.monthlyPay | currency:"":0 }}</td>
-      <td class="text-right">{{sale.builtYear}}</td>
       <td><A target="_blank" href="{{mapEncode(sale)}}">{{sale.avenue}}</a></td>
     </tr>
   </table>
@@ -172,7 +170,6 @@
       <th class="text-right">보증금(만원)</th>
       <th ng-hide="loc.monthlyType=='전세'" class="text-right">월세(만원)</th>
       <th>층</th>
-      <th>건축연도</th>
       <th>도로명 (지도링크)</th>
     </tr>
     <tr ng-repeat="sale in saleArr">
@@ -185,7 +182,6 @@
       <td class="text-right">{{sale.deposit | currency:"":0 }}</td>
       <td ng-hide="loc.monthlyType=='전세'" class="text-right">{{sale.monthlyPay | currency:"":0 }}</td>
       <td class="text-right">{{sale.floor}}</td>
-      <td class="text-right">{{sale.builtYear}}</td>
       <td><A target="_blank" href="{{mapEncode(sale)}}">{{sale.avenue}}</a></td>
     </tr>
   </table>
@@ -266,12 +262,12 @@ var app = angular.module('myApp', ['chart.js', 'cgBusy']);
 app.controller('customersCtrl',
   function($scope, $http, $location) {
     // API Host
-    $rhost = "http://api.kproperty.xyz";
+    $rhost = "http://a.kproperty.xyz";
 
     // API URLs
-    $regionUrl = $rhost + "/trend/r2.php";
-    $saleUrl = $rhost + "/trend/q2.php";
-    $statUrl = $rhost + "/trend/s2.php";
+    $regionUrl = $rhost + "/r2.php";
+    $saleUrl = $rhost + "/q2.php";
+    $statUrl = $rhost + "/s2.php";
 
     // app type
     $scope.appType = 'aptsale';
@@ -295,8 +291,8 @@ app.controller('customersCtrl',
     $scope.maxYear = 2015;
 
     // loc selection
-    $scope.loc = {state: "", 
-                  city: "", county: "", region: "", 
+    $scope.loc = {state: "",
+                  city: "", county: "", region: "",
                   aptName: "", area: "",
                   monthlyType: "",
                   startYear: $scope.minYear, endYear: $scope.maxYear};
@@ -327,10 +323,10 @@ app.controller('customersCtrl',
 
       return '';
     }
-    
-    $scope.appNameList = {aptsale:'아파트 매매', 
-        flatsale:'연립-다세대 매매', 
-        housesale:'단독-다가구 매매', 
+
+    $scope.appNameList = {aptsale:'아파트 매매',
+        flatsale:'연립-다세대 매매',
+        housesale:'단독-다가구 매매',
         aptrent:'아파트 전/월세',
         flatrent:'연립-다세대 전/월세',
         houserent:'단독-다가구 전/월세'};
@@ -353,7 +349,7 @@ app.controller('customersCtrl',
     }
 
     $scope.getRentKind = function() {
-      if ($scope.appType=='aptrent' || $scope.appType=='flatrent' 
+      if ($scope.appType=='aptrent' || $scope.appType=='flatrent'
         || $scope.appType=='houserent') {
         return true;
       }
@@ -436,7 +432,7 @@ app.controller('customersCtrl',
             $scope.updateAptRentAllGraph();
           } else {
             $scope.updateAptRentDepositGraph();
-          } 
+          }
           break;
 
         case 'houserent':
@@ -445,7 +441,7 @@ app.controller('customersCtrl',
           } else {
              $scope.updateHouseRentDepositGraph();
           }
-          break;         
+          break;
       }
     }
 
@@ -455,7 +451,7 @@ app.controller('customersCtrl',
       $scope.labels = [];
       $scope.data=[];
       $scope.data[0]=[];
-      $scope.data[1]=[];  
+      $scope.data[1]=[];
 
       // Init if nedded
       if ($scope.showCount) {
@@ -502,7 +498,7 @@ app.controller('customersCtrl',
       var statLen = $scope.statArr.length;
       for (var i = 0; i < statLen; i++) {
         $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[i].month;
-        $scope.data[0][i] = ($scope.statArr[i].avgAmtUsed*3.025).toFixed(2); // 평당가격
+        $scope.data[0][i] = ($scope.statArr[i].avgAmtArea*3.025).toFixed(2); // 평당가격
         if ($scope.showCount) {
           $scope.data[1][i] = $scope.statArr[i].count;
         }
@@ -533,8 +529,8 @@ app.controller('customersCtrl',
       var statLen = $scope.statArr.length;
       for (var i = 0; i < statLen; i++) {
         $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[i].month;
-        $scope.data[0][i] = ($scope.statArr[i].avgAptDeposit*3.025).toFixed(2); // 평당가격
-        $scope.data[0][i] = ($scope.statArr[i].avgAptRent*3.025).toFixed(2); // 평당가격
+        $scope.data[0][i] = ($scope.statArr[i].avgDeposit*3.025).toFixed(2); // 평당가격
+        $scope.data[0][i] = ($scope.statArr[i].avgRent*3.025).toFixed(2); // 평당가격
 
         if ($scope.showCount) {
           $scope.data[2][i] = $scope.statArr[i].count;
@@ -565,15 +561,15 @@ app.controller('customersCtrl',
       var statLen = $scope.statArr.length;
       for (var i = 0; i < statLen; i++) {
         $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[i].month;
-        $scope.data[0][i] = ($scope.statArr[i].avgHouseDeposit*3.025).toFixed(2); // 평당가격
-        $scope.data[0][i] = ($scope.statArr[i].avgHouseRent*3.025).toFixed(2); // 평당가격
+        $scope.data[0][i] = ($scope.statArr[i].avgDeposit*3.025).toFixed(2); // 평당가격
+        $scope.data[0][i] = ($scope.statArr[i].avgRent*3.025).toFixed(2); // 평당가격
 
         if ($scope.showCount) {
           $scope.data[2][i] = $scope.statArr[i].count;
         }
       }
     };
-    
+
     // update the graph (based on watch statArr)
     $scope.updateAptRentDepositGraph = function() {
       isDeposit = $scope.loc.monthlyType=="전세";
@@ -604,9 +600,9 @@ app.controller('customersCtrl',
       for (var i = 0; i < statLen; i++) {
         $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[i].month;
         if (isDeposit) {
-          $scope.data[0][i] = ($scope.statArr[i].avgAptDeposit*3.025).toFixed(2); // 평당가격
+          $scope.data[0][i] = ($scope.statArr[i].avgDeposit*3.025).toFixed(2); // 평당가격
         } else {
-          $scope.data[0][i] = ($scope.statArr[i].avgAptRent*3.025).toFixed(2); // 평당가격
+          $scope.data[0][i] = ($scope.statArr[i].avgRent*3.025).toFixed(2); // 평당가격
         }
 
         if ($scope.showCount) {
@@ -618,7 +614,7 @@ app.controller('customersCtrl',
 // update the graph (based on watch statArr)
     $scope.updateHouseRentDepositGraph = function() {
       isDeposit = $scope.loc.monthlyType=="전세";
-     
+
       // reset graph array
       $scope.labels = [];
       $scope.data=[];
@@ -644,13 +640,13 @@ app.controller('customersCtrl',
       for (var i = 0; i < statLen; i++) {
         $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[i].month;
         if (isDeposit) {
-          $scope.data[0][i] = ($scope.statArr[i].avgHouseDeposit*3.025).toFixed(2); // 평당가격
+          $scope.data[0][i] = ($scope.statArr[i].avgDeposit*3.025).toFixed(2); // 평당가격
         } else {
-          $scope.data[0][i] = ($scope.statArr[i].avgHouseRent*3.025).toFixed(2); // 평당가격
+          $scope.data[0][i] = ($scope.statArr[i].avgRent*3.025).toFixed(2); // 평당가격
         }
 
         if ($scope.showCount) {
-          $scope.data[2][i] = $scope.statArr[i].count;
+          $scope.data[1][i] = $scope.statArr[i].count;
         }
       }
     };
@@ -676,7 +672,7 @@ app.controller('customersCtrl',
       case 'region':
        $scope.regionArr = [];
        $scope.loc.region = "";
-    }   
+    }
   };
 
    // get county array
@@ -684,11 +680,13 @@ app.controller('customersCtrl',
        // clear region
        $scope.clearSelection('city');
 
-       $scope.countyPromise = $http.get($regionUrl + "/" + 
-                      $scope.appType + "?state=" + 
-                      koEncode($scope.loc.state) + 
+       $scope.errorFlag=false;
+       $scope.countyPromise = $http.get($regionUrl + "/" +
+                      $scope.appType + "?state=" +
+                      koEncode($scope.loc.state) +
                       "&query=city")
-        .success(function (response) {$scope.cityArr = response;})
+        .success(function (response) {$scope.cityArr = response;
+        $scope.cityArr.unshift("");})
         .error(function (response) {$scope.errorFlag=true;});
 
        // update sales information
@@ -698,12 +696,15 @@ app.controller('customersCtrl',
     // get region array
     $scope.getCounty = function() {
       $scope.clearSelection('county');
-      $scope.regionPromise = $http.get($regionUrl + "/" + 
+
+      $scope.errorFlag=false;
+      $scope.regionPromise = $http.get($regionUrl + "/" +
                       $scope.appType + "?state=" +
                       koEncode($scope.loc.state) +
-                      "&city=" + koEncode($scope.loc.city) + 
+                      "&city=" + koEncode($scope.loc.city) +
                       "&query=county")
-       .success(function (response) {$scope.countyArr = response;})
+       .success(function (response) {$scope.countyArr = response;
+       $scope.countyArr.unshift("");})
        .error(function (response) {$scope.errorFlag=true;});
 
        // update sales information
@@ -714,13 +715,15 @@ app.controller('customersCtrl',
      $scope.getRegion = function() {
         $scope.clearSelection('region');
 
-        $scope.regionPromise = $http.get($regionUrl + "/" + 
-                      $scope.appType + 
+        $scope.errorFlag=false;
+        $scope.regionPromise = $http.get($regionUrl + "/" +
+                      $scope.appType +
           "?state=" + koEncode($scope.loc.state) +
-          "&city=" + koEncode($scope.loc.city) +  
+          "&city=" + koEncode($scope.loc.city) +
           "&county=" + koEncode($scope.loc.county) +
           "&query=region")
-        .success(function (response) {$scope.regionArr = response;})
+        .success(function (response) {$scope.regionArr = response;
+          $scope.regionArr.unshift("");})
         .error(function (response) {$scope.errorFlag=true;});
 
         // update sales information
@@ -736,14 +739,17 @@ app.controller('customersCtrl',
         $scope.loc.aptName = "";
         $scope.loc.area = "";
 
-        $scope.regionPromise = $http.get($regionUrl + "/" + 
-                      $scope.appType + 
+        $scope.errorFlag=false;
+
+        $scope.regionPromise = $http.get($regionUrl + "/" +
+                      $scope.appType +
           "?state=" + koEncode($scope.loc.state) +
-          "&city=" + koEncode($scope.loc.city) +  
+          "&city=" + koEncode($scope.loc.city) +
           "&county=" + koEncode($scope.loc.county) +
           "&region=" + koEncode($scope.loc.region) +
           "&query=aptName")
-        .success(function (response) {$scope.aptNameArr = response;})
+        .success(function (response) {$scope.aptNameArr = response;
+          $scope.aptNameArr.unshift("");})
         .error(function (response) {$scope.errorFlag=true;});
 
         // update sales information
@@ -757,15 +763,18 @@ app.controller('customersCtrl',
         $scope.aptAreaArr = [];
         $scope.loc.area = "";
 
-        $scope.regionPromise = $http.get($regionUrl + "/" + 
-                      $scope.appType + 
+        $scope.errorFlag=false;
+
+        $scope.regionPromise = $http.get($regionUrl + "/" +
+                      $scope.appType +
           "?state=" + koEncode($scope.loc.state) +
-          "&city=" + koEncode($scope.loc.city) +  
+          "&city=" + koEncode($scope.loc.city) +
           "&county=" + koEncode($scope.loc.county) +
           "&region=" + koEncode($scope.loc.region) +
-          "&aptName=" + koEncode($scope.loc.aptName) + 
+          "&aptName=" + koEncode($scope.loc.aptName) +
           "&query=area")
-        .success(function (response) {$scope.aptAreaArr = response;})
+        .success(function (response) {$scope.aptAreaArr = response;
+          $scope.aptAreaArr.unshift("");})
         .error(function (response) {$scope.errorFlag=true;});
 
         // update sales information
@@ -798,20 +807,20 @@ app.controller('customersCtrl',
      };
 
      $scope.makeURL = function($baseUrl) {
-       $url = $baseUrl + 
-          "/" + $scope.appType + 
+       $url = $baseUrl +
+          "/" + $scope.appType +
           "?state=" + koEncode($scope.loc.state) +
           "&city=" + koEncode($scope.loc.city) +
           "&county=" + koEncode($scope.loc.county) +
           "&region=" + koEncode($scope.loc.region) +
           "&startyear=" + $scope.loc.startYear +
           "&endyear=" + $scope.loc.endYear;
-        if ($scope.isAptkind) {
+        if ($scope.getAptKind()) {
           $url += "&aptName=" + koEncode($scope.loc.aptName) +
                   "&area=" + koEncode($scope.loc.area);
         }
 
-        if ($scope.isRentkind) {
+        if ($scope.getRentKind()) {
           $url += "&monthlyType=" + koEncode($scope.loc.monthlyType);
         }
 
@@ -820,6 +829,8 @@ app.controller('customersCtrl',
 
      $scope.getStat = function() {
          $scope.statArr=[];
+
+         $scope.errorFlag=false;
 
          $scope.statPromise = $http.get($scope.makeURL($statUrl))
         .success(function (response) {
@@ -830,6 +841,7 @@ app.controller('customersCtrl',
 
      $scope.getSales = function() {
        $scope.saleArr=[];
+       $scope.errorFlag=false;
        $scope.salePromise = $http.get($scope.makeURL($saleUrl))
         .success(function (response) {$scope.saleArr = response;})
         .error(function (response) {$scope.errorFlag=true;});
