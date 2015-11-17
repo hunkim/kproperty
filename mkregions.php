@@ -1,5 +1,5 @@
 <?php
-
+error_reporting(E_STRICT);
 MongoCursor::$timeout = -1;
 testreg();
 
