@@ -260,6 +260,7 @@ function getFields($data) {
     '대지권면적(m2)' => 'landArea',
 
     '건축년도'=>'builtYear',
+    '도로명주소' => 'avenue',
     '도로명'=>'avenue');
 
     $fields = array();
