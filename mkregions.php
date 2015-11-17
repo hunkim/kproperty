@@ -107,7 +107,7 @@ function mkonereg($db, $colname, $grouparr) {
         $r[$skey] = $sval;
       }
     }
-    print_r($r);
+    // print_r($r);
     $col2->insert($r);
   }
 }
