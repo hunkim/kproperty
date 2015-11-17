@@ -1,6 +1,8 @@
 <?php
 
-function testreg() {  
+testreg();
+
+function testreg() {
   // connect
   $m = new MongoClient();
   // select a database
