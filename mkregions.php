@@ -86,7 +86,7 @@ function mkonereg($db, $colname, $grouparr) {
   print_r($grouparr['_id']);
   makegrpIndex($db, $collection, $grouparr['_id']);
 
-  print_r($ops);
+  //print_r($ops);
   try {
     $cursor = $collection->aggregate($ops, $option);
   } catch (MongoException $e) {
@@ -108,7 +108,7 @@ function mkonereg($db, $colname, $grouparr) {
         $r[$skey] = $sval;
       }
     }
-    print_r($r);
+    //print_r($r);
     $col2->insert($r);
   }
 }
