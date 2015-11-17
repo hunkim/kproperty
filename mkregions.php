@@ -100,8 +100,8 @@ function mkonereg($db, $colname, $grouparr) {
 
   //$results = $cursor['result'];
  foreach ($cursor as $result) {
-   print_r($r[_id]);
-   $col2->insert($r[_id]);
+   print_r($result[_id]);
+   $col2->insert($result[_id]);
   }
 }
 ?>
