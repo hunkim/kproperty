@@ -36,7 +36,7 @@ function main($dir, $colname) {
                 echo "working on $csvFile...\n";
 
                 $snames = getSheetNames($xlsx_njs, $dir, $entry);
-        
+
                 foreach($snames as $key=>$sname) {
                     if ($key == 0) {
                         $sysStr = "$xlsx_njs '$dir/$entry' $sname > '$dir/$csvFile'";
@@ -91,7 +91,7 @@ function insertDB($db, $collection, $types, $fields, $data) {
 
 //    $cursor = $collection->find();
 //    echo json_encode(iterator_to_array($cursor), JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE) ;
-} 
+}
 
 function makeDBIndex($db, $collection, $fields, $data) {
     $dbData = array();
@@ -104,7 +104,7 @@ function makeDBIndex($db, $collection, $fields, $data) {
     // Insert it to DB
     $r = $collection->createIndex($dbData, ['name'=> 'all']);
     echo $r;
-} 
+}
 
 function readCSV($dir, $csvFile, $tableName) {
     // connect
@@ -127,7 +127,7 @@ function readCSV($dir, $csvFile, $tableName) {
         echo ("$dir . $csvFile not found!");
         return;
     }
-        
+
     while (($data = fgetcsv($handle, 10000000, ",")) !== FALSE) {
         // table head field
         if ($row++==0) {
@@ -142,7 +142,7 @@ function readCSV($dir, $csvFile, $tableName) {
             // Add meta fields
             $fields[] = "year";
             $fields[] = "month";
-            
+
             $fields[] = "state";
             $fields[] = "city";
             $fields[] = "county";
@@ -153,21 +153,21 @@ function readCSV($dir, $csvFile, $tableName) {
              // types
             $types[] = "i";
             $types[] = "i";
-            
+
             $types[] = "s";
             $types[] = "s";
             $types[] = "s";
             $types[] = "s";
 
             //$types[] = "i";
-            
+
             print_r($fields);
 
             //make a unique/index index
             makeDBIndex($db, $collection, $fields);
 
             continue;
-        } 
+        }
 
         // Another table head?
         $diff = array_diff($thdata, $data);
@@ -190,14 +190,14 @@ function readCSV($dir, $csvFile, $tableName) {
         $data[] = $year;
         $data[] = $month;
 
-        list ($state, $city, $county, $region) = 
+        list ($state, $city, $county, $region) =
             split(" ", trim($data[0]), 4); // data 0 should be the full loc
 
         $data[] = $state;
         $data[] = $city;
         $data[] = $county;
-        $data[] = $region; 
-        $data[] = $row; 
+        $data[] = $region;
+        $data[] = $row;
 
         // echo "$data[0] $data[1]";
         // Let's insert
@@ -216,7 +216,7 @@ function readCSV($dir, $csvFile, $tableName) {
 function shouldIndex($field) {
     $index = ['amount',
         'aptName',
-        'monthlyType',  
+        'monthlyType',
         'year',
         'month',
         'state',
@@ -229,33 +229,37 @@ function shouldIndex($field) {
 
 function getFields($data) {
     $namemap = array(
-    '시군구'=>'fullLoc', 
-    '주택유형'=>'type',    
+    '시군구'=>'fullLoc',
+    '주택유형'=>'type',
     '연면적(㎡)'=>'area',
     '연면적(m2)'=>'area',
+    '연면적(M2)'=>'area',
     '대지면적(㎡)' => 'landArea',
     '대지면적(m2)' => 'landArea',
-    '계약일' => 'day', 
+    '대지면적(M2)' => 'landArea',
+    '계약일' => 'day',
     '거래금액(만원)' => 'amount',
 
 
     '본번' => 'num1',
     '부번' => 'num2',
     '단지명' => 'aptName',
-    '전월세구분' => 'monthlyType',  
+    '전월세구분' => 'monthlyType',
     '전용면적(㎡)' => 'area',
     '전용면적(m2)' => 'area',
+    '전용면적(M2)' => 'area',
     '보증금(만원)' => 'deposit',
     '월세(만원)' => 'monthlyPay',
     '층' => 'floor',
 
     '계약면적(㎡)' => 'area',
-    '대지권면적(㎡)' => 'landArea',
-
     '계약면적(m2)' => 'area',
+    '계약면적(M2)' => 'area',
+    '대지권면적(㎡)' => 'landArea',
+    '대지권면적(M2)' => 'landArea',
     '대지권면적(m2)' => 'landArea',
 
-    '건축년도'=>'builtYear',    
+    '건축년도'=>'builtYear',
     '도로명'=>'avenue');
 
     $fields = array();
@@ -269,17 +273,17 @@ function getFields($data) {
 }
 
 function getTypes($fields) {
-    $typeArr = array('fullLoc'=>'s', 
-    'type'=>'s',    
+    $typeArr = array('fullLoc'=>'s',
+    'type'=>'s',
     'area'=>'f',
     'landArea' => 'f',
-    'day' => 'i', 
+    'day' => 'i',
     'amount' => 'i',
-    'builtYear'=>'i',  
+    'builtYear'=>'i',
     'num1' => 's',
     'num2' => 's',
     'aptName' => 's',
-    'monthlyType' => 's',  
+    'monthlyType' => 's',
     'deposit' => 'i',
     'monthlyPay' => 'i',
     'floor' => 'i',
@@ -293,54 +297,6 @@ function getTypes($fields) {
     }
 
     return $types;
-} 
-
-function getTableName($a) {
-
- //   $a = iconv("utf8", "euckr", $a);
-    echo(mb_internal_encoding());
-    echo(mb_internal_encoding("utf8"));
-    echo(mb_internal_encoding());
-
-    if (strpos($a,'단독-다가구(전월세)') !== false) {
-        return "houserent";
-    }
-
-    if (strpos($a,'아파트(전월세)') !== false) {
-        return "aptrent";
-    }
-
-    if (strpos($a,'연립-다세대(전월세)') !== false) {
-        return "flatrent";
-    }
-
-    if (mb_strpos($a,'단독-다가구(매매)',0, "utf8") !== false) {
-        return "housesale";
-    }
-    if (mb_strpos($a,'단독-다가구(매매)', 0, "utf16") !== false) {
-        return "housesale";
-    }
-    if (mb_strpos($a,'단독-다가구(매매)') !== false) {
-        return "housesale";
-    }
-    if (strpos($a,'단독-다가구(매매)') !== false) {
-        return "housesale";
-    }
-
-
-    if (strpos($a,'아파트(매매)') !== false) {
-        return "aptsale";
-    }
-
-    if (strpos($a,'연립-다세대(매매)') !== false) {
-        return "flatsale";
-    }
-
-    echo("Cannot find the type of this file: $a");
-    //assert(false);
-    //return false;
-    return "housesale";
 }
 
 ?>
-

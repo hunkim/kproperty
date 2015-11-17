@@ -33,6 +33,11 @@ foreach ($_GET as $key => $value) {
     continue;
   }
 
+  if ($key == 'area') {
+    $query['area'] = floatval($value);
+    continue;
+  }
+
   if ($key == 'startyear') {
     $endyear = $_GET['endyear'];
     $query['year'] = ['$gte' => intval($value), '$lte' => intval($endyear)];

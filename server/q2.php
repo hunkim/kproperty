@@ -22,10 +22,10 @@ foreach ($_GET as $key => $value) {
   if ($key == 'debug') {
     $debug = true;
     continue;
-  }  
+  }
 
-  if ($key == 'usedArea') {
-    $query['usedArea'] = floatval($value);
+  if ($key == 'area') {
+    $query['area'] = floatval($value);
     continue;
   }
 
@@ -47,7 +47,7 @@ if ($debug) {
 $cursor = $collection->find($query)->sort(['year'=>-1, 'month'=>-1]);
 $cursor->limit(500);
 
-//echo json_encode(iterator_to_array($cursor), 	
-echo json_encode(iterator_to_array($cursor), 	
+//echo json_encode(iterator_to_array($cursor),
+echo json_encode(iterator_to_array($cursor),
 	JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
 ?>
