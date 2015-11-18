@@ -1,4 +1,5 @@
 <?php
+error_reporting(E_ALL);
 MongoCursor::$timeout = -1;
 //error_reporting(E_STRICT);
 
