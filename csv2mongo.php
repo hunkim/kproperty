@@ -19,7 +19,7 @@ echo("Reload: $reload, CSVONLY: $csvonly\n");
 //main($argv[1] . "/");
 $colnames = ['housesale', 'aptsale', 'flatsale', 'houserent', 'aptrent', 'flatrent'];
 foreach ($colnames as $name) {
-    main("$argv[1]/$name/", $name);
+    main("$argv[1]/$name/", $name, $reload, $csvonly);
 }
 
 function test($dir) {
@@ -60,12 +60,11 @@ function main($dir, $colname, $reload, $csvonly) {
                     system ($sysStr);
                 }
 
-                if ($csvonly==1) {
-                  // do nothing
-                } else {
-                  // process generated CSV
-                  readCSV($dir, $csvFile, $colname);
-              }
+                if ($csvonly) {
+                  continue;
+                }
+                // process generated CSV
+                readCSV($dir, $csvFile, $colname);
             }
         }
     }
