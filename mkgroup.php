@@ -154,8 +154,6 @@ function mkonegrp($db, $colname, $query, $grouparr) {
     exit(1);
   }
 
-
-
   $results = $cursor['result'];
 
   foreach ($results as $key => $val) {

@@ -99,7 +99,11 @@ function makeDBIndex($db, $collection, $fields, $data) {
     $dbData = array();
     foreach ($fields as $i => $field) {
         if (shouldIndex($field)) {
+          if($field=='year' || $field=='month') {
+            $dbData[$field] = -1;  
+          } else {
             $dbData[$field] = 1;
+          }
         }
     }
 
