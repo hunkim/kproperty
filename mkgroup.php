@@ -1,5 +1,6 @@
 <?php
 MongoCursor::$timeout = -1;
+error_reporting(E_STRICT);
 
 function testgrp() {
   // connect
@@ -125,7 +126,6 @@ function makegrpIndex($db, $collection, $ids) {
     // Insert it to DB
     //$r = $collection->createIndex($dbData, ['name'=> 'all']);
     $r = $collection->createIndex($dbData);
-    echo $r;
 }
 
 function mkonegrp($db, $colname, $query, $grouparr) {
