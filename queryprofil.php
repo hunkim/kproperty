@@ -13,12 +13,20 @@ $cursor = $col->find([op =>"query"]);
 foreach ($cursor as $result) {
   $colname = $result['ns'];
   $keys = "";
-  foreach($result['query']['$query'] as $key) {
-    $key .= "$key:1,";
+  foreach($result['query']['$query'] as $k) {
+    $key .= "$k:1,";
   }
 
   $allresult[$colname][$key]=1;
+  print_r($allresult);
 
-  print_r($result['query']['$orderby']);
+  $key = "";
+  foreach($result['query']['$orderby'] as $k=>$o) {
+    $key .= "$k:$d,";
+  }
+
+
+ $ordresult[$colname][$key]=1;
+  print_r($ordresult);
 }
 ?>
