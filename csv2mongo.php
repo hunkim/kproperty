@@ -61,10 +61,10 @@ function main($dir, $colname, $reload, $csvonly) {
                 }
 
                 if ($csvonly==1) {
+                  // do nothing
                 } else {
                   // process generated CSV
                   readCSV($dir, $csvFile, $colname);
-                }
               }
             }
         }
