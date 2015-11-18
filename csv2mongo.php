@@ -15,7 +15,6 @@ $reload = (count($argv)==3 && $argv[2]=='reload');
 $csvonly = (count($argv)==3 && $argv[2]=='csvonly');
 
 echo("Reload: $reload, CSVONLY: $csvonly\n");
-exit(0);
 
 //main($argv[1] . "/");
 $colnames = ['housesale', 'aptsale', 'flatsale', 'houserent', 'aptrent', 'flatrent'];
@@ -39,7 +38,7 @@ function main($dir, $colname, $reload, $csvonly) {
             $csvFile =  "$entry.csv" ;
 
             if (file_exists($dir . $csvFile)) {
-                if ($reload) {
+                if ($reload==1) {
                   echo "$csvFile already exist. Reload it!\n";
                   // process generated CSV
                   readCSV($dir, $csvFile, $colname);
@@ -61,9 +60,11 @@ function main($dir, $colname, $reload, $csvonly) {
                     system ($sysStr);
                 }
 
-                if ($csvonly==false) {
+                if ($csvonly==1) {
+                } else {
                   // process generated CSV
                   readCSV($dir, $csvFile, $colname);
+                }
               }
             }
         }
