@@ -19,7 +19,7 @@ foreach ($cursor as $result) {
   print_r($query);
   //continue;
 
-  $keys = "";
+  $key = "";
   foreach($query as $k=>$v) {
     $key .= "$k:1,";
   }
