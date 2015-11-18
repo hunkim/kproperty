@@ -7,10 +7,11 @@ $m = new MongoClient();
 // select a database
 $db = $m->selectDB('trend');
 $col = new MongoCollection($db, 'system.profile');
-$cursor = $col->find({op:"query"})
+$cursor = $col->find([op =>"query"]);
 
-//$results = $cursor['result'];
 foreach ($cursor as $result) {
-  print_r($result);
+  print_r($result[ns]);
+  print_r($result['query']['$query']);
+  print_r($result['query']['$orderby']);
 }
 ?>
