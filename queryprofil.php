@@ -37,15 +37,19 @@ foreach ($cursor as $result) {
 
 foreach($allresult as $k=>$arr) {
   foreach($arr as $k2=>$val) {
-    $k = str_replace("trend.", "db.", $k);
-    echo "$k.createIndex({ $k2 })\n";
+    if (strpos($k, "system.profile")===false) {
+      $k = str_replace("trend.", "db.", $k);
+      echo "$k.createIndex({ $k2 })\n";
+    }
   }
 }
 
 foreach($ordresult as $k=>$arr) {
   foreach($arr as $k2=>$val) {
-    $k = str_replace("trend.", "db.", $k);
-    echo "$k.createIndex({ $k2 })\n";
+    if (strpos($k, "system.profile")===false) {
+      $k = str_replace("trend.", "db.", $k);
+      echo "$k.createIndex({ $k2 })\n";
+    }
   }
 }
 
