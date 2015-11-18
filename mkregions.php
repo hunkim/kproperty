@@ -83,8 +83,12 @@ function mkonereg($db, $colname, $grouparr) {
 
   $collection = new MongoCollection($db, $colname);
   echo("working on: $colname ... with");
+
+  $col2name = $colname."_reg";
+  $col2 = new MongoCollection($db, $col2name);
+
   print_r($grouparr['_id']);
-  makegrpIndex($db, $collection, $grouparr['_id']);
+  makegrpIndex($db, $col2, $grouparr['_id']);
 
   //print_r($ops);
   try {
@@ -95,8 +99,7 @@ function mkonereg($db, $colname, $grouparr) {
     exit(1);
   }
 
-  $col2name = $colname."_reg";
-  $col2 = new MongoCollection($db, $col2name);
+
 
   //$results = $cursor['result'];
  foreach ($cursor as $result) {
