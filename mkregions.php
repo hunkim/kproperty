@@ -1,7 +1,6 @@
 <?php
 error_reporting(E_ALL);
-MongoCursor->timeout(-1);
-
+MongoCursor::$timeout = -1;
 testreg();
 
 function testreg() {
