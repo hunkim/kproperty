@@ -9,13 +9,12 @@ $db = $m->selectDB('trend');
 $col = new MongoCollection($db, 'system.profile');
 $cursor = $col->find([op =>"query"]);
 
-
 foreach ($cursor as $result) {
   $colname = $result['ns'];
   $keys = "";
 
   print_r($result['query']['$query']);
-
+  continue;
 
   foreach($result['query']['$query'] as $k=>$v) {
     $key .= "$k:1,";
