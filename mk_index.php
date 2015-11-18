@@ -32,7 +32,7 @@ foreach ($keys as $key=>$val) {
     $col->createIndex(['year'=>1, 'month'=>1]);
     $col->createIndex(['year'=>-1, 'month'=>-1]);
 
-    $r = $col2->createIndex($added_idx_key);
+    $r = $col_agg->createIndex($added_idx_key);
     print_r($r);
     $col2->createIndex(['year'=>1, 'month'=>1]);
     $col2->createIndex(['year'=>-1, 'month'=>-1]);
