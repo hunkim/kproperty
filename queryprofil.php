@@ -9,28 +9,34 @@ $db = $m->selectDB('trend');
 $col = new MongoCollection($db, 'system.profile');
 $cursor = $col->find([op =>"query"]);
 
+$allresult=[];
+$ordresult=[];
+
 foreach ($cursor as $result) {
   $colname = $result['ns'];
+
+  $query = $result['query']['$query'];
+  print_r($query);
+  //continue;
+
   $keys = "";
-
-  print_r($result['query']['$query']);
-  continue;
-
-  foreach($result['query']['$query'] as $k=>$v) {
+  foreach($query as $k=>$v) {
     $key .= "$k:1,";
   }
 
-  $allresult[$colname][$key]=1;
-  print_r($allresult);
+  $allresult[$colname][$key]+=$allresult[$colname][$key];
+
 
   $key = "";
   foreach($result['query']['$orderby'] as $k=>$o) {
     $key .= "$k:$o,";
   }
 
-
- $ordresult[$colname][$key]=1;
-  print_r($ordresult);
+ $ordresult[$colname][$key]+=$ordresult[$colname][$key];
 
 }
+
+print_r($allresult);
+print_r($ordresult);
+
 ?>
