@@ -14,7 +14,7 @@ if (count($argv) < 2) {
 $reload = (count($argv)==3 && $argv[2]=='reload');
 $csvonly = (count($argv)==3 && $argv[2]=='csvonly');
 
-echo("Reload: $reload, CSVONLY: $csvonly");
+echo("Reload: $reload, CSVONLY: $csvonly\n");
 exit(0);
 
 //main($argv[1] . "/");
