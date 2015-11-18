@@ -105,7 +105,7 @@ function mkonereg($db, $colname, $grouparr) {
   //$results = $cursor['result'];
  foreach ($cursor as $result) {
    //print_r($result[_id]);
-   $col2->insert($result[_id]);
+   $col2->insert($result['_id']);
   }
 }
 ?>
