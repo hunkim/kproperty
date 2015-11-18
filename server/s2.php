@@ -2,9 +2,11 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
+MongoCursor::$timeout = -1;
+
 // connect
 $m = new MongoClient();
-
+$debug = false;
 // select a database
 $db = $m->selectDB('trend');
 // select a collection (analogous to a relational database's table)
@@ -58,8 +60,15 @@ if($debug) {
   print_r($query);
 }
 
+try {
 // find everything in the collection
-$cursor = $collection->find($query, ['_id'=>0])->sort(['year'=>1, 'month'=>1]);
+    $cursor = $collection->find($query, ['_id' => 0])->sort(['year'=>1, 'month'=>1]);
+catch (MongoException $e) {
+  echo "error message: ".$e->getMessage()."\n";
+  echo "error code: ".$e->getCode()."\n";
+  exit(1);
+}
+//$cursor = $collection->find($query, ['_id'=>0])->sort(['year'=>1, 'month'=>1]);
 
 //echo json_encode(iterator_to_array($cursor),
 echo json_encode(iterator_to_array($cursor),
