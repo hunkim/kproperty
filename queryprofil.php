@@ -16,8 +16,8 @@ foreach ($cursor as $result) {
 
   print_r($result['query']['$query']);
 
-  /*
-  foreach($result['query']['$query'] as $k) {
+
+  foreach($result['query']['$query'] as $k=>$v) {
     $key .= "$k:1,";
   }
 
@@ -26,12 +26,12 @@ foreach ($cursor as $result) {
 
   $key = "";
   foreach($result['query']['$orderby'] as $k=>$o) {
-    $key .= "$k:$d,";
+    $key .= "$k:$o,";
   }
 
 
  $ordresult[$colname][$key]=1;
   print_r($ordresult);
-  */
+
 }
 ?>
