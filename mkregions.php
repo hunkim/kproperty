@@ -63,12 +63,13 @@ function makegrpIndex($db, $collection, $ids) {
     $dbData = array();
     foreach ($ids as $i => $field) {
       $dbData[$i] = 1;
+      // Insert it to DB
+      //$r = $collection->createIndex($dbData, ['name'=> 'all']);
+      $r = $collection->createIndex($dbData);
+      print_r($r);
     }
 
-    // Insert it to DB
-    //$r = $collection->createIndex($dbData, ['name'=> 'all']);
-    $r = $collection->createIndex($dbData);
-    print_r($r);
+
 }
 
 function mkonereg($db, $colname, $grouparr) {
