@@ -63,7 +63,7 @@ if($debug) {
 try {
 // find everything in the collection
     $cursor = $collection->find($query, ['_id' => 0])->sort(['year'=>1, 'month'=>1]);
-catch (MongoException $e) {
+} catch (MongoException $e) {
   echo "error message: ".$e->getMessage()."\n";
   echo "error code: ".$e->getCode()."\n";
   exit(1);
