@@ -24,19 +24,27 @@ foreach ($cursor as $result) {
     $key .= "$k:1,";
   }
 
-  $allresult[$colname][$key]+=$allresult[$colname][$key];
-
+  $allresult[$colname][$key]=1;
 
   $key = "";
   foreach($result['query']['$orderby'] as $k=>$o) {
     $key .= "$k:$o,";
   }
 
- $ordresult[$colname][$key]+=$ordresult[$colname][$key];
+ $ordresult[$colname][$key]=1;
 
 }
 
-print_r($allresult);
-print_r($ordresult);
+foreach($allresult as $k=>$arr) {
+  foreach($arr as $k2=>$val) {
+    echo "$k.createIndex({ $k2 })\n";
+  }
+}
+
+foreach($ordresult as $k=>$arr) {
+  foreach($arr as $k2=>$val) {
+    echo "$k.createIndex({ $k2 })\n";
+  }
+}
 
 ?>
