@@ -336,8 +336,7 @@ app.controller('customersCtrl',
 
       var statLen = $scope.statArr.length;
       for (var i = 0; i < statLen; i++) {
-        $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[
-            i]
+        $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[i]
           .month;
         $scope.data[0][i] = m2pFormat($scope.statArr[i].avgDeposit); // 평당가격
         $scope.data[0][i] = m2pFormat($scope.statArr[i].avgRent); // 평당가격
@@ -350,7 +349,7 @@ app.controller('customersCtrl',
 
     // update the graph (based on watch statArr)
     $scope.updateAptRentDepositGraph = function() {
-      isDeposit = $scope.loc.monthlyType == "전세";
+      var isDeposit = $scope.loc.monthlyType == "전세";
       //   console.log(isDeposit + " " + $scope.loc.monthlyType);
       // reset graph array
       $scope.labels = [];
@@ -363,7 +362,7 @@ app.controller('customersCtrl',
       }
 
       // show count? Then, three series. Otherwise, two
-      legend = '전용면적 평당 월세(만원)';
+      var legend = '전용면적 평당 월세(만원)';
 
       if (isDeposit) {
         legend = '전용면적 평당 보증금(만원)';
@@ -393,7 +392,7 @@ app.controller('customersCtrl',
 
     // update the graph (based on watch statArr)
     $scope.updateHouseRentDepositGraph = function() {
-      isDeposit = $scope.loc.monthlyType == "전세";
+      var isDeposit = $scope.loc.monthlyType == "전세";
 
       // reset graph array
       $scope.labels = [];
@@ -406,7 +405,7 @@ app.controller('customersCtrl',
       }
 
       // show count? Then, three series. Otherwise, two
-      legend = '계약면적 평당 월세(만원)';
+      var legend = '계약면적 평당 월세(만원)';
       if (isDeposit) {
         legend = '계약면적 평당 보증금(만원)';
       }
@@ -418,8 +417,7 @@ app.controller('customersCtrl',
 
       var statLen = $scope.statArr.length;
       for (var i = 0; i < statLen; i++) {
-        $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[
-            i]
+        $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[i]
           .month;
         if (isDeposit) {
           $scope.data[0][i] = m2pFormat($scope.statArr[i].avgDeposit); // 평당가격
