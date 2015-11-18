@@ -11,7 +11,7 @@ $cursor = $col->find([op =>"query"]);
 
 
 foreach ($cursor as $result) {
-  $colname = $result['ns']);
+  $colname = $result['ns'];
   $keys = "";
   foreach($result['query']['$query'] as $key) {
     $key .= "$key:1,";
