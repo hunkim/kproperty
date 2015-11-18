@@ -14,6 +14,9 @@ if (count($argv) < 2) {
 $reload = (count($argv)==3 && $argv[2]=='reload');
 $csvonly = (count($argv)==3 && $argv[2]=='csvonly');
 
+echo("Reload: $reload, CSVONLY: $csvonly");
+exit(0);
+
 //main($argv[1] . "/");
 $colnames = ['housesale', 'aptsale', 'flatsale', 'houserent', 'aptrent', 'flatrent'];
 foreach ($colnames as $name) {
@@ -58,7 +61,7 @@ function main($dir, $colname, $reload, $csvonly) {
                     system ($sysStr);
                 }
 
-                if (!$csvonly) {
+                if ($csvonly==false) {
                   // process generated CSV
                   readCSV($dir, $csvFile, $colname);
               }
