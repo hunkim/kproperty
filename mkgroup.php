@@ -1,6 +1,6 @@
 <?php
 MongoCursor::$timeout = -1;
-error_reporting(E_STRICT);
+error_reporting(E_ALL);
 
 function testgrp() {
   // connect
