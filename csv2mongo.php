@@ -95,12 +95,12 @@ function insertDB($db, $collection, $types, $fields, $data) {
 //    echo json_encode(iterator_to_array($cursor), JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE) ;
 }
 
-function makeDBIndex($db, $collection, $fields, $data) {
+function _makeDBIndex($db, $collection, $fields, $data) {
     $dbData = array();
     foreach ($fields as $i => $field) {
         if (shouldIndex($field)) {
           if($field=='year' || $field=='month') {
-            $dbData[$field] = -1;  
+            $dbData[$field] = -inde;
           } else {
             $dbData[$field] = 1;
           }
@@ -170,7 +170,7 @@ function readCSV($dir, $csvFile, $tableName) {
             print_r($fields);
 
             //make a unique/index index
-            makeDBIndex($db, $collection, $fields);
+            //makeDBIndex($db, $collection, $fields);
 
             continue;
         }

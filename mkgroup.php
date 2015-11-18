@@ -117,7 +117,8 @@ case 'houserent':
   }
 }
 
-function makegrpIndex($db, $collection, $ids) {
+// @deprecated
+function _makegrpIndex($db, $collection, $ids) {
     $dbData = array();
     foreach ($ids as $i => $field) {
       $dbData[$i] = 1;
@@ -144,7 +145,7 @@ function mkonegrp($db, $colname, $query, $grouparr) {
   $col2name = $colname."_agg";
   $col2 = new MongoCollection($db, $col2name);
   print_r($grouparr['_id']);
-  makegrpIndex($db, $col2, $grouparr['_id']);
+  //makegrpIndex($db, $col2, $grouparr['_id']);
 
   try {
     $cursor = $collection->aggregate($ops, $option);
