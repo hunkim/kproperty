@@ -13,6 +13,10 @@ $cursor = $col->find([op =>"query"]);
 foreach ($cursor as $result) {
   $colname = $result['ns'];
   $keys = "";
+
+  print_r($result['query']['$query']);
+
+  /*
   foreach($result['query']['$query'] as $k) {
     $key .= "$k:1,";
   }
@@ -28,5 +32,6 @@ foreach ($cursor as $result) {
 
  $ordresult[$colname][$key]=1;
   print_r($ordresult);
+  */
 }
 ?>
