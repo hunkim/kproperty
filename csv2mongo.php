@@ -6,10 +6,13 @@ error_reporting(E_ALL);
 include 'mkgroup.php';
 
 assert_options(ASSERT_BAIL,     true);
-if (count($argv) != 2) {
-    echo "Usage: $argv[0] <xls_dir>\n\n";
+if (count($argv) < 2) {
+    echo "Usage: $argv[0] <xls_dir> <reload:csvonly>\n\n";
     exit;
 }
+
+$reload = (count($argv)==3 && $argv[2]=='reload');
+$csvonly = (count($argv)==3 && $argv[2]=='csvonly');
 
 //main($argv[1] . "/");
 $colnames = ['housesale', 'aptsale', 'flatsale', 'houserent', 'aptrent', 'flatrent'];
@@ -23,7 +26,7 @@ function test($dir) {
 }
 /* The main controller */
 // $dir should end with '/'
-function main($dir, $colname) {
+function main($dir, $colname, $reload, $csvonly) {
     $xlsx_njs = "./js/node_modules/xlsx/bin/xlsx.njs";
 
     echo ($dir);
@@ -33,7 +36,13 @@ function main($dir, $colname) {
             $csvFile =  "$entry.csv" ;
 
             if (file_exists($dir . $csvFile)) {
-                echo "$csvFile already exist. Skip it!\n";
+                if ($reload) {
+                  echo "$csvFile already exist. Reload it!\n";
+                  // process generated CSV
+                  readCSV($dir, $csvFile, $colname);
+                } else {
+                  echo "$csvFile already exist. Skip it!\n";
+                }
             } else {
                 echo "working on $csvFile...\n";
 
@@ -49,8 +58,10 @@ function main($dir, $colname) {
                     system ($sysStr);
                 }
 
-                // process generated CSV
-                readCSV($dir, $csvFile, $colname);
+                if (!$csvonly) {
+                  // process generated CSV
+                  readCSV($dir, $csvFile, $colname);
+              }
             }
         }
     }
@@ -122,7 +133,7 @@ function readCSV($dir, $csvFile, $tableName) {
     $collection = $db->$tableName;
 
     // Get yeat and month from csvFile
-    list ($year, $month, $rest) = split("_", $csvFile, 3);
+    list ($year, $month, $rest) = explode("_", $csvFile, 3);
     $year = intval($year);
     $month = intval($month);
     assert($year!=null && $month!=null);
@@ -197,7 +208,7 @@ function readCSV($dir, $csvFile, $tableName) {
         $data[] = $month;
 
         list ($state, $city, $county, $region) =
-            split(" ", trim($data[0]), 4); // data 0 should be the full loc
+            explode(" ", trim($data[0]), 4); // data 0 should be the full loc
 
         $data[] = $state;
         $data[] = $city;

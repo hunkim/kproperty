@@ -144,7 +144,7 @@ function mkonegrp($db, $colname, $query, $grouparr) {
 
   $col2name = $colname."_agg";
   $col2 = new MongoCollection($db, $col2name);
-  print_r($grouparr['_id']);
+  //print_r($grouparr['_id']);
   //makegrpIndex($db, $col2, $grouparr['_id']);
 
   try {
