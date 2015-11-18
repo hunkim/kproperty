@@ -9,9 +9,16 @@ $db = $m->selectDB('trend');
 $col = new MongoCollection($db, 'system.profile');
 $cursor = $col->find([op =>"query"]);
 
+
 foreach ($cursor as $result) {
-  print_r($result[ns]);
-  print_r($result['query']['$query']);
+  $colname = $result['ns']);
+  $keys = "";
+  foreach($result['query']['$query'] as $key) {
+    $key .= "$key:1,";
+  }
+
+  $allresult[$colname][$key]=1;
+
   print_r($result['query']['$orderby']);
 }
 ?>
