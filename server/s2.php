@@ -71,7 +71,6 @@ try {
 //$cursor = $collection->find($query, ['_id'=>0])->sort(['year'=>1, 'month'=>1]);
 
 //echo json_encode(iterator_to_array($cursor),
-echo json_encode(iterator_to_array($cursor),
-  JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
+echo json_encode(iterator_to_array($cursor),JSON_UNESCAPED_UNICODE);
 
 ?>

@@ -2,6 +2,9 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
+$debug = false;
+MongoCursor::$timeout = -1;
+
 // connect
 $m = new MongoClient();
 
@@ -43,11 +46,16 @@ if ($debug) {
   print_r($query);
 }
 
-// find everything in the collection
-$cursor = $collection->find($query)->sort(['year'=>-1, 'month'=>-1]);
-$cursor->limit(500);
+try {
+    // find everything in the collection
+    $cursor = $collection->find($query)->sort(['year'=>-1, 'month'=>-1]);
+    $cursor->limit(500);
+} catch (MongoException $e) {
+  echo "error message: ".$e->getMessage()."\n";
+  echo "error code: ".$e->getCode()."\n";
+  exit(1);
+}
 
 //echo json_encode(iterator_to_array($cursor),
-echo json_encode(iterator_to_array($cursor),
-	JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
+echo json_encode(iterator_to_array($cursor),JSON_UNESCAPED_UNICODE);
 ?>

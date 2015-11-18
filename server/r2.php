@@ -2,6 +2,8 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
+MongoCursor::$timeout = -1;
+
 // connect
 $m = new MongoClient();
 
@@ -37,9 +39,14 @@ if ($debug) {
   print_r($query);
 }
 
-$cursor = $collection->distinct($dquery, $query);
+try{
+  $cursor = $collection->distinct($dquery, $query);
+} catch (MongoException $e) {
+  echo "error message: ".$e->getMessage()."\n";
+  echo "error code: ".$e->getCode()."\n";
+  exit(1);
+}
 
 //echo json_encode(iterator_to_array($cursor),
-echo json_encode(($cursor),
-	JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
+echo json_encode(($cursor), JSON_UNESCAPED_UNICODE);
 ?>
