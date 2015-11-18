@@ -1,4 +1,6 @@
 <?php
+MongoCursor::$timeout = -1;
+error_reporting(E_STRICT);
 
 // connect
 $m = new MongoClient();
@@ -6,7 +8,7 @@ $m = new MongoClient();
 $db = $m->selectDB('trend');
 // select a collection (analogous to a relational database's table)
 
-$keys['housesale'] = ["", state", "city", "county", "region"];
+$keys['housesale'] = ["", "state", "city", "county", "region"];
 $keys['aptsale'] = ["", "state", "city", "county", "region", "aptName",  "area"];
 $keys['flatsale'] = ["", "state", "city", "county", "region", "aptName",  "area"];
 
@@ -23,12 +25,18 @@ foreach ($keys as $key=>$val) {
   $idx_key=[];
   foreach ($val as $id) {
     $idx_key[$id] = 1;
-    $added_idx_key = array_merge($idx_key, ['key'=>1])
-    print_r($added_idx_key);
+    $added_idx_key = array_merge($idx_key, ['year'=>1]);
+
+    $r = $col->createIndex($added_idx_key);
+    print_r($r);
+    $col->createIndex(['year'=>1, 'month'=>1]);
+    $col->createIndex(['year'=>-1, 'month'=>-1]);
+
+    $r = $col2->createIndex($added_idx_key);
+    print_r($r);
+    $col2->createIndex(['year'=>1, 'month'=>1]);
+    $col2->createIndex(['year'=>-1, 'month'=>-1]);
+  //    print_r($added_idx_key);
   }
-}
-
-function addIndex($idx_key) {
-
 }
 ?>
