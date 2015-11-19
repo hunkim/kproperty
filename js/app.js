@@ -9,7 +9,7 @@ app.controller('customersCtrl',
 
 
     // API Host
-    var $rhost = "http://a2.kproperty.xyz";
+    var $rhost = "http://a.kproperty.xyz";
 
     // API URLs
     var $regionUrl = $rhost + "/r2.php";
@@ -96,7 +96,7 @@ app.controller('customersCtrl',
     $scope.setAppType = function(type) {
       $scope.appType = type;
       $scope.upAll();
-      if ($scope.isAptkind && $scope.loc.county != "") {
+      if ($scope.loc.county != "" && $scope.getAptKind()) {
         $scope.getAptName();
       }
     }
@@ -158,7 +158,7 @@ app.controller('customersCtrl',
       if ($sale == null) {
         return "";
       }
-      return "http://map.daum.net/?q='" + $sale.fullCity + " " + $sale.avenue +
+      return "http://map.daum.net/?q='" + $sale.fullLoc + " " + $sale.avenue +
         "'";
     };
 
@@ -250,6 +250,7 @@ app.controller('customersCtrl',
 
     // update the graph (based on watch statArr)
     $scope.updateAptSaleGraph = function() {
+      console.log("Reset with: " + $scope.statArr.length);
       // reset graph array
       $scope.labels = [];
       $scope.data = [];
@@ -306,7 +307,7 @@ app.controller('customersCtrl',
             i]
           .month;
         $scope.data[0][i] = m2pFormat($scope.statArr[i].avgDeposit); // 평당가격
-        $scope.data[0][i] = m2pFormat($scope.statArr[i].avgRent); // 평당가격
+        $scope.data[1][i] = m2pFormat($scope.statArr[i].avgRent); // 평당가격
 
         if ($scope.showCount) {
           $scope.data[2][i] = $scope.statArr[i].count;
@@ -339,7 +340,7 @@ app.controller('customersCtrl',
         $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[i]
           .month;
         $scope.data[0][i] = m2pFormat($scope.statArr[i].avgDeposit); // 평당가격
-        $scope.data[0][i] = m2pFormat($scope.statArr[i].avgRent); // 평당가격
+        $scope.data[1][i] = m2pFormat($scope.statArr[i].avgRent); // 평당가격
 
         if ($scope.showCount) {
           $scope.data[2][i] = $scope.statArr[i].count;
@@ -612,9 +613,8 @@ app.controller('customersCtrl',
         "?state=" + koEncode($scope.loc.state) +
         "&city=" + koEncode($scope.loc.city) +
         "&county=" + koEncode($scope.loc.county) +
-        "&region=" + koEncode($scope.loc.region) +
-        "&startyear=" + $scope.loc.startYear +
-        "&endyear=" + $scope.loc.endYear;
+        "&region=" + koEncode($scope.loc.region);
+
       if ($scope.getAptKind()) {
         url += "&aptName=" + koEncode($scope.loc.aptName) +
           "&area=" + koEncode($scope.loc.area);
@@ -623,6 +623,9 @@ app.controller('customersCtrl',
       if ($scope.getRentKind()) {
         url += "&monthlyType=" + koEncode($scope.loc.monthlyType);
       }
+
+      url += "&startyear=" + $scope.loc.startYear +
+        "&endyear=" + $scope.loc.endYear;
 
       return url;
     }
