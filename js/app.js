@@ -440,11 +440,6 @@ app.controller('customersCtrl',
       // clear region
       switch (level) {
         case 'city':
-          $scope.loc.aptName = "";
-          $scope.loc.area = "";
-          $scope.aptNameArr = [];
-          $scope.aptAreaArr = [];
-
           $scope.cityArr = [];
           $scope.loc.city = "";
         case 'county':
@@ -453,6 +448,11 @@ app.controller('customersCtrl',
         case 'region':
           $scope.regionArr = [];
           $scope.loc.region = "";
+
+          $scope.loc.aptName = "";
+          $scope.loc.area = "";
+          $scope.aptNameArr = [];
+          $scope.aptAreaArr = [];
       }
     };
 
