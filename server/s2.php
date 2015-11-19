@@ -62,6 +62,10 @@ if($debug) {
 
 try {
 // find everything in the collection
+    if (debug) {
+        $cursor = $collection->find($query, ['_id' => 0])->sort(['year'=>1, 'month'=>1])->explain();
+        print_r($cursor);
+    }
     $cursor = $collection->find($query, ['_id' => 0])->sort(['year'=>1, 'month'=>1]);
 } catch (MongoException $e) {
   echo "error message: ".$e->getMessage()."\n";
