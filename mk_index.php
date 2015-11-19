@@ -28,12 +28,25 @@ foreach ($keys as $key=>$val) {
     if ($id) {
       $idx_key[$id] = 1;
     }
+
     $added_idx_key = array_merge($idx_key, ['year'=>1]);
-
     print_r($added_idx_key);
-
     $r = $col->createIndex($added_idx_key);
     print_r($r);
+
+    $added_idx_key = array_merge($idx_key, ['year'=>1, 'month'=>1]);
+    print_r($added_idx_key);
+    $r = $col->createIndex($added_idx_key);
+    print_r($r);
+
+    $added_idx_key = array_merge($idx_key, ['year'=>1, 'month'=>1]);
+    $r = $col->createIndex($added_idx_key);
+    print_r($r);
+
+    $added_idx_key = array_merge($idx_key, ['year'=>-1, 'month'=>-1]);
+    $r = $col->createIndex($added_idx_key);
+    print_r($r);
+
     $col->createIndex(['year'=>1, 'month'=>1]);
     $col->createIndex(['year'=>-1, 'month'=>-1]);
 
