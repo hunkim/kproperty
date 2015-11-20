@@ -78,7 +78,7 @@ function mkonereg($db, $colname, $tname, $grouparr, $last) {
 
   $sql .= "), $val from $colname;";
 
-  $result = $conn->query($sql);
+  $result = $db->query($sql);
 
   if ($result->num_rows > 0) {
     // output data of each row
