@@ -86,8 +86,8 @@ function endsWith($haystack, $needle) {
     return $needle === "" || (($temp = strlen($haystack) - strlen($needle)) >= 0 && strpos($haystack, $needle, $temp) !== FALSE);
 }
 
-function insertDB($db, $collection, $types, $fields, $data) {
-  $sql = "INSERT IGNORE INTO $colname SET ";
+function insertDB($db, $tname, $types, $fields, $data) {
+  $sql = "INSERT IGNORE INTO $tname SET ";
 
   foreach ($fields as $i => $field) {
     if ($i != 0) {
@@ -95,7 +95,7 @@ function insertDB($db, $collection, $types, $fields, $data) {
     }
 
     $val = str_replace( ',', '', trim($data[$i]));
-    $sql .= $field. '=' . typeesc($db, $type[$i], $val);
+    $sql .= $field. '=' . typeesc($db, $types[$i], $val);
   }
 
   $sql .= ";\n";
@@ -107,10 +107,10 @@ function insertDB($db, $collection, $types, $fields, $data) {
 
 function readCSV($dir, $csvFile, $tableName) {
     // mysql
-    $conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
+    $db = new mysqli("p:localhost", "trend", "only!trend!", "trend");
     // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
+    if ($db>connect_error) {
+        die("Connection failed: " . $db->connect_error);
     }
 
     // Get yeat and month from csvFile
@@ -184,7 +184,7 @@ function readCSV($dir, $csvFile, $tableName) {
         $data[] = $month;
 
         list ($state, $city, $county, $region) =
-            explode(" ", trim($data[0]), 4); // data 0 should be the full loc
+            array_pad(explode(" ", trim($data[0]), 4), 4, null); // data 0 should be the full loc
 
         $data[] = $state;
         $data[] = $city;
