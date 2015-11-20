@@ -158,7 +158,7 @@ function readCSV($dir, $csvFile, $tableName) {
             print_r($fields);
 
             // makeTable
-            createTable($conn, $colname, $types, $fields);
+            createTable($conn, $tableName, $types, $fields);
             continue;
         }
 
@@ -279,15 +279,13 @@ function getTypes($fields) {
 
 function createTable($conn, $colname, $types, $fields) {
     $sql = "Create Table IF NOT EXISTS $colname (\n";
-    $idx = 0;
-    foreach($type as $i => $val) {
-      $sqltype = $types[$i];
 
-      if ($idx++ != 0) {
+    foreach($types as $i => $type) {
+      if ($i != 0) {
         $sql .= ",\n";
       }
 
-      $sql .= "\t" . $fields[$i] . " $sqltype";
+      $sql .= "\t" . $fields[$i] . " $type";
     }
 
     $sql .= ");";
