@@ -47,7 +47,7 @@ function createTable($colname, $doc) {
     $sql .= ");";
 
     echo ($sql);
-    
+
     $conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
     // Check connection
     if ($conn->connect_error) {
@@ -71,7 +71,7 @@ function getSQLType ($val) {
     case "boolean":
       return "int";
     case "double":
-      return "duble";
+      return "double";
     case "float":
       return "float";
     case "string":
