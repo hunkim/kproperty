@@ -300,6 +300,9 @@ function typeesc ($db, $type, $val) {
     case "varchar(256)":
       return "'" . $db->real_escape_string($val) . "'";
 
+    case "int":
+      return intval($val);
+
     default:
       return $val;
   }
