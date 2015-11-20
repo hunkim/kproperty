@@ -52,9 +52,9 @@ function getSQLType ($val) {
     case "boolean":
       return "int";
     case "double":
-      reutrn "duble";
+      return "duble";
     case "float":
-      retrun "float";
+      return "float";
     case "string":
       return "varchar(255)";
 
