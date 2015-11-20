@@ -47,13 +47,14 @@ function mkregall($db, $colname, $tname) {
 
 function mktable($db, $tname) {
   $sql = "Create Table IF NOT EXISTS $tname(k varchar(255), v varchar(255),";
-  $sql .= "CONSTRAINT u UNIQUE (k,v));";
+  $sql .= "CONSTRAINT u UNIQUE (k,v))";
 
   if ($db->query($sql) !== TRUE) {
     die("Error creating table: $sql\n $db->error");
   }
 
-  if ($db->query("ALTER TABLE $tname ADD INDEX (key);") !== TRUE) {
+  $sql = "ALTER TABLE $tname ADD INDEX (k)";
+  if ($db->query($sql) !== TRUE) {
     die("Error creating table: $sql\n $db->error");
   }
 }
