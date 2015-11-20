@@ -31,7 +31,7 @@ foreach ($_GET as $key=>$val) {
 
 
 if($debug) {
-	echo ($k);
+	echo ("Query: $k");
 }
 
 // Persistent Connections
@@ -44,8 +44,11 @@ if ($conn->connect_error) {
 }
 
 $sql = "select v from $tname where k='" . $conn->real_escape_string($k) . "'";
-//$sql = "select v from $tname";
-//echo $sql;
+
+if($debug) {
+	echo $sql;
+}
+
 $result = $conn->query($sql);
 
 $rows=[];
