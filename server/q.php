@@ -53,7 +53,7 @@ function processQuery($sql, $sql_append) {
 
   $sql .= $sql_append;
 
-		print_r(params);
+		print_r($params);
 		echo ($sql);
 		echo ($type);
 
