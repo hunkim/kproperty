@@ -43,6 +43,10 @@ function processQuery($sql, $sql_append) {
 			continue;
 		}
 
+		if ($val=="") {
+			continue;
+		}
+
   	$sql .= " AND " . $key . "=? ";
 		$type .= "s";
 
