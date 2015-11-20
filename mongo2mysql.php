@@ -37,7 +37,7 @@ function createTable($colname, $doc) {
 
     foreach($doc as $key => $val) {
       $sqltype = getSQLType($val);
-      $sql .= "\t%key $sqltype,\n";
+      $sql .= "\t$key $sqltype,\n";
     }
 
     $sql .= ");";
