@@ -56,6 +56,7 @@ function getSQLType ($val) {
     case "float":
       return "float";
     case "string":
+    case "object":
       return "varchar(255)";
 
     default:
