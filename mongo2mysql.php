@@ -112,7 +112,7 @@ function typeesc ($val) {
     case "float":
       return $val;
     default:
-      return "'" . mysql_real_escape_string($val) . "'";
+      return "'" . mysqli_real_escape_string($val) . "'";
   }
 }
 ?>
