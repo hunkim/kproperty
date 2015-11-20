@@ -48,7 +48,7 @@ function mkreg($db, $colname) {
 function mkreg($db, $colname, $grouparr) {
   foreach ($grouparr as $i => $value) {
     if ($i>1) {
-      mkonereg($db, $colname, $grouparr, $i)
+      mkonereg($db, $colname, $grouparr, $i);
     }
   }
 }
