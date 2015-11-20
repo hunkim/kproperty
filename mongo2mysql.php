@@ -17,7 +17,7 @@ foreach ($colnames as $name) {
 /* The main controller */
 // $dir should end with '/'
 function mongo2mysql($db, $colname, $year, $month) {
-  $col = new MongoCollection($db, $col);
+  $col = new MongoCollection($db, $colname);
   $cursor = $col->find()->timeout(-1)->limit(10);
   foreach ($cursor as $doc) {
     var_dump($doc);
