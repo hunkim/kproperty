@@ -19,7 +19,7 @@ $debug = false;
 
 echo $_SERVER['SCRIPT_NAME'];
 
-if ($_SERVER['SCRIPT_NAME']=="s.php") {
+if ($_SERVER['SCRIPT_NAME']=="/s.php") {
   echo(processQuery($stat_sql, $stat_sql_append));
 } else {
   echo(processQuery($sale_sql, $sale_sql_append));
