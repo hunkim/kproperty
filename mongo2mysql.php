@@ -34,14 +34,20 @@ function mongo2mysql($db, $colname, $year, $month) {
 
 function createTable($colname, $doc) {
     $sql = "Create Table $colname (\n";
-
+    $idx = 0;
     foreach($doc as $key => $val) {
       $sqltype = getSQLType($val);
-      if ($key=="_id") {
-        $sql .= "\t$key $sqltype NOT NULL UNIQUE,\n";
-      } else {
-        $sql .= "\t$key $sqltype,\n";
+
+      if ($idx++ != 0) {
+        $sql .= ",\n";
       }
+      if ($key=="_id") {
+        $sql .= "\t$key $sqltype NOT NULL UNIQUE";
+      } else {
+        $sql .= "\t$key $sqltype";
+      }
+
+
     }
 
     $sql .= ");";
