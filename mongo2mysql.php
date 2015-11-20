@@ -54,7 +54,7 @@ function insert($conn, $colname, $doc) {
   }
 
   $idx = 0;
-  $sql . = ")\n VALUES (";
+  $sql .= ")\n VALUES (";
   foreach($doc as $key => $val) {
     if ($idx++ != 0) {
       $sql += ", ";
