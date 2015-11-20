@@ -2,20 +2,17 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
-error_reporting(E_ALL);
-assert_options(ASSERT_BAIL, true);
-
 $tname = substr($_SERVER['PATH_INFO'], 1);
 
 $stat_sql = "select year, month, count(*) as c, format(avg(amount),2) as avgAmount, ".
 	" REPLACE(format(avg(amount/area)*3.33,2), ',', '') as avgAmtArea, " .
         " REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ".
-	" from $name where amount > 0 ";
+	" from $name where amount > 0 and year >= ? AND year <= ?";
 
 $stat_sql_append = " group by month, year order by year, month, date";
 
 // Basic Sale SQL
-$sale_sql = "SELECT * FROM $name where ";
+$sale_sql = "SELECT * FROM $name where year >= ? AND year <= ?";
 $sale_sql_append = " order by year desc, month desc, date desc limit 500";
 
 $debug = false;
@@ -34,30 +31,24 @@ function processQuery($sql, $sql_append) {
   // http://www.php.net/manual/en/mysqli.persistconns.php
   $conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
 
-  $params = [];
+  $startyear = intval($_GET['startyear']);
+  $endyear = intval($_GET['endyear']);
+
+  if ($endyear ==0) $endyear = 3000;
+
+  $params = array(&$startyear, &$endyear);
   $type = "ii";
 
   foreach ($_GET as $key=>$val) {
-		if ($key=="startyear") {
-			$type .= "i";
-			$sql .= " AND $key >=? ";
-			$startyear = intval($val);
+		if ($key=="startyear" || $key=='endyear')
 			continue;
-		}
-
-		if($key=='endyear') {
-			$type .= "i";
-			$sql .= " AND $key <=? ";
-			$endyear = intval($val);
-			continue;
-		}
 
 		if ($key=='debug') {
-			$debug = true;
+			$debug == true;
 			continue;
 		}
 
-  	$sql .= " AND $key =? ";
+  	$sql .= " AND " . $key . "=? ";
 		$type .= "s";
 
 		// need array element here, since we need a new variable
@@ -68,6 +59,11 @@ function processQuery($sql, $sql_append) {
   $sql .= $sql_append;
   $stmt = $conn->prepare($sql);
 
+	if ($debug) {
+		print_r(params);
+		echo ($sql);
+	}
+	
   // http://stackoverflow.com/questions/16236395/bind-param-with-array-of-parameters
   call_user_func_array(array($stmt, "bind_param"), array_merge(array($type), $params));
 
