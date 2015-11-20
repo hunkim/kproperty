@@ -46,7 +46,7 @@ function createTable($colname, $doc) {
 
 function getSQLType ($val) {
   $type = gettype($val);
-  switch($type)) {
+  switch($type) {
     case "integer":
       return "int";
     case "boolean":
