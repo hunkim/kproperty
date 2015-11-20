@@ -55,9 +55,6 @@ function insert($conn, $colname, $doc) {
   }
 
   $sql .= ";\n";
-
-  echo $sql;
-
   if ($conn->query($sql) !== TRUE) {
       die ("Error: $sql\n $conn->error");
     }
