@@ -2,15 +2,17 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
+$tname = substr($_SERVER['PATH_INFO'], 1);
+
 $stat_sql = "select year, month, count(*) as c, format(avg(amount),2) as avgAmount, ".
-	" REPLACE(format(avg(amount/area)*3.30579,2), ',', '') as avgAmtArea, " .
-        " REPLACE(format(avg(amount/landArea)*3.30579,2), ',', '') as avgAmtLand ".
-	" from Sale where amount > 0 and year >= ? AND year <= ?"; 
+	" REPLACE(format(avg(amount/area)*3.33,2), ',', '') as avgAmtArea, " .
+        " REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ".
+	" from $name where amount > 0 and year >= ? AND year <= ?";
 
 $stat_sql_append = " group by month, year order by year, month, date";
 
 // Basic Sale SQL
-$sale_sql = "SELECT * FROM Sale where year >= ? AND year <= ?";
+$sale_sql = "SELECT * FROM $name where year >= ? AND year <= ?";
 $sale_sql_append = " order by year desc, month desc, date desc limit 500";
 
 if ($_SERVER['PATH_INFO']=="/stat") {
@@ -32,7 +34,7 @@ function processQuery($sql, $sql_append) {
 
   if ($endyear ==0) $endyear = 3000;
 
-  $key_array = array('city', 'county', 'region', 'region1');
+  $key_array = array('state', 'city', 'county', 'region');
   $params = array(&$startyear, &$endyear);
   $type = "ii";
 
