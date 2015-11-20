@@ -49,7 +49,7 @@ function createTable($colname, $doc) {
     $conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
     // Check connection
     if ($conn->connect_error) {
-        die("Connection failed: " . $mysqlconn->connect_error);
+        die("Connection failed: " . $mysql->connect_error);
     }
 
     if ($conn->query($sql) === TRUE) {
