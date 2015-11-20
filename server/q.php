@@ -26,11 +26,6 @@ if ($_SERVER['SCRIPT_NAME']=="s.php") {
 /**
 */
 function processQuery($sql, $sql_append) {
-  // Persistent Connections
-  // http://stackoverflow.com/questions/3332074/what-are-the-disadvantages-of-using-persistent-connection-in-pdo
-  // http://www.php.net/manual/en/mysqli.persistconns.php
-  $conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
-
   $startyear = intval($_GET['startyear']);
   $endyear = intval($_GET['endyear']);
 
@@ -57,13 +52,18 @@ function processQuery($sql, $sql_append) {
   }
 
   $sql .= $sql_append;
-  $stmt = $conn->prepare($sql);
 
-	if ($debug) {
 		print_r(params);
 		echo ($sql);
-	}
-	
+		echo ($type);
+
+
+	// Persistent Connections
+  // http://stackoverflow.com/questions/3332074/what-are-the-disadvantages-of-using-persistent-connection-in-pdo
+  // http://www.php.net/manual/en/mysqli.persistconns.php
+  $conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
+  $stmt = $conn->prepare($sql);
+
   // http://stackoverflow.com/questions/16236395/bind-param-with-array-of-parameters
   call_user_func_array(array($stmt, "bind_param"), array_merge(array($type), $params));
 
