@@ -46,8 +46,8 @@ function mkregall($db, $colname, $tname) {
 }
 
 function mktable($db, $tname) {
-  $sql = "Create Table IF NOT EXISTS $tname(key varchar(255), val varchar(255),";
-  $sql .= "CONSTRAINT u UNIQUE (key,val));";
+  $sql = "Create Table IF NOT EXISTS $tname(k varchar(255), v varchar(255),";
+  $sql .= "CONSTRAINT u UNIQUE (k,v));";
 
   if ($db->query($sql) !== TRUE) {
     die("Error creating table: $sql\n $db->error");
