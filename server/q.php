@@ -8,7 +8,7 @@ $stat_sql = "select year, month, count(*) as count, ".
 	" REPLACE(format(avg(amount/area)*3.33,2), ',', '') as avgAmtArea ";
 
 if ($tname == 'housesale' || $tname == 'flatsale') {
-   	$stat_sql .= " REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ";
+   	$stat_sql .= ", REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ";
 }
 
 $stat_sql .=	" from $tname where amount > 0 and year >= ? AND year <= ?";
