@@ -55,7 +55,7 @@ function createTable($colname, $doc) {
     if ($conn->query($sql) === TRUE) {
       echo "Table MyGuests created successfully";
     } else {
-      echo "Error creating table: " . $conn->error;
+      die("Error creating table: " . $conn->error);
     }
 
     $conn->close();
