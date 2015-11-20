@@ -2,6 +2,9 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
+error_reporting(E_ALL);
+assert_options(ASSERT_BAIL, true);
+
 $tname = substr($_SERVER['PATH_INFO'], 1);
 
 $stat_sql = "select year, month, count(*) as c, format(avg(amount),2) as avgAmount, ".
@@ -50,7 +53,7 @@ function processQuery($sql, $sql_append) {
 		}
 
 		if ($key=='debug') {
-			debug = true;
+			$debug = true;
 			continue;
 		}
 
