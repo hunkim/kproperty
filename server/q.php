@@ -9,11 +9,11 @@ $stat_sql = "select year, month, count(*) as c, format(avg(amount),2) as avgAmou
         " REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ".
 	" from $tname where amount > 0 and year >= ? AND year <= ?";
 
-$stat_sql_append = " group by month, year order by year, month, date";
+$stat_sql_append = " group by month, year order by year, month ";
 
 // Basic Sale SQL
 $sale_sql = "SELECT * FROM $tname where year >= ? AND year <= ?";
-$sale_sql_append = " order by year desc, month desc, date desc limit 500";
+$sale_sql_append = " order by year desc, month desc limit 500";
 
 $debug = false;
 
