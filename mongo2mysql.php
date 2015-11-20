@@ -19,9 +19,9 @@ foreach ($colnames as $name) {
 function mongo2mysql($db, $colname, $year, $month) {
   $col = new MongoCollection($db, $colname);
   $cursor = $col->find()->timeout(-1)->limit(10);
-  foreach ($cursor as $doc) {
+  foreach ($cursor as $idx => $doc) {
     foreach($doc as $key => $val) {
-      echo ("k: $key, v: $val (" . gettype($val) .")\n");
+      echo ("[$idx] k: $key, v: $val (" . gettype($val) .")\n");
     }
   }
 }
