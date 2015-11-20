@@ -45,7 +45,7 @@ if ($conn->connect_error) {
 
 $sql = "select v from $tname where k='" . $conn->real_escape_string($k) . "'";
 //$sql = "select v from $tname";
-echo $sql;
+//echo $sql;
 $result = $conn->query($sql);
 
 $rows=[];
