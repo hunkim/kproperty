@@ -9,10 +9,6 @@ $debug = false;
 $k = "";
 $i=0;
 foreach ($_GET as $key=>$val) {
-
-		if ($i++ !== 0) {
-			$k.="::";
-		}
 		if ($key=='debug') {
 			$debug = true;
 			continue;
@@ -26,7 +22,9 @@ foreach ($_GET as $key=>$val) {
 			continue;
 		}
 
-
+		if ($i++ !== 0) {
+			$k.="::";
+		}
 		$k.=urldecode($val);
 }
 
