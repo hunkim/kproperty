@@ -17,7 +17,7 @@ function runreg() {
     $col2name = $colname."_reg";
 
     // Let's remove all first
-    $col2->drop([]);
+    //$col2->drop([]);
 
     // add agg information
     mkregall($conn, $colname);
