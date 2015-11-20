@@ -125,7 +125,7 @@ function typeesc ($val) {
     case "float":
       return $val;
     default:
-      return '$val';
+      return "'" . $val . "'";
   }
 }
 ?>
