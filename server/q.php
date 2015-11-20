@@ -5,11 +5,15 @@ header("Content-Type: application/json; charset=UTF-8");
 $tname = substr($_SERVER['PATH_INFO'], 1);
 
 $stat_sql = "select year, month, count(*) as count, ".
-	" REPLACE(format(avg(amount/area)*3.33,2), ',', '') as avgAmtArea " .
-    //    " REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ".
-	" from $tname where amount > 0 and year >= ? AND year <= ?";
+	" REPLACE(format(avg(amount/area)*3.33,2), ',', '') as avgAmtArea ";
 
-$stat_sql_append = " group by month, year order by year, month ";
+if ($tname == 'housesale' || $tname == 'flatsale') {
+   	$stat_sql .= " REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ";
+}
+
+$stat_sql .=	" from $tname where amount > 0 and year >= ? AND year <= ?";
+
+$stat_sql_append = " group by year, month order by year, month ";
 
 // Basic Sale SQL
 $sale_sql = "SELECT * FROM $tname where year >= ? AND year <= ?";
