@@ -17,8 +17,6 @@ $sale_sql_append = " order by year desc, month desc limit 500";
 
 $debug = false;
 
-echo $_SERVER['SCRIPT_NAME'];
-
 if ($_SERVER['SCRIPT_NAME']=="/s.php") {
   echo(processQuery($stat_sql, $stat_sql_append));
 } else {
