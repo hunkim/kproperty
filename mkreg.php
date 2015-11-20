@@ -85,8 +85,8 @@ function mkonereg($db, $colname, $tname, $grouparr, $last) {
     while($row = $result->fetch_assoc()) {
       print_r($row);
         $sqinsert = "INSERT IGNORE INTO $tname SET k='";
-        $sqinsert.= $db->real_escape_string($row['k']);
-        $sqinsert.= ", v=" . $db->real_escape_string($row['v']);
+        $sqinsert.= $db->real_escape_string($row['k']) ."'";
+        $sqinsert.= ", v='" . $db->real_escape_string($row['v']) . "'";
 
         if ($db->query($sqinsert) !== TRUE) {
             die ("Error: $sqinsert\n $db->error");
