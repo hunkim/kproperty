@@ -8,8 +8,6 @@ $m = new MongoClient();
 // select a database
 $db = $m->selectDB('trend');
 
-$conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
-
 //main($argv[1] . "/");
 $colnames = ['housesale', 'aptsale', 'flatsale', 'houserent', 'aptrent', 'flatrent'];
 foreach ($colnames as $name) {
@@ -34,7 +32,7 @@ function mongo2mysql($db, $colname, $year, $month) {
   }
 }
 
-function createTable($colname, $doc) {
+function createTable($mysqlconn, $colname, $doc) {
     $sql = "Create Table $colname (\n";
 
     foreach($doc as $key => $val) {
@@ -47,6 +45,20 @@ function createTable($colname, $doc) {
     }
 
     $sql .= ");";
+
+    $conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $mysqlconn->connect_error);
+    }
+
+    if ($conn->query($sql) === TRUE) {
+      echo "Table MyGuests created successfully";
+    } else {
+      echo "Error creating table: " . $conn->error;
+    }
+
+    $conn->close();
     return $sql;
 }
 
