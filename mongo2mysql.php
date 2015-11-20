@@ -18,21 +18,56 @@ foreach ($colnames as $name) {
 // $dir should end with '/'
 function mongo2mysql($db, $colname, $year, $month) {
   $col = new MongoCollection($db, $colname);
-  $cursor = $col->find()->timeout(-1)->limit(10);
+
+  // mysql
+  $conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
+  // Check connection
+  if ($conn->connect_error) {
+      die("Connection failed: " . $conn->connect_error);
+  }
+
+  $cursor = $col->find()->timeout(-1).limit(10);
+
   $idx = 0;
   foreach ($cursor as $doc) {
     if ($idx++===0) {
-        $table = createTable($colname, $doc);
+        $table = createTable($conn, $colname, $doc);
         echo ($table);
     }
 
-    foreach($doc as $key => $val) {
-      echo ("[$idx] k: $key, v: $val (" . gettype($val) .")\n");
-    }
+    //insrt DB
+    insert($conn, $colname, $doc);
   }
+
+  $conn->close();
 }
 
-function createTable($colname, $doc) {
+function insert($conn, $colname, $doc) {
+  $sql = "INSERT INTO $colname VALUES ("
+
+  $idx = 0;
+  foreach($doc as $key => $val) {
+    if ($idx++ != 0) {
+      $sql += ", ";
+    }
+    $sql += $key;
+  }
+
+  $idx = 0;
+  $sql . = ")\n VALUES (";
+  foreach($doc as $key => $val) {
+    if ($idx++ != 0) {
+      $sql += ", ";
+    }
+    $sql += typeesc($val);
+  }
+
+  $sql .= ");\n";
+
+  echo $sql;
+}
+
+function createTable($conn, $colname, $doc) {
     $sql = "Create Table IF NOT EXISTS $colname (\n";
     $idx = 0;
     foreach($doc as $key => $val) {
@@ -54,19 +89,11 @@ function createTable($colname, $doc) {
 
     echo ($sql);
 
-    $conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
     if ($conn->query($sql) === TRUE) {
       echo "Table MyGuests created successfully";
     } else {
       die("Error creating table: " . $conn->error);
     }
-
-    $conn->close();
 }
 
 function getSQLType ($val) {
@@ -89,4 +116,16 @@ function getSQLType ($val) {
   }
 }
 
+function typeesc ($val) {
+  $type = gettype($val);
+  switch($type) {
+    case "integer":
+    case "boolean":
+    case "double":
+    case "float":
+      return $val;
+    default:
+      return "'$val'";
+  }
+}
 ?>
