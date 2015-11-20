@@ -251,7 +251,7 @@ function getFields($data) {
 }
 
 function getTypes($fields) {
-    $typeArr = array('fullLoc'=>'s',
+    $typeArr = array('fullLoc'=>'varchar(256)',
     'type'=>'varchar(256)',
     'area'=>'double',
     'landArea' => 'double',
