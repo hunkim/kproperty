@@ -43,7 +43,7 @@ function mongo2mysql($db, $colname, $year, $month) {
 }
 
 function insert($conn, $colname, $doc) {
-  $sql = "INSERT IGNORE INTO $colname SET "
+  $sql = "INSERT IGNORE INTO $colname SET ";
 
   $idx = 0;
   foreach($doc as $key => $val) {
@@ -53,7 +53,7 @@ function insert($conn, $colname, $doc) {
     $sql .= $key. '=' . typeesc($val);
   }
 
-  $sql .= ");\n";
+  $sql .= ";\n";
 
   echo $sql;
 }
