@@ -11,7 +11,7 @@ $db = $m->selectDB('trend');
 //main($argv[1] . "/");
 $colnames = ['housesale', 'aptsale', 'flatsale', 'houserent', 'aptrent', 'flatrent'];
 foreach ($colnames as $name) {
-    mongo2mysql($name);
+    mongo2mysql($db, $name, 2015, 10);
 }
 
 /* The main controller */
