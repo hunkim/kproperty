@@ -56,7 +56,7 @@ function mkreg($db, $colname, $grouparr) {
 // select distinct CONCAT_WS('::', state, city), county from housesale;
 function mkonereg($db, $colname, $grouparr, $last) {
   $val = $grouparr[$last];
-  $sql = "select distinct CONCAT_WS('::' "
+  $sql = "select distinct CONCAT_WS('::' ";
   for($i=0; $i<$last; $i++) {
     $sql .= ", $grouparr[$i]";
   }
