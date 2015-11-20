@@ -57,7 +57,7 @@ function mkreg($db, $colname, $grouparr) {
 function mkonereg($db, $colname, $grouparr, $last) {
   $val = $grouparr[$last];
   $sql = "select distinct CONCAT_WS('::' "
-  for($i=0; i<$last; $i++) {
+  for($i=0; $i<$last; $i++) {
     $sql .= ", $grouparr[$i]";
   }
 
