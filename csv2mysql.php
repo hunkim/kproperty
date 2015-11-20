@@ -158,7 +158,7 @@ function readCSV($dir, $csvFile, $tableName) {
             print_r($fields);
 
             // makeTable
-            createTable($conn, $tableName, $types, $fields);
+            createTable($db, $tableName, $types, $fields);
             continue;
         }
 
