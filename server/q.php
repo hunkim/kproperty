@@ -5,7 +5,7 @@ header("Content-Type: application/json; charset=UTF-8");
 $tname = substr($_SERVER['PATH_INFO'], 1);
 
 $stat_sql = "select year, month, count(*) as c, format(avg(amount),2) as avgAmount, ".
-	" REPLACE(format(avg(amount/area)*3.33,2), ',', '') as avgAmtArea, " .
+	" REPLACE(format(avg(amount/area)*3.33,2), ',', '') as avgAmtArea " .
     //    " REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ".
 	" from $tname where amount > 0 and year >= ? AND year <= ?";
 
