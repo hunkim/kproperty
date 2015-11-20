@@ -58,10 +58,11 @@ function processQuery($sql, $sql_append) {
   $sql .= $sql_append;
 
 
-	print_r($params);
+if($debug) {
+ 	print_r($params);
 	echo ($sql);
 	echo ($type);
-
+}
 
 	// Persistent Connections
   // http://stackoverflow.com/questions/3332074/what-are-the-disadvantages-of-using-persistent-connection-in-pdo
