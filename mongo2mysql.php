@@ -43,7 +43,7 @@ function mongo2mysql($db, $colname, $year, $month) {
 }
 
 function insert($conn, $colname, $doc) {
-  $sql = "INSERT INTO $colname VALUES ("
+  $sql = "INSERT INTO $colname VALUES (";
 
   $idx = 0;
   foreach($doc as $key => $val) {
