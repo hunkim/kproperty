@@ -60,7 +60,7 @@ function insert($conn, $colname, $doc) {
   if ($conn->query($sql) === TRUE) {
     echo "New record created successfully";
   } else {
-      die "Error: " . $sql . "\n" . $conn->error;
+      die("Error: " . $sql . "\n" . $conn->error);
     }
 }
 
