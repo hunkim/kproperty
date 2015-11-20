@@ -47,7 +47,5 @@ while($row = $result->fetch_array(MYSQLI_ASSOC)) {
 
 // JSON_PRETTY_PRINT|
 return json_encode($rows,JSON_UNESCAPED_UNICODE);
-
 $conn->close();
-}
 ?>
