@@ -109,7 +109,7 @@ function readCSV($dir, $csvFile, $tableName) {
     // mysql
     $db = new mysqli("p:localhost", "trend", "only!trend!", "trend");
     // Check connection
-    if ($db>connect_error) {
+    if ($db->connect_error) {
         die("Connection failed: " . $db->connect_error);
     }
 
