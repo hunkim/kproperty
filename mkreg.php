@@ -20,11 +20,11 @@ function runreg() {
     $col2->drop([]);
 
     // add agg information
-    mkreg($conn, $colname);
+    mkregall($conn, $colname);
   }
 }
 
-function mkreg($db, $colname) {
+function mkregall($db, $colname) {
 
   switch ($colname) {
     case 'aptsale':
