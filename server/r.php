@@ -9,11 +9,12 @@ $debug = false;
 $k = "";
 $i=0;
 foreach ($_GET as $key=>$val) {
+
 		if ($i++ !== 0) {
 			$k.="::";
 		}
 		if ($key=='debug') {
-			$debug == true;
+			$debug = true;
 			continue;
 		}
 
