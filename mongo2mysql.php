@@ -51,7 +51,7 @@ function insert($conn, $colname, $doc) {
     if ($idx++ != 0) {
       $sql .= ", \n\t";
     }
-    $sql .= $key. '=' . typeesc($val);
+    $sql .= $key. '=' . typeesc($conn, $val);
   }
 
   $sql .= ";\n";
@@ -103,7 +103,7 @@ function getSQLType ($val) {
   }
 }
 
-function typeesc ($val) {
+function typeesc ($conn, $val) {
   $type = gettype($val);
   switch($type) {
     case "integer":
@@ -112,7 +112,7 @@ function typeesc ($val) {
     case "float":
       return $val;
     default:
-      return "'" . mysqli_real_escape_string($val) . "'";
+      return "'" . $conn->real_escape_string($val) . "'";
   }
 }
 ?>
