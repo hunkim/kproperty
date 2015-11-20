@@ -86,7 +86,7 @@ if($debug) {
   call_user_func_array(array($stmt, "bind_param"), array_merge(array($type), $params));
 
   $stmt->execute();
-
+ 
 	// Need to install
 	// sudo apt-get install php5-mysqlnd
   $result = $stmt->get_result();
