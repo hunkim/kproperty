@@ -55,7 +55,13 @@ function insert($conn, $colname, $doc) {
 
   $sql .= ";\n";
 
-  echo $sql;
+//  echo $sql;
+
+  if ($conn->query($sql) === TRUE) {
+    echo "New record created successfully";
+  } else {
+      die "Error: " . $sql . "\n" . $conn->error;
+    }
 }
 
 function createTable($conn, $colname, $doc) {
