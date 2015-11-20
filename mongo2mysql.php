@@ -48,18 +48,18 @@ function insert($conn, $colname, $doc) {
   $idx = 0;
   foreach($doc as $key => $val) {
     if ($idx++ != 0) {
-      $sql += ", ";
+      $sql .= ", ";
     }
-    $sql += $key;
+    $sql .= $key;
   }
 
   $idx = 0;
   $sql .= ")\n VALUES (";
   foreach($doc as $key => $val) {
     if ($idx++ != 0) {
-      $sql += ", ";
+      $sql .= ", ";
     }
-    $sql += typeesc($val);
+    $sql .= typeesc($val);
   }
 
   $sql .= ");\n";
