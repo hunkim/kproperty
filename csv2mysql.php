@@ -99,8 +99,8 @@ function insertDB($db, $tname, $types, $fields, $data) {
   }
 
   $sql .= ";\n";
-  if ($conn->query($sql) !== TRUE) {
-      die ("Error: $sql\n $conn->error");
+  if ($db->query($sql) !== TRUE) {
+      die ("Error: $sql\n $db->error");
   }
 }
 
@@ -194,7 +194,7 @@ function readCSV($dir, $csvFile, $tableName) {
 
         // echo "$data[0] $data[1]";
         // Let's insert
-        insertDB($db, $collection, $types, $fields, $data);
+        insertDB($db, $tableName, $types, $fields, $data);
     }
 
     fclose($handle);
@@ -277,7 +277,7 @@ function getTypes($fields) {
     return $types;
 }
 
-function createTable($conn, $colname, $types, $fields) {
+function createTable($db, $colname, $types, $fields) {
     $sql = "Create Table IF NOT EXISTS $colname (\n";
 
     foreach($types as $i => $type) {
@@ -290,15 +290,15 @@ function createTable($conn, $colname, $types, $fields) {
 
     $sql .= ");";
 
-    if ($conn->query($sql) !== TRUE) {
-      die("Error creating table: $sql\n $conn->error");
+    if ($db->query($sql) !== TRUE) {
+      die("Error creating table: $sql\n $db->error");
     }
 }
 
-function typeesc ($conn, $type, $val) {
+function typeesc ($db, $type, $val) {
   switch($type) {
     case "varchar(256)":
-      return "'" . $conn->real_escape_string($val) . "'";
+      return "'" . $db->real_escape_string($val) . "'";
 
     default:
       return $val;
