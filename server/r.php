@@ -56,6 +56,8 @@ if ($result->num_rows > 0) {
 	}
 }
 
+print_r($rows);
+
 // JSON_PRETTY_PRINT|
 return json_encode($rows,JSON_UNESCAPED_UNICODE);
 $conn->close();
