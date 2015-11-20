@@ -1,7 +1,7 @@
 <?php
 error_reporting(E_ALL);
 MongoCursor::$timeout = -1;
-testreg();
+runreg();
 
 function runreg() {
   $conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
