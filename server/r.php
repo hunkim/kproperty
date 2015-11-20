@@ -17,11 +17,16 @@ foreach ($_GET as $key=>$val) {
 			continue;
 		}
 
+		if ($key=='query') {
+			continue;
+		}
+
 		if ($val=="") {
 			continue;
 		}
 
-		$k.=$val;
+
+		$k.=urldecode($val);
 }
 
 
