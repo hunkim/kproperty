@@ -7,13 +7,15 @@ $tname = substr($_SERVER['PATH_INFO'], 1);
 $stat_sql = "select year, month, count(*) as c, format(avg(amount),2) as avgAmount, ".
 	" REPLACE(format(avg(amount/area)*3.33,2), ',', '') as avgAmtArea, " .
         " REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ".
-	" from $name where amount > 0 and year >= ? AND year <= ?";
+	" from $name where amount > 0 ";
 
 $stat_sql_append = " group by month, year order by year, month, date";
 
 // Basic Sale SQL
-$sale_sql = "SELECT * FROM $name where year >= ? AND year <= ?";
+$sale_sql = "SELECT * FROM $name where ";
 $sale_sql_append = " order by year desc, month desc, date desc limit 500";
+
+$debug = false;
 
 if ($_SERVER['SCRIPT_NAME']=="s.php") {
   echo(processQuery($stat_sql, $stat_sql_append));
@@ -29,23 +31,35 @@ function processQuery($sql, $sql_append) {
   // http://www.php.net/manual/en/mysqli.persistconns.php
   $conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
 
-  $startyear = intval($_GET['startyear']);
-  $endyear = intval($_GET['endyear']);
-
-  if ($endyear ==0) $endyear = 3000;
-
-  $key_array = array('state', 'city', 'county', 'region');
-  $params = array(&$startyear, &$endyear);
+  $params = [];
   $type = "ii";
 
-  foreach ($key_array as $key) {
-    if ($val = $_GET[$key]) {
-	$sql .= " AND " . $key . "=? ";
-	$type .= "s";
-	// need array element here, since we need a new variable
-	$decoded_val[$key] = urldecode($val);
-	$params[] = &$decoded_val[$key];
-    }
+  foreach ($_GET as $key=>$val) {
+		if ($key=="startyear") {
+			$type .= "i";
+			$sql .= " AND $key >=? ";
+			$startyear = intval($val);
+			continue;
+		}
+
+		if($key=='endyear') {
+			$type .= "i";
+			$sql .= " AND $key <=? ";
+			$endyear = intval($val);
+			continue;
+		}
+
+		if ($key=='debug') {
+			debug = true;
+			continue;
+		}
+
+  	$sql .= " AND $key =? ";
+		$type .= "s";
+
+		// need array element here, since we need a new variable
+		$decoded_val[$key] = urldecode($val);
+		$params[] = &$decoded_val[$key];
   }
 
   $sql .= $sql_append;
