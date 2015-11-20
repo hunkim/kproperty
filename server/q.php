@@ -67,7 +67,15 @@ function processQuery($sql, $sql_append) {
   // http://stackoverflow.com/questions/3332074/what-are-the-disadvantages-of-using-persistent-connection-in-pdo
   // http://www.php.net/manual/en/mysqli.persistconns.php
   $conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
+	// Check connection
+	if ($conn->connect_error) {
+			die("Connection failed: " . $conn->connect_error);
+	}
+
   $stmt = $conn->prepare($sql);
+	if (!$stmt) {
+		 die ("Prepare $sql failed: ($conn->errno)  $conn->error");
+	}
 
   // http://stackoverflow.com/questions/16236395/bind-param-with-array-of-parameters
   call_user_func_array(array($stmt, "bind_param"), array_merge(array($type), $params));
