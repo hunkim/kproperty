@@ -166,14 +166,14 @@ function readCSV($dir, $csvFile, $tableName) {
         $diff = array_diff($thdata, $data);
         // all same?
         if (count($diff)==0) {
-            echo ("Skip another table head");
+            echo ("Skip another table head\n");
             continue;
         }
 
         $num = count($data);
         if($num != $numFields) {
             echo "<!> $num fields in line $row!\n";
-            print_r($data);
+          //  print_r($data);
             continue;
         }
 
