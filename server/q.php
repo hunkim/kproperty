@@ -95,8 +95,10 @@ if($debug) {
   while($row = $result->fetch_array(MYSQLI_ASSOC)) {
     $rows[] = $row;
   }
-  $conn->close();
 
-  return json_encode($rows, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
+	// JSON_PRETTY_PRINT|
+  return json_encode($rows,JSON_UNESCAPED_UNICODE);
+
+	$conn->close();
 }
 ?>
