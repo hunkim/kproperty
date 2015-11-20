@@ -26,7 +26,7 @@ function mongo2mysql($db, $colname, $year, $month) {
       die("Connection failed: " . $conn->connect_error);
   }
 
-  $cursor = $col->find()->timeout(-1)->limit(10);
+  $cursor = $col->find()->timeout(-1);
 
   $idx = 0;
   foreach ($cursor as $doc) {
@@ -37,6 +37,7 @@ function mongo2mysql($db, $colname, $year, $month) {
 
     //insrt DB
     insert($conn, $colname, $doc);
+    echo " $idx \n";
   }
 
   $conn->close();
@@ -55,12 +56,10 @@ function insert($conn, $colname, $doc) {
 
   $sql .= ";\n";
 
-//  echo $sql;
+  echo $sql;
 
-  if ($conn->query($sql) === TRUE) {
-    echo "New record created successfully";
-  } else {
-      die("Error: " . $sql . "\n" . $conn->error);
+  if ($conn->query($sql) !== TRUE) {
+      die "Error: " . $sql . "\n" . $conn->error;
     }
 }
 
@@ -78,18 +77,12 @@ function createTable($conn, $colname, $doc) {
       } else {
         $sql .= "\t$key $sqltype";
       }
-
-
     }
 
     $sql .= ");";
 
-    echo ($sql);
-
-    if ($conn->query($sql) === TRUE) {
-      echo "Table MyGuests created successfully";
-    } else {
-      die("Error creating table: " . $conn->error);
+    if ($conn->query($sql) !== TRUE) {
+      die("Error creating table: $sql\n $conn->error");
     }
 }
 
