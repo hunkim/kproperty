@@ -47,7 +47,7 @@ function mkregall($db, $colname) {
 
 function mkreg($db, $colname, $grouparr) {
   foreach ($grouparr as $i => $value) {
-    if ($i>1) {
+    if ($i != 0) {
       mkonereg($db, $colname, $grouparr, $i);
     }
   }
@@ -63,7 +63,7 @@ function mkonereg($db, $colname, $grouparr, $last) {
 
   $sql .= "), $val from $colname;";
 
-  echo ($sql);
+  echo ($sql . "\n");
 }
 
 ?>
