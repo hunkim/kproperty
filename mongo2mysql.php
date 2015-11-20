@@ -46,6 +46,8 @@ function createTable($colname, $doc) {
 
     $sql .= ");";
 
+    echo ($sql);
+    
     $conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
     // Check connection
     if ($conn->connect_error) {
@@ -59,7 +61,6 @@ function createTable($colname, $doc) {
     }
 
     $conn->close();
-    return $sql;
 }
 
 function getSQLType ($val) {
