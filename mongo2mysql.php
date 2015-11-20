@@ -8,6 +8,8 @@ $m = new MongoClient();
 // select a database
 $db = $m->selectDB('trend');
 
+$conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
+
 //main($argv[1] . "/");
 $colnames = ['housesale', 'aptsale', 'flatsale', 'houserent', 'aptrent', 'flatrent'];
 foreach ($colnames as $name) {
