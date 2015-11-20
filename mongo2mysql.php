@@ -39,7 +39,11 @@ function createTable($colname, $doc) {
 
     foreach($doc as $key => $val) {
       $sqltype = getSQLType($val);
-      $sql .= "\t$key $sqltype,\n";
+      if ($key=="_id") {
+        $sql .= "\t$key $sqltype NOT NULL UNIQUE,\n";
+      } else {
+        $sql .= "\t$key $sqltype,\n";
+      }
     }
 
     $sql .= ");";
