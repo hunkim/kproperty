@@ -15,7 +15,7 @@ $stat_sql_append = " group by month, year order by year, month, date";
 $sale_sql = "SELECT * FROM $name where year >= ? AND year <= ?";
 $sale_sql_append = " order by year desc, month desc, date desc limit 500";
 
-if ($_SERVER['PATH_INFO']=="/stat") {
+if ($_SERVER['SCRIPT_NAME']=="s.php") {
   echo(processQuery($stat_sql, $stat_sql_append));
 } else {
   echo(processQuery($sale_sql, $sale_sql_append));
