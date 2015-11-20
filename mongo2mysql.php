@@ -33,7 +33,7 @@ function mongo2mysql($db, $colname, $year, $month) {
 }
 
 function createTable($colname, $doc) {
-    $sql = "Create Table $colname (\n";
+    $sql = "Create Table IF NOT EXISTS $colname (\n";
     $idx = 0;
     foreach($doc as $key => $val) {
       $sqltype = getSQLType($val);
