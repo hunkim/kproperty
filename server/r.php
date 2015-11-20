@@ -40,9 +40,12 @@ if ($conn->connect_error) {
 
 $sql = "select v from $tname where k='" . $conn->real_escape_string($k) . "'";
 $result = $conn->query($sql);
-$rows=array();
-while($row = $result->fetch_array(MYSQLI_ASSOC)) {
-    $rows[] = $row;
+
+if ($result->num_rows > 0) {
+	// output data of each row
+	while($row = $result->fetch_assoc()) {
+    $rows[] = $row['v'];
+	}
 }
 
 // JSON_PRETTY_PRINT|
