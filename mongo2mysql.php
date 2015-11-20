@@ -32,7 +32,7 @@ function mongo2mysql($db, $colname, $year, $month) {
   }
 }
 
-function createTable($mysqlconn, $colname, $doc) {
+function createTable($colname, $doc) {
     $sql = "Create Table $colname (\n";
 
     foreach($doc as $key => $val) {
