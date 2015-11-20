@@ -44,7 +44,7 @@ if ($conn->connect_error) {
 }
 
 $sql = "select v from $tname where k='" . $conn->real_escape_string($k) . "'";
-$sql = "select v from $tname";
+//$sql = "select v from $tname";
 echo $sql;
 $result = $conn->query($sql);
 
@@ -52,7 +52,7 @@ $rows=[];
 if ($result->num_rows > 0) {
 	// output data of each row
 	while($row = $result->fetch_assoc()) {
-    $rows[] = $row;
+    $rows[] = $row['v'];
 	}
 }
 
