@@ -78,6 +78,23 @@ function mkonereg($db, $colname, $tname, $grouparr, $last) {
 
   $sql .= "), $val from $colname;";
 
+  $result = $conn->query($sql);
+
+  if ($result->num_rows > 0) {
+    // output data of each row
+    while($row = $result->fetch_assoc()) {
+        $sqinsert = "INSERT IGNORE INTO $tname SET k='";
+        $sqinsert.= $db->real_escape_string($row['k']);
+        $sqinsert.= ", v=" . $db->real_escape_string($row['v']);
+
+        if ($db->query($sqinsert) !== TRUE) {
+            die ("Error: $sqinsert\n $db->error");
+        }
+    }
+  } else {
+      echo "0 results";
+  }
+
   echo ($sql . "\n");
 }
 
