@@ -43,23 +43,14 @@ function mongo2mysql($db, $colname, $year, $month) {
 }
 
 function insert($conn, $colname, $doc) {
-  $sql = "INSERT INTO $colname VALUES (";
+  $sql = "INSERT IGNORE INTO $colname SET "
 
   $idx = 0;
   foreach($doc as $key => $val) {
     if ($idx++ != 0) {
-      $sql .= ", ";
+      $sql .= ", \n\t";
     }
-    $sql .= $key;
-  }
-
-  $idx = 0;
-  $sql .= ")\n VALUES (";
-  foreach($doc as $key => $val) {
-    if ($idx++ != 0) {
-      $sql .= ", ";
-    }
-    $sql .= typeesc($val);
+    $sql .= $key. '=' . typeesc($val);
   }
 
   $sql .= ");\n";
