@@ -277,11 +277,11 @@ function getTypes($fields) {
     return $types;
 }
 
-function createTable($conn, $colname, $type, $fields) {
+function createTable($conn, $colname, $types, $fields) {
     $sql = "Create Table IF NOT EXISTS $colname (\n";
     $idx = 0;
     foreach($type as $i => $val) {
-      $sqltype = getTypes($val);
+      $sqltype = $types[$i];
 
       if ($idx++ != 0) {
         $sql .= ",\n";
