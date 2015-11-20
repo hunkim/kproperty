@@ -34,10 +34,12 @@ function mongo2mysql($db, $colname, $year, $month) {
 
 function createTable($colname, $doc) {
     $sql = "Create Table $colname (\n";
+
     foreach($doc as $key => $val) {
       $sqltype = getSQLType($val);
-      $sql .= "\t%key $sqltype,\n"
+      $sql .= "\t%key $sqltype,\n";
     }
+
     $sql .= ");";
     return $sql;
 }
