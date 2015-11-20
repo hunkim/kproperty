@@ -7,12 +7,12 @@ $tname = substr($_SERVER['PATH_INFO'], 1);
 $stat_sql = "select year, month, count(*) as c, format(avg(amount),2) as avgAmount, ".
 	" REPLACE(format(avg(amount/area)*3.33,2), ',', '') as avgAmtArea, " .
         " REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ".
-	" from $name where amount > 0 and year >= ? AND year <= ?";
+	" from $tname where amount > 0 and year >= ? AND year <= ?";
 
 $stat_sql_append = " group by month, year order by year, month, date";
 
 // Basic Sale SQL
-$sale_sql = "SELECT * FROM $name where year >= ? AND year <= ?";
+$sale_sql = "SELECT * FROM $tname where year >= ? AND year <= ?";
 $sale_sql_append = " order by year desc, month desc, date desc limit 500";
 
 $debug = false;
@@ -57,9 +57,10 @@ function processQuery($sql, $sql_append) {
 
   $sql .= $sql_append;
 
-		print_r($params);
-		echo ($sql);
-		echo ($type);
+
+	print_r($params);
+	echo ($sql);
+	echo ($type);
 
 
 	// Persistent Connections
