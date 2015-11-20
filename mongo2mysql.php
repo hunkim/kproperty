@@ -20,7 +20,7 @@ function mongo2mysql($db, $colname, $year, $month) {
   $col = new MongoCollection($db, $colname);
   $cursor = $col->find()->timeout(-1)->limit(10);
   foreach ($cursor as $doc) {
-    foreach($doc as $key => $va) {
+    foreach($doc as $key => $val) {
       echo ("k: $key, v: $val");
     }
   }
