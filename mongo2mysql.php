@@ -26,7 +26,7 @@ function mongo2mysql($db, $colname, $year, $month) {
       die("Connection failed: " . $conn->connect_error);
   }
 
-  $cursor = $col->find()->timeout(-1).limit(10);
+  $cursor = $col->find()->timeout(-1)->limit(10);
 
   $idx = 0;
   foreach ($cursor as $doc) {
