@@ -22,9 +22,9 @@ $sale_sql_append = " order by year desc, month desc limit 500";
 $debug = false;
 
 if ($_SERVER['SCRIPT_NAME']=="/s.php") {
-  echo(processQuery($stat_sql, $stat_sql_append));
+  echo(processQuery($stat_sql, $stat_sql_append, $debug));
 } else {
-  echo(processQuery($sale_sql, $sale_sql_append));
+  echo(processQuery($sale_sql, $sale_sql_append, $debug));
 }
 
 /**
@@ -86,7 +86,7 @@ if($debug) {
   call_user_func_array(array($stmt, "bind_param"), array_merge(array($type), $params));
 
   $stmt->execute();
- 
+
 	// Need to install
 	// sudo apt-get install php5-mysqlnd
   $result = $stmt->get_result();

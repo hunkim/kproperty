@@ -79,8 +79,6 @@ if ($result->num_rows > 0) {
 		// select first 10 and last 10
 		if ($i++ < 10) {$bottomrows[] = $row;}
 		if ($i> ($result->num_rows-10)) {$toprows[] = $row;}
-
-		}
 	}
 }
 
