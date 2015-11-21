@@ -76,7 +76,7 @@ if ($result->num_rows > 0) {
 	while($row = $result->fetch_assoc()) {
 		// select first 10 and last 10
 		if ($i++ < 10) {$rows[] = $row;}
-		if ($i> ($result->num_rows-10)) {rows[] = $row;}
+		if ($i> ($result->num_rows-10)) {$rows[] = $row;}
 	}
 }
 
