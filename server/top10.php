@@ -69,13 +69,15 @@ if ($delta) {
 	}
 } else {
 	if($tname=='housesale') {
-		$sql = "select CONCAT_WS(' ', state, city, county) as label, avg(amount/area) as value from $tname";
+		$sql =  "select CONCAT_WS(' ', state, city, county) as label, avg(amount/area) as value from $tname";
+	  $sql .= " where amount>0 and year = $year $q ";
 		$sql .= " group by state, city, county";
-	  $sql .=" where amount>0 and year = $year $q order by value desc;";
+		$sql .= " order by value desc;";
 	} else {
 		$sql = "select CONCAT_WS(' ', state, city, county, aptName) as label, avg(amount/area) as value from $tname";
+		$sql .= " where amount>0 and year = $year $q ";
 		$sql .= " group by state, city, county, aptName ";
-		$sql .=" where amount>0 and year = $year $q order by value desc;";
+		$sql .= " order by value desc;";
 	}
 }
 
