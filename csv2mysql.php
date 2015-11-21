@@ -92,7 +92,7 @@ function endsWith($haystack, $needle) {
 }
 
 function insertDB($db, $tname, $types, $fields, $data) {
-  $sql = "INSERT INTO $tname SET ";
+  $sql = "INSERT DELAYED INTO $tname SET ";
 
   foreach ($fields as $i => $field) {
     if ($i != 0) {
@@ -287,7 +287,7 @@ function createTable($db, $colname, $types, $fields) {
       $sql .= "\t" . $fields[$i] . " $type";
     }
 
-    $sql .= ");";
+    $sql .= ") ENGINE = MYISAM;";
 
     if ($db->query($sql) !== TRUE) {
       die("Error creating table: $sql\n $db->error");
