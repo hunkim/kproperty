@@ -82,8 +82,10 @@ if ($result->num_rows > 0) {
 	}
 }
 
+$rows = array_merge($toprows, $bottomrows);
+
 $result=[];
-$result[] = ["key"=>"Cumulative Return", "values" => $toprows];
+$result[] = ["key"=>"Cumulative Return", "values" => $rows];
 
 //print_r($rows);
 
