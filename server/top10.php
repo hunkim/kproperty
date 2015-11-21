@@ -52,7 +52,7 @@ if($tname=='housesale') {
 	$sql .= " v2.a-v1.a as value from ";
 	$sql .= "(select avg(amount/area) as a, state, city, county, year from $tname where year = $preYear $q group by state, city, county) v1,";
 	$sql .= "(select avg(amount/area) as a, state, city, county, year from $tname where year = $year $q group by state, city, county) v2 ";
-	$sql .= "where v1.state=v2.state and v1.city=v2.city and v1.county=v2.county order by value;";
+	$sql .= "where v1.state=v2.state and v1.city=v2.city and v1.county=v2.county order by value desc;";
 } else {
 	$sql = "select CONCAT_WS(' ', v1.state, v1.city, v1.aptName) as label,";
 	//$sql .= "v1.year as year1, v1.a as avg1, v2.year as year2, v2.a as avg2, ";
@@ -69,20 +69,16 @@ if($debug) {
 
 $result = $conn->query($sql);
 
-$toprows=[];
-$bottomrows=[];
 
 if ($result->num_rows > 0) {
 	// output data of each row
 	$i = 0;
 	while($row = $result->fetch_assoc()) {
 		// select first 10 and last 10
-		if ($i++ < 10) {$bottomrows[] = $row;}
-		if ($i> ($result->num_rows-10)) {$toprows[] = $row;}
+		if ($i++ < 10) {$rows[] = $row;}
+		if ($i> ($result->num_rows-10)) {rows[] = $row;}
 	}
 }
-
-$rows = array_merge($toprows, $bottomrows);
 
 $result=[];
 $result[] = ["key"=>"Cumulative Return", "values" => $rows];
