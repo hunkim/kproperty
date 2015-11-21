@@ -111,7 +111,7 @@ function insertDB($db, $tname, $types, $fields, $data) {
 
 
 function readCSV($dir, $csvFile, $db, $tableName) {
-    $db->mysql_query("BEGIN");
+    $db->query("BEGIN");
 
     // Get yeat and month from csvFile
     list ($year, $month, $rest) = explode("_", $csvFile, 3);
@@ -199,7 +199,7 @@ function readCSV($dir, $csvFile, $db, $tableName) {
 
     fclose($handle);
     // mk grpo
-    $db->mysql_query("COMMIT");
+    $db->query("COMMIT");
     echo "<!> Inserted $row rows!\n";
 }
 
