@@ -87,7 +87,7 @@ if($debug) {
 $result = $conn->query($sql);
 
 if ($result !== TRUE) {
-	echo("Error creating table: $sql\n $db->error");
+	echo("Error creating table: $sql\n $conn->error");
 	exit(0);
 }
 
