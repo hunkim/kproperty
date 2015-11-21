@@ -26,6 +26,14 @@ function test($dir) {
 /* The main controller */
 // $dir should end with '/'
 function main($dir, $colname, $reload, $csvonly) {
+
+  // mysql
+  $db = new mysqli("p:localhost", "trend", "only!trend!", "trend");
+  // Check connection
+  if ($db->connect_error) {
+      die("Connection failed: " . $db->connect_error);
+  }
+
     $xlsx_njs = "./js/node_modules/xlsx/bin/xlsx.njs";
 
     echo ($dir);
@@ -61,11 +69,12 @@ function main($dir, $colname, $reload, $csvonly) {
                   continue;
                 }
                 // process generated CSV
-                readCSV($dir, $csvFile, $colname);
+                readCSV($dir, $csvFile, $db, $colname);
             }
         }
     }
     $d->close();
+    $db->close();
 }
 
 
@@ -87,7 +96,7 @@ function endsWith($haystack, $needle) {
 }
 
 function insertDB($db, $tname, $types, $fields, $data) {
-  $sql = "INSERT IGNORE INTO $tname SET ";
+  $sql = "INSERT IGNORE DELAYED INTO $tname SET ";
 
   foreach ($fields as $i => $field) {
     if ($i != 0) {
@@ -105,13 +114,8 @@ function insertDB($db, $tname, $types, $fields, $data) {
 }
 
 
-function readCSV($dir, $csvFile, $tableName) {
-    // mysql
-    $db = new mysqli("p:localhost", "trend", "only!trend!", "trend");
-    // Check connection
-    if ($db->connect_error) {
-        die("Connection failed: " . $db->connect_error);
-    }
+function readCSV($dir, $csvFile, $db, $tableName) {
+    $db->mysql_query("BEGIN");
 
     // Get yeat and month from csvFile
     list ($year, $month, $rest) = explode("_", $csvFile, 3);
@@ -198,10 +202,9 @@ function readCSV($dir, $csvFile, $tableName) {
     }
 
     fclose($handle);
-    $db->close();
-
-     // mk grpo
-     echo "<!> Inserted $row rows!\n";
+    // mk grpo
+    $db->mysql_query("COMMIT");
+    echo "<!> Inserted $row rows!\n";
 }
 
 function getFields($data) {
