@@ -19,10 +19,6 @@ foreach ($colnames as $name) {
     main("$argv[1]/$name/", $name, $reload, $csvonly);
 }
 
-function test($dir) {
-    readCSV(".", '2015_06_test.csv');
-
-}
 /* The main controller */
 // $dir should end with '/'
 function main($dir, $colname, $reload, $csvonly) {
@@ -46,7 +42,7 @@ function main($dir, $colname, $reload, $csvonly) {
                 if ($reload==1) {
                   echo "$csvFile already exist. Reload it!\n";
                   // process generated CSV
-                  readCSV($dir, $csvFile, $colname);
+                  readCSV($dir, $csvFile, $db, $colname);
                 } else {
                   echo "$csvFile already exist. Skip it!\n";
                 }
