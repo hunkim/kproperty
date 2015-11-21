@@ -6,7 +6,7 @@ $tname = substr($_SERVER['PATH_INFO'], 1);
 
 $debug = false;
 
-$k = "";
+$delta = false;
 
 $preYear=2014;
 $year=2015;
@@ -16,6 +16,11 @@ $q = "";
 foreach ($_GET as $key=>$val) {
 		if ($key=='debug') {
 			$debug = true;
+			continue;
+		}
+
+		if ($key=='delta') {
+			$delta = true;
 			continue;
 		}
 
@@ -46,20 +51,32 @@ if ($conn->connect_error) {
 		die("Connection failed: " . $conn->connect_error);
 }
 
-if($tname=='housesale') {
-	$sql = "select CONCAT_WS(' ', v1.state, v1.city, v1.county) as label,";
-	//$sql .= "v1.year as year1, v1.a as avg1, v2.year as year2, v2.a as avg2, ";
-	$sql .= " v2.a-v1.a as value from ";
-	$sql .= "(select avg(amount/area) as a, state, city, county, year from $tname where year = $preYear $q group by state, city, county) v1,";
-	$sql .= "(select avg(amount/area) as a, state, city, county, year from $tname where year = $year $q group by state, city, county) v2 ";
-	$sql .= "where v1.state=v2.state and v1.city=v2.city and v1.county=v2.county order by value desc;";
+if ($delta) {
+  if($tname=='housesale') {
+		$sql = "select CONCAT_WS(' ', v1.state, v1.city, v1.county) as label,";
+		//$sql .= "v1.year as year1, v1.a as avg1, v2.year as year2, v2.a as avg2, ";
+		$sql .= " v2.a-v1.a as value from ";
+		$sql .= "(select avg(amount/area) as a, state, city, county, year from $tname where year = $preYear $q group by state, city, county) v1,";
+		$sql .= "(select avg(amount/area) as a, state, city, county, year from $tname where year = $year $q group by state, city, county) v2 ";
+		$sql .= "where v1.state=v2.state and v1.city=v2.city and v1.county=v2.county order by value desc;";
+	} else {
+		$sql = "select CONCAT_WS(' ', v1.state, v1.city, v1.aptName) as label,";
+		//$sql .= "v1.year as year1, v1.a as avg1, v2.year as year2, v2.a as avg2, ";
+		$sql .= " v2.a-v1.a as value from ";
+		$sql .= "(select avg(amount/area) as a, state, city, county, aptName, year from $tname where year = $preYear $q group by state, city, county, aptName) v1,";
+		$sql .= "(select avg(amount/area) as a, state, city, county, aptName, year from $tname where year = $year $q group by state, city, county, aptName) v2 ";
+		$sql .= "where v1.state=v2.state and v1.city=v2.city and v1.county=v2.county and v1.aptName=v2.aptName order by value desc;";
+	}
 } else {
-	$sql = "select CONCAT_WS(' ', v1.state, v1.city, v1.aptName) as label,";
-	//$sql .= "v1.year as year1, v1.a as avg1, v2.year as year2, v2.a as avg2, ";
-	$sql .= " v2.a-v1.a as value from ";
-	$sql .= "(select avg(amount/area) as a, state, city, county, aptName, year from $tname where year = $preYear $q group by state, city, county, aptName) v1,";
-	$sql .= "(select avg(amount/area) as a, state, city, county, aptName, year from $tname where year = $year $q group by state, city, county, aptName) v2 ";
-	$sql .= "where v1.state=v2.state and v1.city=v2.city and v1.county=v2.county and v1.aptName=v2.aptName order by value desc;";
+	if($tname=='housesale') {
+		$sql = "select CONCAT_WS(' ', state, city, county) as label, avg(amount/area) as value from $tname";
+		$sql .= " group by state, city, county";
+	  $sql .=" where amount>0 and year = $year $q order by value desc;";
+	} else {
+		$sql = "select CONCAT_WS(' ', state, city, county, aptName) as label, avg(amount/area) as value from $tname";
+		$sql .= " group by state, city, county, aptName ";
+		$sql .=" where amount>0 and year = $year $q order by value desc;";
+	}
 }
 
 
@@ -69,6 +86,10 @@ if($debug) {
 
 $result = $conn->query($sql);
 
+if ($result !== TRUE) {
+	echo("Error creating table: $sql\n $db->error");
+	exit(0);
+}
 
 if ($result->num_rows > 0) {
 	// output data of each row
