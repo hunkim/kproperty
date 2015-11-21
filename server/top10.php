@@ -51,7 +51,7 @@ $sql = "select CONCAT_WS(' ', v1.state, v1.city, v1.county) as label,";
 $sql .= " v2.a-v1.a as value from ";
 $sql .= "(select avg(amount/area) as a, state, city, county, year from $tname where year = $preYear $q group by state, city, county) v1,";
 $sql .= "(select avg(amount/area) as a, state, city, county, year from $tname where year = $year $q group by state, city, county) v2 ";
-$sql .= "where v1.state=v2.state and v1.city=v2.city and v1.county=v2.county order by value desc limit 10;";
+$sql .= "where v1.state=v2.state and v1.city=v2.city and v1.county=v2.county order by value desc;";
 
 
 if($debug) {
@@ -63,8 +63,12 @@ $result = $conn->query($sql);
 $rows=[];
 if ($result->num_rows > 0) {
 	// output data of each row
+	$i = 0;
 	while($row = $result->fetch_assoc()) {
-    $rows[] = $row;
+		// select first 10 and last 10
+		if ($i++ < 10 || $i< ($result->num_rows-10)) {}
+    	$rows[] = $row;
+		}
 	}
 }
 
