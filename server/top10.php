@@ -69,20 +69,23 @@ if($debug) {
 
 $result = $conn->query($sql);
 
-$rows=[];
+$toprows=[];
+$bottomrows=[];
+
 if ($result->num_rows > 0) {
 	// output data of each row
 	$i = 0;
 	while($row = $result->fetch_assoc()) {
 		// select first 10 and last 10
-		if ($i++ < 10 || $i> ($result->num_rows-10)) {
-    	$rows[] = $row;
+		if ($i++ < 10) {$bottomrows[] = $row;}
+		if ($i> ($result->num_rows-10)) {$toprows[] = $row;}
+
 		}
 	}
 }
 
 $result=[];
-$result[] = ["key"=>"Cumulative Return", "values" => $rows];
+$result[] = ["key"=>"Cumulative Return", "values" => array_merge($toprows, $buttonrows)];
 
 //print_r($rows);
 
