@@ -52,7 +52,7 @@ if($tname=='housesale') {
 	$sql .= " v2.a-v1.a as value from ";
 	$sql .= "(select avg(amount/area) as a, state, city, county, year from $tname where year = $preYear $q group by state, city, county) v1,";
 	$sql .= "(select avg(amount/area) as a, state, city, county, year from $tname where year = $year $q group by state, city, county) v2 ";
-	$sql .= "where v1.state=v2.state and v1.city=v2.city and v1.county=v2.county order by value desc;";
+	$sql .= "where v1.state=v2.state and v1.city=v2.city and v1.county=v2.county order by value;";
 } else {
 	$sql = "select CONCAT_WS(' ', v1.state, v1.city, v1.aptName) as label,";
 	//$sql .= "v1.year as year1, v1.a as avg1, v2.year as year2, v2.a as avg2, ";
