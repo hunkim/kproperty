@@ -59,11 +59,14 @@ function mktable($db, $tname) {
 }
 
 function mkreg($db, $colname, $tname, $grouparr) {
+  $db->query("BEGIN");
   foreach ($grouparr as $i => $value) {
     if ($i != 0) {
       mkonereg($db, $colname, $tname, $grouparr, $i);
     }
   }
+
+  $db->query("COMMIT");
 }
 
 
