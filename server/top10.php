@@ -83,7 +83,7 @@ if ($result->num_rows > 0) {
 }
 
 $result=[];
-$result[] = ["key"=>"Cumulative Return", "values" => $toprows)];
+$result[] = ["key"=>"Cumulative Return", "values" => $toprows];
 
 //print_r($rows);
 
