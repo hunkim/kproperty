@@ -7,7 +7,9 @@ $tname = substr($_SERVER['PATH_INFO'], 1);
 $debug = false;
 
 $k = "";
-$i=0;
+
+//state='?' and city='?' and county='?'
+$q = "";
 foreach ($_GET as $key=>$val) {
 		if ($key=='debug') {
 			$debug = true;
@@ -22,16 +24,9 @@ foreach ($_GET as $key=>$val) {
 			continue;
 		}
 
-		if ($i++ !== 0) {
-			$k.="::";
-		}
-		$k.=urldecode($val);
+		$q.=" and $key= " . urldecode($val);
 }
 
-
-if($debug) {
-	echo ("Query: $k");
-}
 
 // Persistent Connections
 // http://stackoverflow.com/questions/3332074/what-are-the-disadvantages-of-using-persistent-connection-in-pdo
@@ -42,10 +37,12 @@ if ($conn->connect_error) {
 		die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "select CONCAT_WS(' ', v1.state, v1.city, v1.county) as loc, v1.year as year1, v1.a as avg1, v2.year as year2, v2.a as avg2, v2.a-v1.a as delta from
-(select avg(amount/area) as a, year,  state, city, county from $tname where year = 2006 group by state, city, county) v1,
-(select avg(amount/area) as a, year,  state, city, county from $tname where year = 2007 group by state, city, county) v2
-where v1.city=v2.city and v1.county=v2.county and v1.state=v2.state order by delta desc;";
+$sql = "select CONCAT_WS(' ', v1.state, v1.city, v1.county) as loc,";
+$sql .= "v1.year as year1, v1.a as avg1, v2.year as year2, v2.a as avg2, v2.a-v1.a as delta from ";
+$sql .= "(select avg(amount/area) as a, state, city, county, year from $tname where year = 2006 $q group by state, city, county) v1,";
+$sql .= "(select avg(amount/area) as a, state, city, county, year from $tname where year = 2007 $q group by state, city, county) v2 ";
+$sql .= "where v1.state=v2.state and v1.city=v2.city and v1.county=v2.county order by delta desc;";
+
 
 if($debug) {
 	echo $sql;
