@@ -92,7 +92,7 @@ function endsWith($haystack, $needle) {
 }
 
 function insertDB($db, $tname, $types, $fields, $data) {
-  $sql = "INSERT DELAYED INTO $tname SET ";
+  $sql = "INSERT INTO $tname SET ";
 
   foreach ($fields as $i => $field) {
     if ($i != 0) {
