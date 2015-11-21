@@ -67,9 +67,12 @@ if ($result->num_rows > 0) {
 	}
 }
 
+$result = ["key"=>"Cumulative Return",
+"values" => $rows[]];
+
 //print_r($rows);
 
 // JSON_PRETTY_PRINT|
-print json_encode($rows,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
+print json_encode($result, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
 $conn->close();
 ?>
