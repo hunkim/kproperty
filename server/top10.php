@@ -8,6 +8,9 @@ $debug = false;
 
 $k = "";
 
+$preYear=2014;
+$year=2015;
+
 //state='?' and city='?' and county='?'
 $q = "";
 foreach ($_GET as $key=>$val) {
@@ -17,6 +20,12 @@ foreach ($_GET as $key=>$val) {
 		}
 
 		if ($key=='query') {
+			continue;
+		}
+
+		if ($key=='year') {
+			$year = intval($val);
+			$preYear = intval($val)-1;
 			continue;
 		}
 
@@ -39,8 +48,8 @@ if ($conn->connect_error) {
 
 $sql = "select CONCAT_WS(' ', v1.state, v1.city, v1.county) as loc,";
 $sql .= "v1.year as year1, v1.a as avg1, v2.year as year2, v2.a as avg2, v2.a-v1.a as delta from ";
-$sql .= "(select avg(amount/area) as a, state, city, county, year from $tname where year = 2006 $q group by state, city, county) v1,";
-$sql .= "(select avg(amount/area) as a, state, city, county, year from $tname where year = 2007 $q group by state, city, county) v2 ";
+$sql .= "(select avg(amount/area) as a, state, city, county, year from $tname where year = $preYear $q group by state, city, county) v1,";
+$sql .= "(select avg(amount/area) as a, state, city, county, year from $tname where year = $year $q group by state, city, county) v2 ";
 $sql .= "where v1.state=v2.state and v1.city=v2.city and v1.county=v2.county order by delta desc;";
 
 
