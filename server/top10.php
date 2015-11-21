@@ -33,7 +33,7 @@ foreach ($_GET as $key=>$val) {
 			continue;
 		}
 
-		$q.=" and $key= " . urldecode($val);
+		$q.=" and $key='" . urldecode($val) . "'";
 }
 
 
