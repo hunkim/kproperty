@@ -72,12 +72,12 @@ if ($delta) {
 		$sql =  "select CONCAT_WS(' ', state, city, county) as label, avg(amount/area) as value from $tname";
 	  $sql .= " where amount>0 and year = $year $q ";
 		$sql .= " group by state, city, county";
-		$sql .= " order by value desc;";
+		$sql .= " order by value desc limit 20;";
 	} else {
 		$sql = "select CONCAT_WS(' ', state, city, county, aptName) as label, avg(amount/area) as value from $tname";
 		$sql .= " where amount>0 and year = $year $q ";
 		$sql .= " group by state, city, county, aptName ";
-		$sql .= " order by value desc;";
+		$sql .= " order by value desc limit 20;";
 	}
 }
 
