@@ -42,7 +42,7 @@ if ($conn->connect_error) {
 		die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "select v1.state, v1.city, v1.county, v1.year, v1.a, v2.year, v2.a, v2.a-v1.a as d from
+$sql = "select v1.state, v1.city, v1.county, v1.year as year1, v1.a as avg1, v2.year as year2, v2.a as avg2, v2.a-v1.a as delta from
 (select avg(amount/area) as a, year,  state, city, county from $tname where year = 2006 group by state, city, county) v1,
 (select avg(amount/area) as a, year,  state, city, county from $tname where year = 2007 group by state, city, county) v2
 where v1.city=v2.city and v1.county=v2.county and v1.state=v2.state order by d desc;";
