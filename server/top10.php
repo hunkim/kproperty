@@ -47,7 +47,7 @@ if ($conn->connect_error) {
 }
 
 if($tname=='housesale') {
-	$sql = "select CONCAT_WS(' ', LEFT(v1.state,2), v1.city, v1.county) as label,";
+	$sql = "select CONCAT_WS(' ', LEFT(v1.state,4), v1.city, v1.county) as label,";
 	//$sql .= "v1.year as year1, v1.a as avg1, v2.year as year2, v2.a as avg2, ";
 	$sql .= " v2.a-v1.a as value from ";
 	$sql .= "(select avg(amount/area) as a, state, city, county, year from $tname where year = $preYear $q group by state, city, county) v1,";
