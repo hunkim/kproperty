@@ -71,17 +71,17 @@ function mkoneagg($db, $tname, $tnameagg, $year, $month, $arr) {
     case 'aptsale':
     case 'flatsale':
       $sql = "insert DELAYED into $tnameagg select $concat as k, year, month, count(*) as count, ".
-        " REPLACE(format(avg(amount/area),2)*3.33, ',', '') as avgAmtArea ";
+        " avg(amount/area) as avgAmtArea ";
       if ($tname != 'aptsale') {
-        $sql .= ", REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ";
+        $sql .= ", avg(amount/landArea) as avgAmtLand ";
       }
       $sql .=	" from $tname where amount > 0 and year = $year AND month = $month";
      break;
 
   default:
     $sql = "insert DELAYED into $tnameagg select $concat as k, year, month, count(*) as count, ".
-      " REPLACE(format(avg(deposit/area),2)*3.33, ',', '') as avgDeposit ";
-    $sql .= ", REPLACE(format(avg(monthlyPay/area)*3.33,2), ',', '') as avgRent ";
+      " avg(deposit/area) as avgDeposit ";
+    $sql .= ", avg(monthlyPay/area) as avgRent ";
     $sql .=	" from $tname where year = $year AND month = $month";
   }
 
