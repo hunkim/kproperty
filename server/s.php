@@ -11,11 +11,11 @@ switch($tname) {
 			$stat_sql = "select year, month, count(*) as count, ".
 			" REPLACE(format(avg(amount/area)*3.33,2), ',', '') as avgAmtArea ";
 
-			$stat_simple = "select year, month, count, avgAmtArea ";
+			$stat_simple = "select year, month, count, REPLACE(avgAmtArea, ',','') ";
 
 			if ($tname != 'aptsale') {
    			$stat_sql .= ", REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ";
-				$stat_simple .= ", avgAmtLand ";
+				$stat_simple .= ", REPLACE(avgAmtLand, ',', '') ";
 			}
 
 			$stat_sql .=	" from $tname where amount > 0 and year >= ? AND year <= ?";
@@ -29,7 +29,7 @@ switch($tname) {
 		$stat_sql .= ", REPLACE(format(avg(monthlyPay/area)*3.33,2), ',', '') as avgRent ";
 		$stat_sql .=	" from $tname where year >= ? AND year <= ?";
 
-		$stat_simple = "select year, month, count, avgDeposit, avgRent ";
+		$stat_simple = "select year, month, count, REPLACE(avgDeposit, '',', ''), REPLACE(avgRent, ',', '') ";
 		$stat_simple .= " from $tname" . "_agg where k=? AND year >= ? AND year <= ? order by year, month";
 }
 
