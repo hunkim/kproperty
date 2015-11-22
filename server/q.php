@@ -4,45 +4,17 @@ header("Content-Type: application/json; charset=UTF-8");
 
 $tname = substr($_SERVER['PATH_INFO'], 1);
 
-switch($tname) {
-	case 'housesale':
-	case 'aptsale':
-	case 'flatsale':
-		$stat_sql = "select year, month, count(*) as count, ".
-			" REPLACE(format(avg(amount/area)*3.33,2), ',', '') as avgAmtArea ";
-
-			if ($tname != 'aptsale') {
-   			$stat_sql .= ", REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ";
-			}
-
-			$stat_sql .=	" from $tname where amount > 0 and year >= ? AND year <= ?";
-		 break;
-
-	default:
-		$stat_sql = "select year, month, count(*) as count, ".
-			" REPLACE(format(avg(deposit/area)*3.33,2), ',', '') as avgDeposit ";
-		$stat_sql .= ", REPLACE(format(avg(monthlyPay/area)*3.33,2), ',', '') as avgRent ";
-		$stat_sql .=	" from $tname where year >= ? AND year <= ?";
-
-}
-
-$stat_sql_append = " group by year, month order by year, month ";
-
 // Basic Sale SQL
 $sale_sql = "Select * from (SELECT * FROM $tname where year >= ? AND year <= ?";
 $sale_sql_append = " limit 500) x order by year desc, month desc";
 
 $debug = false;
 
-if ($_SERVER['SCRIPT_NAME']=="/s.php") {
-  echo(processQuery($stat_sql, $stat_sql_append, $debug));
-} else {
-  echo(processQuery($sale_sql, $sale_sql_append, $debug));
-}
+echo(processQuery($sale_sql, $sale_sql_append, $debug));
 
 /**
 */
-function processQuery($sql, $sql_append) {
+function processQuery($sql, $sql_append, $debug) {
   $startyear = intval($_GET['startyear']);
   $endyear = intval($_GET['endyear']);
 
@@ -51,6 +23,8 @@ function processQuery($sql, $sql_append) {
   $params = array(&$startyear, &$endyear);
   $type = "ii";
 
+	$searchKey="";
+	$i=0;
   foreach ($_GET as $key=>$val) {
 		if ($key=="startyear" || $key=='endyear')
 			continue;
@@ -63,6 +37,11 @@ function processQuery($sql, $sql_append) {
 		if ($val=="") {
 			continue;
 		}
+
+		if ($i++>0) {
+			$searchKey+="::";
+		}
+		$searchKey .= $key;
 
   	$sql .= " AND " . $key . "=? ";
 		$type .= "s";
