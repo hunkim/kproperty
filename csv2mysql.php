@@ -202,11 +202,11 @@ function readCSV($dir, $csvFile, $db, $tableName) {
 
     fclose($handle);
     echo "<!> Inserted $row rows!\n";
+    $db->query("COMMIT");
 
     // make agg
+    $db->query("BEGIN");
     mkagg($db, $tableName, $year, $month);
-
-    // mk grpo
     $db->query("COMMIT");
 
 
