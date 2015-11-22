@@ -81,7 +81,7 @@ function processQuery($sql, $sql_append, $simple, $debug) {
 
   $sql .= $sql_append;
 
-  if (i<=3) {
+  if ($i<=3) {
 		$sql = $simple;
 		$params = [$searchKey, &$startyear, &$endyear];
 		$type ="sii";
