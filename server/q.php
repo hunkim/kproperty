@@ -29,7 +29,7 @@ function processQuery($sql, $sql_append, $debug) {
 			continue;
 
 		if ($key=='debug') {
-			$debug == true;
+			$debug = true;
 			continue;
 		}
 
