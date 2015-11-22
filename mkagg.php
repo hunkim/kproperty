@@ -45,6 +45,6 @@ function mkagg($db, $tname, $year, $month) {
 
 function mkoneagg($db, $tname, $sql) {
   $tnameagg = $tname."_agg";
-  echo ($sql);
+  echo ($sql\n);
 }
 ?>
