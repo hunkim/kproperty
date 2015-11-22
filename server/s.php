@@ -12,6 +12,7 @@ switch($tname) {
 			" REPLACE(format(avg(amount/area)*3.33,2), ',', '') as avgAmtArea ";
 
 			$stat_simple = "select year, month, count, amtArea";
+
 			if ($tname != 'aptsale') {
    			$stat_sql .= ", REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ";
 				$stat_simple = ", abgAmtLand ";
@@ -35,7 +36,7 @@ switch($tname) {
 
 $stat_sql_append = " group by year, month order by year, month ";
 
-echo(processQuery($stat_sql, $stat_sql_append, $stat_sql));
+processQuery($stat_sql, $stat_sql_append, $stat_simple);
 
 /**
 */
@@ -121,7 +122,7 @@ function processQuery($sql, $sql_append, $simple) {
   }
 
 	// JSON_PRETTY_PRINT|
-  return json_encode($rows,JSON_UNESCAPED_UNICODE);
+  print json_encode($rows,JSON_UNESCAPED_UNICODE);
 
 	$conn->close();
 }

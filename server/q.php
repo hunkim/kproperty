@@ -10,7 +10,7 @@ $sale_sql_append = " limit 500) x order by year desc, month desc";
 
 
 
-echo(processQuery($sale_sql, $sale_sql_append));
+processQuery($sale_sql, $sale_sql_append);
 
 /**
 */
@@ -83,7 +83,7 @@ if($debug) {
   }
 
 	// JSON_PRETTY_PRINT|
-  return json_encode($rows,JSON_UNESCAPED_UNICODE);
+  print json_encode($rows,JSON_UNESCAPED_UNICODE);
 
 	$conn->close();
 }
