@@ -29,8 +29,8 @@ switch($tname) {
 $stat_sql_append = " group by year, month order by year, month ";
 
 // Basic Sale SQL
-$sale_sql = "SELECT * FROM $tname where year >= ? AND year <= ?";
-$sale_sql_append = " order by year desc, month desc limit 500";
+$sale_sql = "Select * from (SELECT * FROM $tname where year >= ? AND year <= ?";
+$sale_sql_append = " limit 500) x order by year desc, month desc";
 
 $debug = false;
 
