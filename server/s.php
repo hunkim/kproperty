@@ -66,7 +66,7 @@ function processQuery($sql, $sql_append, $simple) {
 		}
 
 		if ($i++>0) {
-			$searchKey+="::";
+			$searchKey .= "::";
 		}
 
   	$sql .= " AND " . $key . "=? ";
