@@ -148,10 +148,10 @@ function readCSV($dir, $csvFile, $db, $tableName) {
             $fields[] = "city";
             $fields[] = "county";
             $fields[] = "region";
-            $types[] = "varchar(256)";
-            $types[] = "varchar(256)";
-            $types[] = "varchar(256)";
-            $types[] = "varchar(256)";
+            $types[] = "varchar(99)";
+            $types[] = "varchar(99)";
+            $types[] = "varchar(99)";
+            $types[] = "varchar(99)";
 
             //$types[] = "i";
 
@@ -250,21 +250,21 @@ function getFields($data) {
 }
 
 function getTypes($fields) {
-    $typeArr = array('fullLoc'=>'varchar(256)',
-    'type'=>'varchar(256)',
+    $typeArr = array('fullLoc'=>'varchar(255)',
+    'type'=>'varchar(99)',
     'area'=>'double',
     'landArea' => 'double',
     'day' => 'int',
     'amount' => 'int',
     'builtYear'=>'int',
-    'num1' => 'varchar(256)',
-    'num2' => 'varchar(256)',
-    'aptName' => 'varchar(256)',
-    'monthlyType' => 'varchar(256)',
+    'num1' => 'varchar(99)',
+    'num2' => 'varchar(99)',
+    'aptName' => 'varchar(99)',
+    'monthlyType' => 'varchar(99)',
     'deposit' => 'int',
     'monthlyPay' => 'int',
     'floor' => 'int',
-    'avenue'=>'varchar(256)');
+    'avenue'=>'varchar(255)');
 
     $types = array();
     foreach ($fields as $value) {
@@ -296,7 +296,8 @@ function createTable($db, $colname, $types, $fields) {
 
 function typeesc ($db, $type, $val) {
   switch($type) {
-    case "varchar(256)":
+    case "varchar(255)":
+    case "varchar(99)":
       return "'" . $db->real_escape_string($val) . "'";
 
     case "int":

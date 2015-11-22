@@ -92,7 +92,7 @@ function mkonereg($db, $colname, $tname, $grouparr, $last) {
 
         print_r($row);
 
-        $sqinsert = "INSERT IGNORE INTO $tname SET k='";
+        $sqinsert = "INSERT IGNORE DELAYED INTO $tname SET k='";
         $sqinsert.= $db->real_escape_string($row['k']) ."'";
         $sqinsert.= ", v='" . $db->real_escape_string($row['v']) . "'";
 
