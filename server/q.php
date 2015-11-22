@@ -5,10 +5,8 @@ header("Content-Type: application/json; charset=UTF-8");
 $tname = substr($_SERVER['PATH_INFO'], 1);
 
 // Basic Sale SQL
-$sale_sql = "Select * from (SELECT * FROM $tname where year >= ? AND year <= ?";
-$sale_sql_append = " limit 500) x order by year desc, month desc";
-
-
+$sale_sql = "SELECT * FROM $tname where year >= ? AND year <= ? ";
+$sale_sql_append = " order by year desc, month desc limit 500";
 
 processQuery($sale_sql, $sale_sql_append);
 
