@@ -11,7 +11,7 @@ switch($tname) {
 			$stat_sql = "select year, month, count(*) as count, ".
 			" REPLACE(format(avg(amount/area)*3.33,2), ',', '') as avgAmtArea ";
 
-			$stat_simple = "select year, month, count, amtArea";
+			$stat_simple = "select year, month, count, amtArea ";
 
 			if ($tname != 'aptsale') {
    			$stat_sql .= ", REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ";
