@@ -7,7 +7,7 @@ $tname = substr($_SERVER['PATH_INFO'], 1);
 switch($tname) {
 	case 'hosuesale':
 	case 'aptsale':
-	case 'flatsale'
+	case 'flatsale':
 		$stat_sql = "select year, month, count(*) as count, ".
 			" REPLACE(format(avg(amount/area)*3.33,2), ',', '') as avgAmtArea ";
 
