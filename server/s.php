@@ -15,7 +15,7 @@ switch($tname) {
 
 			if ($tname != 'aptsale') {
    			$stat_sql .= ", REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ";
-				$stat_simple .= ", abgAmtLand ";
+				$stat_simple .= ", avgAmtLand ";
 			}
 
 			$stat_sql .=	" from $tname where amount > 0 and year >= ? AND year <= ?";
