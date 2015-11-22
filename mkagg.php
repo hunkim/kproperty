@@ -15,7 +15,7 @@ function test() {
 function mkagg($db, $tname, $year, $month) {
   $tnameagg = $tname."_agg";
 
-  $create = "Create Table IF NOT EXISTS $tname (k varchar(255), year int, month, count int,";
+  $create = "Create Table IF NOT EXISTS $tnameagg (k varchar(255), year int, month int, count int,";
 
   switch($tname) {
     case 'housesale':
