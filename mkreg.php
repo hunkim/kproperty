@@ -56,9 +56,9 @@ function mktable($db, $tname) {
     die("Error creating table: $sql\n $db->error");
   }
 
-  $sql = "CREATE INDEX k_index ON $tname (k);
+  $sql = "CREATE INDEX k_index ON $tname (k)";
   if ($db->query($sql) !== TRUE) {
-    //die("Error creating table: $sql\n $db->error");
+    // die("Error creating table: $sql\n $db->error");
   }
 }
 
