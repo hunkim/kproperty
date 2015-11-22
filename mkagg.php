@@ -12,7 +12,7 @@ function test() {
   mkagg($conn, "housesale", 2015, 10);
 }
 
-function mkagg($db, $colname, $year, $month) {
+function mkagg($db, $tname, $year, $month) {
   switch($colname) {
     case 'flatsale':
       $stat_sql = "select year, month, count(*) as count, ".
@@ -36,15 +36,15 @@ function mkagg($db, $colname, $year, $month) {
 
   // insert with empty
   $sql_grp = "";
-  mkoneagg($db, $colname, $sql);
+  mkoneagg($db, $tname, $sql);
   foreach ($groupkey as $key => $va) {
       $sql_grp .= ", $va ";
-      mkonegrp($db, $colname, $query, $grouparr);
+      mkonegrp($db, $tname, $query, $grouparr);
   }
 }
 
-function mkoneagg($db, $colname, $sql) {
-  $col2name = $colname."_agg";
+function mkoneagg($db, $tname, $sql) {
+  $tnameagg = $tname."_agg";
   echo ($sql);
 }
 ?>
