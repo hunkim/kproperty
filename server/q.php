@@ -22,7 +22,7 @@ switch($tname) {
 		$stat_sql = "select year, month, count(*) as count, ".
 			" REPLACE(format(avg(deposit/area)*3.33,2), ',', '') as avgDeposit ";
 		$stat_sql .= ", REPLACE(format(avg(monthlyPay/area)*3.33,2), ',', '') as avgRent ";
-		$stat_sql .=	" from $tname where and year >= ? AND year <= ?";
+		$stat_sql .=	" from $tname where year >= ? AND year <= ?";
 
 }
 
