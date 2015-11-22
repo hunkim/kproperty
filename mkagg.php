@@ -41,7 +41,7 @@ function mkagg($db, $tname, $year, $month) {
     die("Error creating table: $create\n $db->error");
   }
 
-  $sql = "ALTER TABLE $tnameagg ADD INDEX (k)";
+  $sql = "CREATE INDEX IF NOT EXISTS k_index ON $tnameagg (k)";
   if ($db->query($sql) !== TRUE) {
     die("Error creating table: $sql\n $db->error");
   }
