@@ -18,6 +18,7 @@ function test() {
 }
 
 function mkagg($db, $tname, $year, $month) {
+  echo "Making agg $tname $year $month...\n";
   $tnameagg = $tname."_agg";
 
   $create = "Create Table IF NOT EXISTS $tnameagg (k varchar(255), year int, month int, count int,";
