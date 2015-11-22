@@ -18,10 +18,11 @@ foreach ($_GET as $key=>$val) {
 			continue;
 		}
 
+/*
 		if ($val=="") {
 			continue;
 		}
-
+*/
 		if ($i++ !== 0) {
 			$k.="::";
 		}
