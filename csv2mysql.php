@@ -1,8 +1,11 @@
 #!/usr/bin/php
 <?php
 error_reporting(E_ALL);
-
 assert_options(ASSERT_BAIL,     true);
+
+include 'mkagg.php';
+
+
 if (count($argv) < 2) {
     echo "Usage: $argv[0] <xls_dir> <reload:csvonly>\n\n";
     exit;
@@ -201,6 +204,9 @@ function readCSV($dir, $csvFile, $db, $tableName) {
     // mk grpo
     $db->query("COMMIT");
     echo "<!> Inserted $row rows!\n";
+
+    // make agg
+    mkagg($db, $tableName, $year, $month) {
 }
 
 function getFields($data) {
