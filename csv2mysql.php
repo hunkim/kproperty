@@ -201,12 +201,15 @@ function readCSV($dir, $csvFile, $db, $tableName) {
     }
 
     fclose($handle);
-    // mk grpo
-    $db->query("COMMIT");
     echo "<!> Inserted $row rows!\n";
 
     // make agg
-    mkagg($db, $tableName, $year, $month) {
+    mkagg($db, $tableName, $year, $month);
+
+    // mk grpo
+    $db->query("COMMIT");
+
+
 }
 
 function getFields($data) {
