@@ -4,14 +4,27 @@ header("Content-Type: application/json; charset=UTF-8");
 
 $tname = substr($_SERVER['PATH_INFO'], 1);
 
-$stat_sql = "select year, month, count(*) as count, ".
-	" REPLACE(format(avg(amount/area)*3.33,2), ',', '') as avgAmtArea ";
+switch($tname) {
+	case 'hosuesale':
+	case 'aptsale':
+	case 'flatsale'
+		$stat_sql = "select year, month, count(*) as count, ".
+			" REPLACE(format(avg(amount/area)*3.33,2), ',', '') as avgAmtArea ";
 
-if ($tname == 'housesale' || $tname == 'flatsale') {
-   	$stat_sql .= ", REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ";
+			if ($tname != 'aptsale') {
+   			$stat_sql .= ", REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ";
+			}
+
+			$stat_sql .=	" from $tname where amount > 0 and year >= ? AND year <= ?";
+		 break;
+
+	default:
+		$stat_sql = "select year, month, count(*) as count, ".
+			" REPLACE(format(avg(deposit/area)*3.33,2), ',', '') as avgDeposit ";
+		$stat_sql .= ", REPLACE(format(avg(monthlyPay/area)*3.33,2), ',', '') as avgRent ";
+		$stat_sql .=	" from $tname where and year >= ? AND year <= ?";
+
 }
-
-$stat_sql .=	" from $tname where amount > 0 and year >= ? AND year <= ?";
 
 $stat_sql_append = " group by year, month order by year, month ";
 
