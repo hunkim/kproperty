@@ -68,7 +68,7 @@ if ($delta) {
 		$sql .= "where v1.state=v2.state and v1.city=v2.city and v1.county=v2.county and v1.aptName=v2.aptName order by value desc;";
 	}
 } else {
-	if($tname=='aptrent' || $tname=='flatrent')) {
+	if($tname=='aptrent' || $tname=='flatrent') {
 		$sql =  "select CONCAT_WS(' ', state, city, county) as label, avg(deposit/area) as value from $tname";
 	  $sql .= " where deposit>0 and year = $year $q ";
 		$sql .= " group by state, city, county";
