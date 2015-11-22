@@ -34,6 +34,8 @@ function mkoneagg($db, $tname, $year, $month, $arr) {
   }
 
   switch($tname) {
+    case 'housesale':
+    case 'aptsale':
     case 'flatsale':
       $sql = "select CONCAT_WS('::' $keys) as key, year, month, count(*) as count, ".
         " REPLACE(format(avg(amount/area),2), ',', '') as avgAmtArea ";
