@@ -34,7 +34,7 @@ switch($tname) {
 			$stat_sql .=	" from $tname where year >= ? AND year <= ?";
 
 			$stat_simple .= " REPLACE(format(avgDeposit,2), ',', '') as avgDeposit, ";
-			$stat_simple .= " REPLACE(format(avgRent,2), ',', '') as AvgRent ";
+			$stat_simple .= " REPLACE(format(avgRent,2), ',', '') as avgRent ";
 }
 
 $stat_simple .= " from $tname" . "_agg where k=? AND year >= ? AND year <= ?  order by year, month";
