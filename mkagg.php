@@ -19,11 +19,11 @@ function mkagg($db, $tname, $year, $month) {
 
   foreach ($groupkey as $key => $value) {
       $arr[] = $value;
-      mkoneagg($db, $tname, $arr);
+      mkoneagg($db, $tname, $year, $month, $arr);
   }
 }
 
-function mkoneagg($db, $tname, $arr) {
+function mkoneagg($db, $tname, $year, $month, $arr) {
   $tnameagg = $tname."_agg";
 
   $keys = "";
