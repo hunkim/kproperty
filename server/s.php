@@ -9,13 +9,13 @@ switch($tname) {
 	case 'aptsale':
 	case 'flatsale':
 			$stat_sql = "select year, month, count(*) as count, ".
-			" REPLACE(format(avg(amount/area)*3.33,2), ',', '') as avgAmtArea ";
+			" REPLACE(format(avg(amount/area),2), ',', '') as avgAmtArea ";
 
-			$stat_simple = "select year, month, count, REPLACE(format(avgAmtArea*3.33,2), ',','') as avgAmtArea ";
+			$stat_simple = "select year, month, count, REPLACE(format(avgAmtArea,2), ',','') as avgAmtArea ";
 
 			if ($tname != 'aptsale') {
-   			$stat_sql .= ", REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ";
-				$stat_simple .= ", REPLACE(format(avgAmtLand*3.33,2), ',', '') as avgAmtLand  ";
+   			$stat_sql .= ", REPLACE(format(avg(amount/landArea),2), ',', '') as avgAmtLand ";
+				$stat_simple .= ", REPLACE(format(avgAmtLand,2), ',', '') as avgAmtLand  ";
 			}
 
 			$stat_sql .=	" from $tname where amount > 0 and year >= ? AND year <= ?";
@@ -25,12 +25,12 @@ switch($tname) {
 
 	default:
 		$stat_sql = "select year, month, count(*) as count, ".
-			" REPLACE(format(avg(deposit/area)*3.33,2), ',', '') as avgDeposit ";
-		$stat_sql .= ", REPLACE(format(avg(monthlyPay/area)*3.33,2), ',', '') as avgRent ";
+			" REPLACE(format(avg(deposit/area),2), ',', '') as avgDeposit ";
+		$stat_sql .= ", REPLACE(format(avg(monthlyPay/area),2), ',', '') as avgRent ";
 		$stat_sql .=	" from $tname where year >= ? AND year <= ?";
 
-		$stat_simple = "select year, month, count, REPLACE(format(avgDeposit*3.33,2), '',', '') as avgDeposit, ";
-		$stat_simple = " REPLACE(format(avgRent*3.33,2), ',', '') as AvgRent ";
+		$stat_simple = "select year, month, count, REPLACE(format(avgDeposit,2), '',', '') as avgDeposit, ";
+		$stat_simple = " REPLACE(format(avgRent,2), ',', '') as AvgRent ";
 		$stat_simple .= " from $tname" . "_agg where k=? AND year >= ? AND year <= ? order by year, month";
 }
 
