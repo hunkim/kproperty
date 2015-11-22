@@ -8,9 +8,9 @@ $tname = substr($_SERVER['PATH_INFO'], 1);
 $sale_sql = "Select * from (SELECT * FROM $tname where year >= ? AND year <= ?";
 $sale_sql_append = " limit 500) x order by year desc, month desc";
 
-$debug = false;
 
-echo(processQuery($sale_sql, $sale_sql_append, $debug));
+
+echo(processQuery($sale_sql, $sale_sql_append));
 
 /**
 */
@@ -23,9 +23,8 @@ function processQuery($sql, $sql_append, $debug) {
   $params = array(&$startyear, &$endyear);
   $type = "ii";
 
-	$searchKey="";
-	$i=0;
-  foreach ($_GET as $key=>$val) {
+	$debug = false;
+	foreach ($_GET as $key=>$val) {
 		if ($key=="startyear" || $key=='endyear')
 			continue;
 
@@ -37,11 +36,6 @@ function processQuery($sql, $sql_append, $debug) {
 		if ($val=="") {
 			continue;
 		}
-
-		if ($i++>0) {
-			$searchKey+="::";
-		}
-		$searchKey .= $key;
 
   	$sql .= " AND " . $key . "=? ";
 		$type .= "s";
