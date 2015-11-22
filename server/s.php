@@ -2,38 +2,44 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
+// get app name
 $tname = substr($_SERVER['PATH_INFO'], 1);
 
+$stat_sql = "select year, month, count(*) as count, ";
+$stat_simple = "select year, month, count, ";
+
 switch($tname) {
-	case 'housesale':
 	case 'aptsale':
-	case 'flatsale':
-			$stat_sql = "select year, month, count(*) as count, ".
-			" REPLACE(format(avg(amount/area),2), ',', '') as avgAmtArea ";
-
-			$stat_simple = "select year, month, count, REPLACE(format(avgAmtArea,2), ',','') as avgAmtArea ";
-
-			if ($tname != 'aptsale') {
-   			$stat_sql .= ", REPLACE(format(avg(amount/landArea),2), ',', '') as avgAmtLand ";
-				$stat_simple .= ", REPLACE(format(avgAmtLand,2), ',', '') as avgAmtLand  ";
-			}
-
+			$stat_sql .= " REPLACE(format(avg(amount/area),2), ',', '') as avgAmtArea ";
 			$stat_sql .=	" from $tname where amount > 0 and year >= ? AND year <= ?";
 
-			$stat_simple .= "from $tname" . "_agg where k=? AND year >= ? AND year <= ?  order by year, month";
-		 break;
+			$stat_simple .= " REPLACE(format(avgAmtArea,2), ',','') as avgAmtArea ";
+			break;
 
+	case 'housesale':
+	case 'flatsale':
+			$stat_sql = " REPLACE(format(avg(amount/area),2), ',', '') as avgAmtArea ";
+			$stat_sql .= ", REPLACE(format(avg(amount/landArea),2), ',', '') as avgAmtLand ";
+			$stat_sql .=	" from $tname where amount > 0 and year >= ? AND year <= ?";
+
+
+			$stat_simple .= " REPLACE(format(avgAmtArea,2), ',','') as avgAmtArea ";
+			$stat_simple .= ", REPLACE(format(avgAmtLand,2), ',', '') as avgAmtLand  ";
+		 	break;
+
+ // all others
 	default:
-		$stat_sql = "select year, month, count(*) as count, ".
-			" REPLACE(format(avg(deposit/area),2), ',', '') as avgDeposit ";
-		$stat_sql .= ", REPLACE(format(avg(monthlyPay/area),2), ',', '') as avgRent ";
-		$stat_sql .=	" from $tname where year >= ? AND year <= ?";
+			$state_sql .=" REPLACE(format(avg(deposit/area),2), ',', '') as avgDeposit ";
+			$stat_sql .= ", REPLACE(format(avg(monthlyPay/area),2), ',', '') as avgRent ";
+			$stat_sql .=	" from $tname where year >= ? AND year <= ?";
 
-		$stat_simple = "select year, month, count, REPLACE(format(avgDeposit,2), '',', '') as avgDeposit, ";
-		$stat_simple = " REPLACE(format(avgRent,2), ',', '') as AvgRent ";
-		$stat_simple .= " from $tname" . "_agg where k=? AND year >= ? AND year <= ? order by year, month";
+			$stat_simple .= " REPLACE(format(avgDeposit,2), '',', '') as avgDeposit, ";
+			$stat_simple .= " REPLACE(format(avgRent,2), ',', '') as AvgRent ";
 }
 
+$stat_simple .= " from $tname" . "_agg where k=? AND year >= ? AND year <= ?  order by year, month";
+
+// to append after adding more search keys
 $stat_sql_append = " group by year, month order by year, month ";
 
 processQuery($stat_sql, $stat_sql_append, $stat_simple);
@@ -54,8 +60,9 @@ function processQuery($sql, $sql_append, $simple) {
 	$debug = false;
 
   foreach ($_GET as $key=>$val) {
-		if ($key=="startyear" || $key=='endyear')
+		if ($key=='startyear' || $key=='endyear') {
 			continue;
+		}
 
 		if ($key=='debug') {
 			$debug = true;
@@ -74,24 +81,28 @@ function processQuery($sql, $sql_append, $simple) {
 		$type .= "s";
 
 		// need array element here, since we need a new variable
-		$decoded_val[$key] = urldecode($val);
-		$searchKey .= urldecode($val);
+		$decodedvar = urldecode($val);
+		$decoded_val[$key] = $decodedvar;
 		$params[] = &$decoded_val[$key];
+
+		$searchKey .= $decodedvar;
   }
 
+	// Add SQL
   $sql .= $sql_append;
 
+	// only three, let's use simple sql
   if ($i<=3) {
 		$sql = $simple;
 		$params = [&$searchKey, &$startyear, &$endyear];
 		$type ="sii";
 	}
 
-if($debug) {
+	if($debug) {
  		print_r($params);
 		echo ($sql);
 		echo ($type);
-}
+	}
 
 	// Persistent Connections
   // http://stackoverflow.com/questions/3332074/what-are-the-disadvantages-of-using-persistent-connection-in-pdo

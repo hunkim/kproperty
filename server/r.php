@@ -7,7 +7,7 @@ $tname = substr($_SERVER['PATH_INFO'], 1) . "_reg";
 $debug = false;
 
 $k = "";
-$i=0;
+$i = 0;
 foreach ($_GET as $key=>$val) {
 		if ($key=='debug') {
 			$debug = true;
@@ -18,11 +18,6 @@ foreach ($_GET as $key=>$val) {
 			continue;
 		}
 
-/*
-		if ($val=="") {
-			continue;
-		}
-*/
 		if ($i++ !== 0) {
 			$k.="::";
 		}
@@ -58,8 +53,6 @@ if ($result->num_rows > 0) {
     $rows[] = $row['v'];
 	}
 }
-
-//print_r($rows);
 
 // JSON_PRETTY_PRINT|
 print json_encode($rows,JSON_UNESCAPED_UNICODE);

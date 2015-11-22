@@ -2,29 +2,35 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
+// Get app name
 $tname = substr($_SERVER['PATH_INFO'], 1);
 
-// Basic Sale SQL
+// Basic information SQL
 $sale_sql = "SELECT * FROM $tname where year >= ? AND year <= ? ";
 $sale_sql_append = " order by year desc, month desc limit 500";
 
+// process and print
 processQuery($sale_sql, $sale_sql_append);
 
 /**
+* Main function
 */
-function processQuery($sql, $sql_append, $debug) {
+function processQuery($sql, $sql_append) {
   $startyear = intval($_GET['startyear']);
   $endyear = intval($_GET['endyear']);
 
+	// No end year, give it enough
   if ($endyear ==0) $endyear = 3000;
 
-  $params = array(&$startyear, &$endyear);
+	// make array and type
+  $params = [&$startyear, &$endyear];
   $type = "ii";
 
 	$debug = false;
 	foreach ($_GET as $key=>$val) {
-		if ($key=="startyear" || $key=='endyear')
+		if ($key=="startyear" || $key=='endyear') {
 			continue;
+		}
 
 		if ($key=='debug') {
 			$debug = true;
@@ -38,19 +44,19 @@ function processQuery($sql, $sql_append, $debug) {
   	$sql .= " AND " . $key . "=? ";
 		$type .= "s";
 
-		// need array element here, since we need a new variable
+		// need array element here, since we need a reference
 		$decoded_val[$key] = urldecode($val);
 		$params[] = &$decoded_val[$key];
   }
 
+	// add the last part
   $sql .= $sql_append;
 
-
-if($debug) {
- 	print_r($params);
-	echo ($sql);
-	echo ($type);
-}
+	if($debug) {
+ 		print_r($params);
+		echo ($sql);
+		echo ($type);
+	}
 
 	// Persistent Connections
   // http://stackoverflow.com/questions/3332074/what-are-the-disadvantages-of-using-persistent-connection-in-pdo
