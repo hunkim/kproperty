@@ -81,6 +81,9 @@ function mkoneagg($db, $tname, $tnameagg, $year, $month, $arr) {
 
   $sql.= " group by year, month $keys";
 
-  echo "$sql\n";
+  if ($db->query($sql) !== TRUE) {
+    die("Error executing table: $sql\n $db->error");
+  }
+//  echo "$sql\n";
 }
 ?>
