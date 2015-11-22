@@ -35,7 +35,7 @@ switch($tname) {
 
 $stat_sql_append = " group by year, month order by year, month ";
 
-echo(processQuery($stat_sql, $stat_sql_append, $stat_sql, $debug));
+echo(processQuery($stat_sql, $stat_sql_append, $stat_sql));
 
 /**
 */
@@ -51,7 +51,7 @@ function processQuery($sql, $sql_append, $simple) {
 	$searchKey="";
 	$i=0;
 	$debug = false;
-	
+
   foreach ($_GET as $key=>$val) {
 		if ($key=="startyear" || $key=='endyear')
 			continue;
