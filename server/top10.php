@@ -56,9 +56,9 @@ if ($delta) {
 		$sql = "select CONCAT_WS(' ', v1.state, v1.city, v1.county) as label,";
 		//$sql .= "v1.year as year1, v1.a as avg1, v2.year as year2, v2.a as avg2, ";
 		$sql .= " v2.a-v1.a as value from ";
-		$sql .= "(select avg(deposit/area) as a, state, city, county, year from $tname where where deposit>0 and monthlyPay=0 and  year = $preYear $q group by state, city, county) v1,";
-		$sql .= "(select avg(deposit/area) as a, state, city, county, year from $tname where where deposit>0 and monthlyPay=0 and  year = $year $q group by state, city, county) v2 ";
-		$sql .= "where v1.state=v2.state and v1.city=v2.city and v1.county=v2.county order by value desc;";
+		$sql .= "(select avg(deposit/area) as a, state, city, county, year from $tname where where deposit>0 and monthlyPay=0 and  year = $preYear $q group by state, city, county, aptName) v1,";
+		$sql .= "(select avg(deposit/area) as a, state, city, county, year from $tname where where deposit>0 and monthlyPay=0 and  year = $year $q group by state, city, county, aptName) v2 ";
+		$sql .= "where v1.state=v2.state and v1.city=v2.city and v1.county=v2.county and v1.aptName=v2.aptName order by value desc;";
 	} else { // sale
 		$sql = "select CONCAT_WS(' ', v1.state, v1.city, v1.aptName) as label,";
 		//$sql .= "v1.year as year1, v1.a as avg1, v2.year as year2, v2.a as avg2, ";
@@ -69,9 +69,9 @@ if ($delta) {
 	}
 } else {
 	if($tname=='aptrent' || $tname=='flatrent') {
-		$sql =  "select CONCAT_WS(' ', state, city, county) as label, avg(deposit/area) as value from $tname";
+		$sql =  "select CONCAT_WS(' ', state, city, county, aptName) as label, avg(deposit/area) as value from $tname";
 	  $sql .= " where deposit>0 and year = $year $q ";
-		$sql .= " group by state, city, county";
+		$sql .= " group by state, city, county, aptName ";
 		$sql .= " order by value desc limit 20;";
 	} else { // sale
 		$sql = "select CONCAT_WS(' ', state, city, county, aptName) as label, avg(amount/area) as value from $tname";
