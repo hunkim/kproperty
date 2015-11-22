@@ -13,9 +13,29 @@ function test() {
 }
 
 function mkagg($db, $tname, $year, $month) {
+  $groupkey = ['', 'state','city','county'];
+
+
+
+  foreach ($groupkey as $key => $value) {
+      $arr[] = $value;
+      mkoneagg($db, $tname, $arr);
+  }
+}
+
+function mkoneagg($db, $tname, $arr) {
+  $tnameagg = $tname."_agg";
+
+  $keys = "";
+  foreach ($groupkey as $key) {
+    if ($key!='') {
+      $keys .=", $key";
+    }
+  }
+
   switch($tname) {
     case 'flatsale':
-      $sql = "select year, month, count(*) as count, ".
+      $sql = "select CONCAT_WS('::' $keys), year, month, count(*) as count, ".
         " REPLACE(format(avg(amount/area)*3.33,2), ',', '') as avgAmtArea ";
       if ($tname != 'aptsale') {
         $sql .= ", REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ";
@@ -24,27 +44,14 @@ function mkagg($db, $tname, $year, $month) {
      break;
 
   default:
-    $sql = "select year, month, count(*) as count, ".
+    $sql = "select CONCAT_WS('::' $keys), year, month, count(*) as count, ".
       " REPLACE(format(avg(deposit/area)*3.33,2), ',', '') as avgDeposit ";
     $sql .= ", REPLACE(format(avg(monthlyPay/area)*3.33,2), ',', '') as avgRent ";
     $sql .=	" from $tname where year = $year AND month = $month";
   }
 
-  $sql.= " group by year, month";
+  $sql.= " group by year, month $keys";
 
-  $groupkey = ['state','city','county'=>'$county'];
-
-  // insert with empty
-  $sql_grp = "";
-  mkoneagg($db, $tname, $sql);
-  foreach ($groupkey as $key => $va) {
-      $sql_grp .= ", $va ";
-      mkoneagg($db, $tname, $sql);
-  }
-}
-
-function mkoneagg($db, $tname, $sql) {
-  $tnameagg = $tname."_agg";
   echo "$sql\n";
 }
 ?>
