@@ -36,7 +36,7 @@ function mkoneagg($db, $tname, $year, $month, $arr) {
   switch($tname) {
     case 'flatsale':
       $sql = "select CONCAT_WS('::' $keys) as key, year, month, count(*) as count, ".
-        " REPLACE(format(avg(amount/area)*3.33,2), ',', '') as avgAmtArea ";
+        " REPLACE(format(avg(amount/area),2), ',', '') as avgAmtArea ";
       if ($tname != 'aptsale') {
         $sql .= ", REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ";
       }
@@ -45,7 +45,7 @@ function mkoneagg($db, $tname, $year, $month, $arr) {
 
   default:
     $sql = "select CONCAT_WS('::' $keys) as key, year, month, count(*) as count, ".
-      " REPLACE(format(avg(deposit/area)*3.33,2), ',', '') as avgDeposit ";
+      " REPLACE(format(avg(deposit/area),2), ',', '') as avgDeposit ";
     $sql .= ", REPLACE(format(avg(monthlyPay/area)*3.33,2), ',', '') as avgRent ";
     $sql .=	" from $tname where year = $year AND month = $month";
   }
