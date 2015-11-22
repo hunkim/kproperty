@@ -9,7 +9,11 @@ function test() {
 	if ($conn->connect_error) {
 			die("Connection failed: " . $conn->connect_error);
 	}
-  mkagg($conn, "housesale", 2015, 10);
+
+  // select a collection (analogous to a relational database's table)
+  $colnames = ['housesale', 'aptsale', 'flatsale', 'houserent', 'aptrent', 'flatrent'];
+  foreach ($colnames as $tname) {
+  mkagg($conn, $tname, 2015, 10);
 }
 
 function mkagg($db, $tname, $year, $month) {
