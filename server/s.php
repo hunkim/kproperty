@@ -30,7 +30,7 @@ switch($tname) {
 		$stat_sql .=	" from $tname where year >= ? AND year <= ?";
 
 		$stat_simple = "select year, month, count, avgDeposit, avgRent ";
-		$stat_simple = "from $tname" . "_agg where k=? AND year >= ? AND year <= ? order by year, month";
+		$stat_simple .= " from $tname" . "_agg where k=? AND year >= ? AND year <= ? order by year, month";
 }
 
 $stat_sql_append = " group by year, month order by year, month ";
