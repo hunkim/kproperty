@@ -31,8 +31,8 @@ function mkagg($db, $tname, $year, $month) {
   }
   $create .= " ENGINE = MYISAM;";
 
-  if ($db->query($sql) !== TRUE) {
-    die("Error creating table: $sql\n $db->error");
+  if ($db->query($create) !== TRUE) {
+    die("Error creating table: $create\n $db->error");
   }
 
   $sql = "ALTER TABLE $tname ADD INDEX (k)";
