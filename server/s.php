@@ -20,8 +20,7 @@ switch($tname) {
 
 			$stat_sql .=	" from $tname where amount > 0 and year >= ? AND year <= ?";
 
-			$stat_simple = "select year, month, count, avgDeposit, avgRent from";
-			$stat_simple = "from $tname" . "_agg where k=? AND year >= ? AND year <= ?  order by year, month";
+			$stat_simple .= "from $tname" . "_agg where k=? AND year >= ? AND year <= ?  order by year, month";
 		 break;
 
 	default:
