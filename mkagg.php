@@ -39,7 +39,7 @@ function mkagg($db, $tname, $year, $month) {
   mkoneagg($db, $tname, $sql);
   foreach ($groupkey as $key => $va) {
       $sql_grp .= ", $va ";
-      mkonegrp($db, $tname, $sql);
+      mkoneagg($db, $tname, $sql);
   }
 }
 
