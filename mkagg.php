@@ -13,24 +13,24 @@ function test() {
 }
 
 function mkagg($db, $tname, $year, $month) {
-  switch($colname) {
+  switch($tname) {
     case 'flatsale':
-      $stat_sql = "select year, month, count(*) as count, ".
+      $sql = "select year, month, count(*) as count, ".
         " REPLACE(format(avg(amount/area)*3.33,2), ',', '') as avgAmtArea ";
       if ($tname != 'aptsale') {
-        $stat_sql .= ", REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ";
+        $sql .= ", REPLACE(format(avg(amount/landArea)*3.33,2), ',', '') as avgAmtLand ";
       }
-      $stat_sql .=	" from $tname where amount > 0 and year = $year AND month = $month";
+      $sql .=	" from $tname where amount > 0 and year = $year AND month = $month";
      break;
 
   default:
-    $stat_sql = "select year, month, count(*) as count, ".
+    $sql = "select year, month, count(*) as count, ".
       " REPLACE(format(avg(deposit/area)*3.33,2), ',', '') as avgDeposit ";
-    $stat_sql .= ", REPLACE(format(avg(monthlyPay/area)*3.33,2), ',', '') as avgRent ";
-    $stat_sql .=	" from $tname where year = $year AND month = $month";
+    $sql .= ", REPLACE(format(avg(monthlyPay/area)*3.33,2), ',', '') as avgRent ";
+    $sql .=	" from $tname where year = $year AND month = $month";
   }
 
-  $stat_sql.= " group by year, month";
+  $sql.= " group by year, month";
 
   $groupkey = ['state','city','county'=>'$county'];
 
@@ -39,7 +39,7 @@ function mkagg($db, $tname, $year, $month) {
   mkoneagg($db, $tname, $sql);
   foreach ($groupkey as $key => $va) {
       $sql_grp .= ", $va ";
-      mkonegrp($db, $tname, $query, $grouparr);
+      mkonegrp($db, $tname, $sql);
   }
 }
 
