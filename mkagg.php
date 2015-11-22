@@ -13,19 +13,41 @@ function test() {
 }
 
 function mkagg($db, $tname, $year, $month) {
+  $tnameagg = $tname."_agg";
+
+  $create = "Create Table IF NOT EXISTS $tname (k varchar(255), year int, month, count int,";
+
+  switch($tname) {
+    case 'housesale':
+    case 'flatsale':
+      $create .= "avgAmtArea double, avgAmtLand double)";
+      break;
+    case 'aptsale':
+      $create .= "avgAmtArea double)";
+      break;
+    default:
+      $create .= "avgDeposit double, avgRent double)";
+      break;
+  }
+  $create .= " ENGINE = MYISAM;";
+
+  if ($db->query($sql) !== TRUE) {
+    die("Error creating table: $sql\n $db->error");
+  }
+
+  $sql = "ALTER TABLE $tname ADD INDEX (k)";
+  if ($db->query($sql) !== TRUE) {
+    die("Error creating table: $sql\n $db->error");
+  }
+
   $groupkey = ['', 'state','city','county'];
-
-
-
   foreach ($groupkey as $key => $value) {
       $arr[] = $value;
-      mkoneagg($db, $tname, $year, $month, $arr);
+      mkoneagg($db, $tname, $tnameagg, $year, $month, $arr);
   }
 }
 
-function mkoneagg($db, $tname, $year, $month, $arr) {
-  $tnameagg = $tname."_agg";
-
+function mkoneagg($db, $tname, $tnameagg, $year, $month, $arr) {
   $keys = "";
   foreach ($arr as $key) {
     if ($key!='') {
@@ -37,6 +59,7 @@ function mkoneagg($db, $tname, $year, $month, $arr) {
   if ($keys=="") {
     $concat = "CONCAT_WS('::','')";
   }
+
   switch($tname) {
     case 'housesale':
     case 'aptsale':
