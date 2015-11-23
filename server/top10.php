@@ -101,10 +101,11 @@ if ($result->num_rows > 0) {
 	}
 }
 
-$result=[];
-$result[] = ["key"=>"Cumulative Return", "values" => $rows];
-
-//print_r($rows);
+$result = [];
+foreach ($rows as $key => $val) {
+	$arr = ['c'=>['v'=>$key, $v=>val]];
+	$result [] = $arr;
+}
 
 // JSON_PRETTY_PRINT|
 print json_encode($result, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
