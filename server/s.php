@@ -1,5 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
+header("Accept-Encoding: gzip,deflate");
+header("Content-Encoding: gzip");
 header("Content-Type: application/json; charset=UTF-8");
 
 // get app name
@@ -133,7 +135,7 @@ function processQuery($sql, $sql_append, $simple) {
   }
 
 	// JSON_PRETTY_PRINT|
-  print json_encode($rows,JSON_UNESCAPED_UNICODE);
+  print gzencode(json_encode($rows,JSON_UNESCAPED_UNICODE));
 
 	$conn->close();
 }
