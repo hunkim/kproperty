@@ -80,10 +80,10 @@ function processQuery($sql, $sql_append, $simple) {
 			$searchKey .= "::";
 		}
 
-		if ($key=='hasMonthlyType') {
+		if ($key=='monthlyType') {
 			$hasMonthlyType = true;
 		}
-		
+
   	$sql .= " AND " . $key . "=? ";
 		$type .= "s";
 
