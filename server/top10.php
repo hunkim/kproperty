@@ -65,7 +65,7 @@ if ($delta) {
 		$sql .= " replace(format((v2.a-v1.a as x),2),',', '') as value from ";
 		$sql .= "(select avg(amount/area) as a, state, city, county, aptName, year from $tname where amount>0 and year = $preYear $q group by state, city, county, aptName) v1,";
 		$sql .= "(select avg(amount/area) as a, state, city, county, aptName, year from $tname where amount>0 and year = $year $q group by state, city, county, aptName) v2 ";
-		$sql .= "where v1.state=v2.state and v1.city=v2.city and v1.county=v2.county and v1.aptName=v2.aptName order by value x;";
+		$sql .= "where v1.state=v2.state and v1.city=v2.city and v1.county=v2.county and v1.aptName=v2.aptName order by x desc;";
 	}
 } else {
 	if($tname=='aptrent' || $tname=='flatrent') {
