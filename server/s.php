@@ -61,6 +61,7 @@ function processQuery($sql, $sql_append, $simple) {
 	$i=0;
 	$debug = false;
 
+	$hasMonthlyType = false;
   foreach ($_GET as $key=>$val) {
 		if ($key=='startyear' || $key=='endyear') {
 			continue;
@@ -79,6 +80,9 @@ function processQuery($sql, $sql_append, $simple) {
 			$searchKey .= "::";
 		}
 
+		if ($key=='hasMonthlyType') {
+			$hasMonthlyType = true;
+		}
   	$sql .= " AND " . $key . "=? ";
 		$type .= "s";
 
@@ -94,7 +98,7 @@ function processQuery($sql, $sql_append, $simple) {
   $sql .= $sql_append;
 
 	// only three, let's use simple sql
-  if ($i<=3 && array_key_exists('monthlyType', $decoded_val)) {
+  if ($i<=3 && !$hasMonthlyType) {
 		$sql = $simple;
 		$params = [&$searchKey, &$startyear, &$endyear];
 		$type ="sii";
