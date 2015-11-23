@@ -94,7 +94,7 @@ function processQuery($sql, $sql_append, $simple) {
   $sql .= $sql_append;
 
 	// only three, let's use simple sql
-  if ($i<=3 && !$decoded_val['monthlyType']) {
+  if ($i<=3 && array_key_exists('monthlyType', $decoded_val)) {
 		$sql = $simple;
 		$params = [&$searchKey, &$startyear, &$endyear];
 		$type ="sii";
