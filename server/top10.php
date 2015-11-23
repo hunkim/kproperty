@@ -69,15 +69,15 @@ if ($delta) {
 	}
 } else {
 	if($tname=='aptrent' || $tname=='flatrent') {
-		$sql =  "select CONCAT_WS(' ', state, city, county, aptName) as label, replace(format(avg(deposit/area),2),',', '') as value from $tname";
+		$sql =  "select CONCAT_WS(' ', state, city, county, aptName) as label, replace(format(avg(deposit/area),2),',', '') as value, avg(deposit/area) as x from $tname";
 	  $sql .= " where deposit>0 and year = $year $q ";
 		$sql .= " group by state, city, county, aptName ";
-		$sql .= " order by avg(deposit/area) desc limit 20;";
+		$sql .= " order by x desc limit 20;";
 	} else { // sale
-		$sql = "select CONCAT_WS(' ', state, city, county, aptName) as label, replace(format(avg(amount/area),2),',', '') as value from $tname";
+		$sql = "select CONCAT_WS(' ', state, city, county, aptName) as label, replace(format(avg(amount/area),2),',', '') as value, avg(amount/area) as x from $tname";
 		$sql .= " where amount>0 and year = $year $q ";
 		$sql .= " group by state, city, county, aptName ";
-		$sql .= " order by avg(deposit/area) desc limit 20;";
+		$sql .= " order by x desc limit 20;";
 	}
 }
 
