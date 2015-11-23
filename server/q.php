@@ -87,8 +87,8 @@ function processQuery($sql, $sql_append) {
   }
 
 	// JSON_PRETTY_PRINT|
-  ob_start('ob_gzhandler');
-  print json_encode($rows,JSON_UNESCAPED_UNICODE);
+  //http://php.net/manual/de/function.gzencode.php
+  print gzencode(json_encode($rows,JSON_UNESCAPED_UNICODE));
 
 	$conn->close();
 }
