@@ -7,14 +7,13 @@ app.controller('customersCtrl',
     $scope.m2top = 3.30579;
     $scope.ptom2 = 0.30259;
 
-
     // API Host
-    var $rhost = "http://a.kproperty.xyz";
+    var $rhost = "http://k.kproperty.xyz";
 
     // API URLs
-    var $regionUrl = $rhost + "/r2.php";
-    var $saleUrl = $rhost + "/q2.php";
-    var $statUrl = $rhost + "/s2.php";
+    var $regionUrl = $rhost + "/r.php";
+    var $saleUrl = $rhost + "/q.php";
+    var $statUrl = $rhost + "/s.php";
 
     // app type
     $scope.appType = 'aptsale';
@@ -95,10 +94,12 @@ app.controller('customersCtrl',
 
     $scope.setAppType = function(type) {
       $scope.appType = type;
-      $scope.upAll();
+
       if ($scope.loc.county != "" && $scope.getAptKind()) {
         $scope.getAptName();
       }
+
+      $scope.upAll();
     }
 
     // APT?
@@ -250,7 +251,6 @@ app.controller('customersCtrl',
 
     // update the graph (based on watch statArr)
     $scope.updateAptSaleGraph = function() {
-      console.log("Reset with: " + $scope.statArr.length);
       // reset graph array
       $scope.labels = [];
       $scope.data = [];
