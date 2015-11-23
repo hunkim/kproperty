@@ -1,5 +1,7 @@
 <?php
 header("Access-Control-Allow-Origin: *");
+header("Accept-Encoding: gzip,deflate");
+header("Content-Encoding: gzip");
 header("Content-Type: application/json; charset=UTF-8");
 
 // Get app name
