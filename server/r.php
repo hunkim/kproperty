@@ -35,7 +35,8 @@ if($debug) {
 $conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
 // Check connection
 if ($conn->connect_error) {
-		die("Connection failed: " . $conn->connect_error);
+		if ($debug) {echo("Connection failed: " . $conn->connect_error);}
+		exit(0);
 }
 
 $sql = "select v from $tname where k='" . $conn->real_escape_string($k) . "'";

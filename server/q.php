@@ -1,4 +1,5 @@
 <?php
+
 header("Access-Control-Allow-Origin: *");
 //header("Accept-Encoding: gzip,deflate");
 //header("Content-Encoding: gzip");
@@ -6,6 +7,10 @@ header("Content-Type: application/json; charset=UTF-8");
 
 // Get app name
 $tname = substr($_SERVER['PATH_INFO'], 1);
+
+if (!$name) {
+  exit(0);
+}
 
 // Basic information SQL
 $sale_sql = "SELECT * FROM $tname where year >= ? AND year <= ? ";
@@ -66,12 +71,14 @@ function processQuery($sql, $sql_append) {
   $conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
 	// Check connection
 	if ($conn->connect_error) {
-			die("Connection failed: " . $conn->connect_error);
+			if ($debug) {echo("Connection failed: " . $conn->connect_error);}
+      exit(0);
 	}
 
   $stmt = $conn->prepare($sql);
 	if (!$stmt) {
-		 die ("Prepare $sql failed: ($conn->errno)  $conn->error");
+		 if ($debug) {die("Prepare $sql failed: ($conn->errno)  $conn->error");}
+     exit(0);
 	}
 
   // http://stackoverflow.com/questions/16236395/bind-param-with-array-of-parameters
