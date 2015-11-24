@@ -8,7 +8,7 @@ header("Content-Type: application/json; charset=UTF-8");
 // Get app name
 $tname = substr($_SERVER['PATH_INFO'], 1);
 
-if (!$name) {
+if (!$tname) {
   exit(0);
 }
 
@@ -77,7 +77,7 @@ function processQuery($sql, $sql_append) {
 
   $stmt = $conn->prepare($sql);
 	if (!$stmt) {
-		 if ($debug) {die("Prepare $sql failed: ($conn->errno)  $conn->error");}
+		 if ($debug) {echo("Prepare $sql failed: ($conn->errno)  $conn->error");}
      exit(0);
 	}
 

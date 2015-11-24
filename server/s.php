@@ -7,6 +7,10 @@ header("Content-Type: application/json; charset=UTF-8");
 // get app name
 $tname = substr($_SERVER['PATH_INFO'], 1);
 
+if (!$tname) {
+  exit(0);
+}
+
 $stat_sql = "select year, month, count(*) as count, ";
 $stat_simple = "select year, month, count, ";
 
