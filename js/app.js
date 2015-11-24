@@ -8,7 +8,7 @@ app.controller('customersCtrl',
     $scope.ptom2 = 0.30259;
 
     // API Host
-    var $rhost = "http://k.kproperty.xyz";
+    var $rhost = "http://a.kproperty.xyz";
 
     // API URLs
     var $regionUrl = $rhost + "/r.php";
