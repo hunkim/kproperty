@@ -7,33 +7,34 @@ include_once 'mkagg.php';
 
 
 $stateArr = ['서울특별시'=>"11",
-		'부산광역시'=>"26",
-		'대구광역시'=>"27",
-		'인천광역시'=>"28",
-		'광주광역시'=>"29",
-		'대전광역시'=>"30",
-		'울산광역시'=>"31",
-		'세종특별자치시'=>"36",
-		'경기도'=>"41",
-		'강원도'=>"42",
-		'충청북도'=>"43",
-		'충청남도'=>"44",
-		'전라북도'=>"45",
-		'전라남도'=>"46",
-		'경상북도'=>"47",
-		'경상남도'=>"48",
-		'제주특별자치도'=>"50"];
+    '부산광역시'=>"26",
+    '대구광역시'=>"27",
+    '인천광역시'=>"28",
+    '광주광역시'=>"29",
+    '대전광역시'=>"30",
+    '울산광역시'=>"31",
+    '세종특별자치시'=>"36",
+    '경기도'=>"41",
+    '강원도'=>"42",
+    '충청북도'=>"43",
+    '충청남도'=>"44",
+    '전라북도'=>"45",
+    '전라남도'=>"46",
+    '경상북도'=>"47",
+    '경상남도'=>"48",
+    '제주특별자치도'=>"50"];
 
-$dealType= ['aptsale'=>['menuGubun'=>'A', 'srhType'=>'LOC', 'houseType' => '1'],
-            'aptrent'=>['menuGubun'=>'A', 'srhType'=>'LOC', 'houseType' => '2'],
-            'flatsale'=>['menuGubun'=>'B', 'srhType'=>'LOC', 'houseType' => '1'],
-            'flatrent'=>['menuGubun'=>'B', 'srhType'=>'LOC', 'houseType' => '2'],
-            'housesale'=>['menuGubun'=>'C', 'srhType'=>'LOC', 'houseType' => '1'],
+$dealType= [
             'houserent'=>['menuGubun'=>'C', 'srhType'=>'LOC', 'houseType' => '2'],
             'officetelsale'=>['menuGubun'=>'E', 'srhType'=>'LOC', 'houseType' => '1'],
             'officetelrent'=>['menuGubun'=>'E', 'srhType'=>'LOC', 'houseType' => '2'],
             'aptlots'=>['menuGubun'=>'F', 'srhType'=>'LOC', 'houseType' => '1'],
-            'landsale'=>['menuGubun'=>'G', 'srhType'=>'LOC', 'houseType' => '1']
+            'landsale'=>['menuGubun'=>'G', 'srhType'=>'LOC', 'houseType' => '1'],
+            'aptsale'=>['menuGubun'=>'A', 'srhType'=>'LOC', 'houseType' => '1'],
+            'aptrent'=>['menuGubun'=>'A', 'srhType'=>'LOC', 'houseType' => '2'],
+            'flatsale'=>['menuGubun'=>'B', 'srhType'=>'LOC', 'houseType' => '1'],
+            'flatrent'=>['menuGubun'=>'B', 'srhType'=>'LOC', 'houseType' => '2'],
+            'housesale'=>['menuGubun'=>'C', 'srhType'=>'LOC', 'houseType' => '1'],
 ];
 
 crawlNow();
@@ -48,7 +49,7 @@ function crawlNow() {
   // current month
   crawl($date->format('Y'), null, $date->format('m'));
 
-  // last month  
+  // last month
   $date->modify('-1 month');
   crawl($date->format('Y'), null, $date->format('m'));
 }
@@ -90,6 +91,9 @@ function crawl($year, $period, $month) {
       die("Connection failed: " . $db->connect_error);
   }
 
+  // Set utf8
+  //$db->set_charset("utf8");
+
   // get deal type and table name
   foreach ($dealType as $tname => $args) {
     echo ("Getting $tname\n");
@@ -112,22 +116,21 @@ function crawl($year, $period, $month) {
 
           $r = "";
           $cArr = explode(" ", $county['NAME'], 2);
-          if (size($cArr)==2) {
+          if (count($cArr)==2) {
             $r = $cArr[1];
           }
 
           foreach ($monthArr as $month) {
-            echo("Working on $year/$month ($period) on $state " . 
+            echo("Working on $year/$month ($period) on $state " .
                   $city['NAME'] . " " . $cArr[0] . "$r \n");
 
-            $infoArr = ['year'=>$year, 'month'=>$month, 
-                        'state'=>$state, 'city'=>$city['NAME'], 
+            $infoArr = ['year'=>$year, 'month'=>$month,
+                        'state'=>$state, 'city'=>$city['NAME'],
                         'county'=>$cArr[0], 'region'=>$r];
 
-            // update     
+            // update
             // function update($db, $tname, $metaArr, $json) {
-            update($db, $tname, $infoArr, $deals);        
-            return;
+            update($db, $tname, $infoArr, $deals);
           }
         }
       }
@@ -141,7 +144,7 @@ function doPost($url, $args) {
   for ($i = 0; $i <= 7; $i++) {
     $out = _doPost($url, $args);
     if ($out!=null) {
-      return out;
+      return $out;
     }
 
     echo ("Post $url nothing. Try again...\n");
@@ -175,20 +178,20 @@ function _doPost($url, $args) {
 }
 
 function getDeals($year, $period, $state, $city, $region, $args) {
-    $args =  array_merge($args, ['srhType'=>'LOC',
-		'srhYear'=>$year, 'srhPeriod'=>$period, 'gubunCode'=>'LAND',
-		'sidoCode'=>$state, 'gugunCode'=>$city, 'dongCode'=>$region,
-		'chosung'=>'', 'roadCode'=>'', 'danjiCode' => '', 'rentAmtType' =>'3',
-		'fromAmt1'=>'', 'toAmt1'=>'', 'fromAmt2'=>'', 'toAmt2'=>'', 'fromAmt3'=>'',
-		'toAmt3'=>'', 'areaCode'=>'', 'jimokCode'=>'', 'useCode'=>'', 'useSubCode'=>''
+    $args =  array_merge($args, [
+    'srhYear'=>$year, 'srhPeriod'=>$period, 'gubunCode'=>'LAND',
+    'sidoCode'=>$state, 'gugunCode'=>$city, 'dongCode'=>$region,
+    'chosung'=>'', 'roadCode'=>'', 'danjiCode' => '', 'rentAmtType' =>'3',
+    'fromAmt1'=>'', 'toAmt1'=>'', 'fromAmt2'=>'', 'toAmt2'=>'', 'fromAmt3'=>'',
+    'toAmt3'=>'', 'areaCode'=>'', 'jimokCode'=>'', 'useCode'=>'', 'useSubCode'=>''
     ]);
 
   return doPost('http://rt.molit.go.kr/srh/getListAjax.do', $args);
 }
 
-function getRegions($year, $period, $state, $city, $args) {
+function getCounties($year, $period, $state, $city, $args) {
 
-  $args = array_merge($args, ['srhType'=>'LOC',
+  $args = array_merge($args, [
     'srhYear'=>$year,
     'srhPeriod'=>$period,
     'gubunCode'=>'LAND',
