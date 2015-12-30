@@ -31,6 +31,8 @@ function mkagg($db, $tname, $year, $month) {
       break;
     case 'aptsale':
     case 'officetelsale':
+    case 'landsale':
+    case 'aptlots':
       $create .= "avgAmtArea double)";
       break;
     default:
@@ -78,7 +80,7 @@ function mkoneagg($db, $tname, $tnameagg, $year, $month, $arr) {
 
       $sql = "insert DELAYED into $tnameagg select $concat as k, year, month, count(*) as count, ".
         " avg(amount/area) as avgAmtArea ";
-      if ($tname == 'housesale') {
+      if ($tname == 'housesale' || $tname == 'flatsale') {
         $sql .= ", avg(amount/landArea) as avgAmtLand ";
       }
       $sql .= " from $tname where amount > 0 and year = $year AND month = $month";
