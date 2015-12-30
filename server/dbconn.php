@@ -1,6 +1,6 @@
 <?php
 
-function DBconn() {
+function DBconn($debug) {
   // Persistent Connections
   // http://stackoverflow.com/questions/3332074/what-are-the-disadvantages-of-using-persistent-connection-in-pdo
   // http://www.php.net/manual/en/mysqli.persistconns.php
@@ -10,4 +10,6 @@ function DBconn() {
       if ($debug) {echo("Connection failed: " . $conn->connect_error);}
 	  exit(0);
 	}
+
+  return $conn;
 }

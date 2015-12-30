@@ -68,8 +68,7 @@ function processQuery($sql, $sql_append) {
 	}
 
 	
-  $conn = DBConn();
-
+  $conn = DBConn($debug);
   $stmt = $conn->prepare($sql);
 	if (!$stmt) {
 		 if ($debug) {echo("Prepare $sql failed: ($conn->errno)  $conn->error");}
