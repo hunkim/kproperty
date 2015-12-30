@@ -1,7 +1,7 @@
 <?php
 error_reporting(E_ALL);
 
-if (argv[0]==="mkagg.php") {
+if ($argv[0]==="mkagg.php") {
   test();
 }
 
