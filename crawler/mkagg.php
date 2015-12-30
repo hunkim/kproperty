@@ -1,6 +1,8 @@
 <?php
 error_reporting(E_ALL);
 
+include_once '../server/dbconn.php';
+
 if ($argv[0]==="mkagg.php") {
   test();
 }
