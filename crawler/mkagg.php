@@ -7,7 +7,8 @@ function test() {
   $conn = DBConn();
 
   // select a collection (analogous to a relational database's table)
-  $colnames = ['housesale', 'aptsale', 'flatsale', 'houserent', 'aptrent', 'flatrent'];
+  $colnames = ['housesale', 'aptsale', 'flatsale', 'houserent', 'aptrent', 'flatrent', 
+  'officetelrent', 'officetelsale', 'aptlots', 'landsale'];
   foreach ($colnames as $tname) {
     mkagg($conn, $tname, 2015, 10);
   }
