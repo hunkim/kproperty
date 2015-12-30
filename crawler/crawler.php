@@ -139,7 +139,7 @@ function crawl($year, $period, $month) {
     // make aggregation
     foreach ($monthArr as $month) {
       echo ("Make agg $tname on $year/$month");
-      mkagg($db, $tname, $year, $month);
+      // mkagg($db, $tname, $year, $month);
     }
   }
 

@@ -4,11 +4,7 @@ error_reporting(E_ALL);
 //test();
 
 function test() {
-  $conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
-  // Check connection
-  if ($conn->connect_error) {
-      die("Connection failed: " . $conn->connect_error);
-  }
+  $conn = DBConn();
 
   // select a collection (analogous to a relational database's table)
   $colnames = ['housesale', 'aptsale', 'flatsale', 'houserent', 'aptrent', 'flatrent'];
@@ -29,6 +25,7 @@ function mkagg($db, $tname, $year, $month) {
       $create .= "avgAmtArea double, avgAmtLand double)";
       break;
     case 'aptsale':
+    case 'officetelsale':
       $create .= "avgAmtArea double)";
       break;
     default:
@@ -70,9 +67,13 @@ function mkoneagg($db, $tname, $tnameagg, $year, $month, $arr) {
     case 'housesale':
     case 'aptsale':
     case 'flatsale':
+    case 'officetelsale':
+    case 'landsale':
+    case 'aptlots':
+
       $sql = "insert DELAYED into $tnameagg select $concat as k, year, month, count(*) as count, ".
         " avg(amount/area) as avgAmtArea ";
-      if ($tname != 'aptsale') {
+      if ($tname == 'housesale') {
         $sql .= ", avg(amount/landArea) as avgAmtLand ";
       }
       $sql .= " from $tname where amount > 0 and year = $year AND month = $month";
@@ -80,7 +81,7 @@ function mkoneagg($db, $tname, $tnameagg, $year, $month, $arr) {
 
   default:
     $sql = "insert DELAYED into $tnameagg select $concat as k, year, month, count(*) as count, ".
-      " avg(deposit/area) as avgDeposit ";
+      " avg(amount/area) as avgDeposit ";
     $sql .= ", avg(monthlyPay/area) as avgRent ";
     $sql .= " from $tname where year = $year AND month = $month";
   }
