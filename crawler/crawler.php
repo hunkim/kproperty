@@ -92,7 +92,7 @@ function crawl($year, $period, $month) {
   }
 
   // Set utf8
-  //$db->set_charset("utf8");
+  $db->set_charset("utf8");
 
   // get deal type and table name
   foreach ($dealType as $tname => $args) {
@@ -134,6 +134,12 @@ function crawl($year, $period, $month) {
           }
         }
       }
+    }
+
+    // make aggregation
+    foreach ($monthArr as $month) {
+      echo ("Make agg $tname on $year/$month");
+      mkagg($db, $tname, $year, $month);
     }
   }
 

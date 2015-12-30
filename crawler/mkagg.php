@@ -5,10 +5,10 @@ error_reporting(E_ALL);
 
 function test() {
   $conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
-	// Check connection
-	if ($conn->connect_error) {
-			die("Connection failed: " . $conn->connect_error);
-	}
+  // Check connection
+  if ($conn->connect_error) {
+      die("Connection failed: " . $conn->connect_error);
+  }
 
   // select a collection (analogous to a relational database's table)
   $colnames = ['housesale', 'aptsale', 'flatsale', 'houserent', 'aptrent', 'flatrent'];
@@ -75,14 +75,14 @@ function mkoneagg($db, $tname, $tnameagg, $year, $month, $arr) {
       if ($tname != 'aptsale') {
         $sql .= ", avg(amount/landArea) as avgAmtLand ";
       }
-      $sql .=	" from $tname where amount > 0 and year = $year AND month = $month";
+      $sql .= " from $tname where amount > 0 and year = $year AND month = $month";
      break;
 
   default:
     $sql = "insert DELAYED into $tnameagg select $concat as k, year, month, count(*) as count, ".
-      " avg(amount/area) as avgDeposit ";
+      " avg(deposit/area) as avgDeposit ";
     $sql .= ", avg(monthlyPay/area) as avgRent ";
-    $sql .=	" from $tname where year = $year AND month = $month";
+    $sql .= " from $tname where year = $year AND month = $month";
   }
 
   $sql.= " group by year, month $keys";
