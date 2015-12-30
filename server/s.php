@@ -7,6 +7,10 @@ header("Content-Type: application/json; charset=UTF-8");
 // get app name
 $tname = substr($_SERVER['PATH_INFO'], 1);
 
+if (!$tname) {
+  exit(0);
+}
+
 $stat_sql = "select year, month, count(*) as count, ";
 $stat_simple = "select year, month, count, ";
 
@@ -117,12 +121,14 @@ function processQuery($sql, $sql_append, $simple) {
   $conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
 	// Check connection
 	if ($conn->connect_error) {
-			die("Connection failed: " . $conn->connect_error);
+			if ($debug) {echo("Connection failed: " . $conn->connect_error);}
+			exit(0);
 	}
 
   $stmt = $conn->prepare($sql);
 	if (!$stmt) {
-		 die ("Prepare $sql failed: ($conn->errno)  $conn->error");
+		 if ($debug) {echo ("Prepare $sql failed: ($conn->errno)  $conn->error");}
+		 exit(0);
 	}
 
   // http://stackoverflow.com/questions/16236395/bind-param-with-array-of-parameters

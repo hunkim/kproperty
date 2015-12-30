@@ -4,6 +4,10 @@ header("Content-Type: application/json; charset=UTF-8");
 
 $tname = substr($_SERVER['PATH_INFO'], 1) . "_reg";
 
+if (!$tname) {
+  exit(0);
+}
+
 $debug = false;
 
 $k = "";
@@ -35,7 +39,8 @@ if($debug) {
 $conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
 // Check connection
 if ($conn->connect_error) {
-		die("Connection failed: " . $conn->connect_error);
+		if ($debug) {echo("Connection failed: " . $conn->connect_error);}
+		exit(0);
 }
 
 $sql = "select v from $tname where k='" . $conn->real_escape_string($k) . "'";
