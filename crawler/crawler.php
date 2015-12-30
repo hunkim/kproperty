@@ -25,7 +25,7 @@ $stateArr = ['서울특별시'=>"11",
     '제주특별자치도'=>"50"];
 
 $dealType= [
-            'houserent'=>['menuGubun'=>'C', 'srhType'=>'LOC', 'houseType' => '2'],
+           
             'officetelsale'=>['menuGubun'=>'E', 'srhType'=>'LOC', 'houseType' => '1'],
             'officetelrent'=>['menuGubun'=>'E', 'srhType'=>'LOC', 'houseType' => '2'],
             'aptlots'=>['menuGubun'=>'F', 'srhType'=>'LOC', 'houseType' => '1'],
@@ -35,6 +35,7 @@ $dealType= [
             'flatsale'=>['menuGubun'=>'B', 'srhType'=>'LOC', 'houseType' => '1'],
             'flatrent'=>['menuGubun'=>'B', 'srhType'=>'LOC', 'houseType' => '2'],
             'housesale'=>['menuGubun'=>'C', 'srhType'=>'LOC', 'houseType' => '1'],
+             'houserent'=>['menuGubun'=>'C', 'srhType'=>'LOC', 'houseType' => '2'],
 ];
 
 crawlNow();
@@ -139,7 +140,7 @@ function crawl($year, $period, $month) {
     // make aggregation
     foreach ($monthArr as $month) {
       echo ("Make agg $tname on $year/$month");
-      // mkagg($db, $tname, $year, $month);
+      mkagg($db, $tname, $year, $month);
     }
   }
 

@@ -5,7 +5,7 @@ runreg();
 include_once '../server/dbconn.php';
 
 function runreg() {
-  $conn = DBConn();
+  $conn = DBconn();
 
   // select a collection (analogous to a relational database's table)
   $colnames = ['housesale', 'aptsale', 'flatsale', 'houserent', 'aptrent', 'flatrent', 
