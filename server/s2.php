@@ -4,7 +4,7 @@ header("Access-Control-Allow-Origin: *");
 //header("Content-Encoding: gzip");
 header("Content-Type: application/json; charset=UTF-8");
 
-include_once 'dnconn.php';
+include_once 'dbconn.php';
 
 
 // get app name

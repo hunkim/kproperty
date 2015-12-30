@@ -2,7 +2,7 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
-include_once 'dnconn.php';
+include_once 'dbconn.php';
 
 $tname = substr($_SERVER['PATH_INFO'], 1) . "_reg";
 
