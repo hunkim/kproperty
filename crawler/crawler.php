@@ -24,16 +24,16 @@ $stateArr = ['서울특별시'=>"11",
 		'경상남도'=>"48",
 		'제주특별자치도'=>"50"];
 
-$dealType= ['aptsale'=>['menuGubun'=>'A', 'houseType' => '1'],
-            'aptrent'=>['menuGubun'=>'A', 'houseType' => '2'],
-            'flatsale'=>['menuGubun'=>'B', 'houseType' => '1'],
-            'flatrent'=>['menuGubun'=>'B', 'houseType' => '2'],
-            'housesale'=>['menuGubun'=>'C', 'houseType' => '1'],
-            'houserent'=>['menuGubun'=>'C', 'houseType' => '2'],
-            'officetelsale'=>['menuGubun'=>'E', 'houseType' => '1'],
-            'officetelrent'=>['menuGubun'=>'E', 'houseType' => '2'],
-            'aptlots'=>['menuGubun'=>'F', 'houseType' => '1'],
-            'landsale'=>['menuGubun'=>'G', 'houseType' => '1']
+$dealType= ['aptsale'=>['menuGubun'=>'A', 'srhType'=>'LOC', 'houseType' => '1'],
+            'aptrent'=>['menuGubun'=>'A', 'srhType'=>'LOC', 'houseType' => '2'],
+            'flatsale'=>['menuGubun'=>'B', 'srhType'=>'LOC', 'houseType' => '1'],
+            'flatrent'=>['menuGubun'=>'B', 'srhType'=>'LOC', 'houseType' => '2'],
+            'housesale'=>['menuGubun'=>'C', 'srhType'=>'LOC', 'houseType' => '1'],
+            'houserent'=>['menuGubun'=>'C', 'srhType'=>'LOC', 'houseType' => '2'],
+            'officetelsale'=>['menuGubun'=>'E', 'srhType'=>'LOC', 'houseType' => '1'],
+            'officetelrent'=>['menuGubun'=>'E', 'srhType'=>'LOC', 'houseType' => '2'],
+            'aptlots'=>['menuGubun'=>'F', 'srhType'=>'LOC', 'houseType' => '1'],
+            'landsale'=>['menuGubun'=>'G', 'srhType'=>'LOC', 'houseType' => '1']
 ];
 
 crawlNow();
@@ -93,9 +93,14 @@ function crawl($year, $period, $month) {
   // get deal type and table name
   foreach ($dealType as $tname => $args) {
     echo ("Getting $tname\n");
+    print_r($args);
+
     foreach ($stateArr as $state => $stateCode) {
       $cities = getCities($year, $period, $stateCode, $args);
       $cityArr = json_decode($cities, true);
+
+      echo ($cities);
+      print_r($cityArr);
 
       foreach ($cityArr['jsonList'] as $city) {
         $counties = getCounties($year, $period, $stateCode, $city['CODE'], $args);
@@ -194,11 +199,13 @@ function getRegions($year, $period, $state, $city, $args) {
 }
 
 function getCities($year, $period, $state, $args) {
-  $args = array_merge($args, ['srhType'=>'LOC',
+  $args = array_merge($args, [
     'srhYear'=>$year,
     'srhPeriod'=>$period,
     'gubunCode'=>'LAND',
    'sidoCode'=>$state]);
+
+  print_r($args);
 
   return doPost('http://rt.molit.go.kr/srh/getGugunListAjax.do', $args);
 }
