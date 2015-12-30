@@ -1,7 +1,9 @@
 <?php
 error_reporting(E_ALL);
 
-//test();
+if (argv[0]==="mkagg.php") {
+  test();
+}
 
 function test() {
   $conn = DBConn();
@@ -10,7 +12,7 @@ function test() {
   $colnames = ['housesale', 'aptsale', 'flatsale', 'houserent', 'aptrent', 'flatrent', 
   'officetelrent', 'officetelsale', 'aptlots', 'landsale'];
   foreach ($colnames as $tname) {
-    mkagg($conn, $tname, 2015, 10);
+    mkagg($conn, $tname, 2015, 12);
   }
 }
 
