@@ -92,7 +92,7 @@ function crawl($year, $period, $month) {
   }
 
   // Set utf8
-  $db->set_charset("utf8");
+  //$db->set_charset("utf8");
 
   // get deal type and table name
   foreach ($dealType as $tname => $args) {
