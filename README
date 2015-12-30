@@ -1,7 +1,6 @@
 How to update?
-  - copy file to xls
-  - run 1. csv2mongo: add documents and make aggregation
-        2. mkregions.php: update region information
+  - copy file to xls/xx/
+  - run 1. csv2mysql xls 
 
 INSTALL
  1. LAMP
