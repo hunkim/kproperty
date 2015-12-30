@@ -1,8 +1,12 @@
 <?php
 error_reporting(E_ALL);
-runreg();
 
 include_once '../server/dbconn.php';
+
+if ($argv[0]==="mkreg.php") {
+  runreg();
+}
+
 
 function runreg() {
   $conn = DBconn();
