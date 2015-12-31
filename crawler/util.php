@@ -53,6 +53,11 @@ function getDelSQL($db, $tname, $metaArr) {
   return $sqlDel;
 }
 
+function startsWith($haystack, $needle) {
+    // search backwards starting from haystack length characters from the end
+    return $needle === "" || strrpos($haystack, $needle, -strlen($haystack)) !== FALSE;
+}
+
 function arr2SQL($db, $tname, $metaArr, $arr) {
    $tmap = [
     'BOBN' => 'avenue',
@@ -85,7 +90,7 @@ function arr2SQL($db, $tname, $metaArr, $arr) {
     // if county and UMD_MM are the same, skip
     if ($key=='UMD_NM') {
       if($value==$metaArr['county']) {
-        contunue;
+        $value=="";
       }
 
       //Skip starting part
