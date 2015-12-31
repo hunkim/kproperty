@@ -110,6 +110,8 @@ function crawl($tname, $year, $period, $month) {
   echo ("Getting $tname\n");
 
   foreach ($stateArr as $state => $stateCode) {
+    echo("Working on $year/$month ($period) on $state \n");
+
     $cities = getCities($year, $period, $stateCode, $args);
     $cityArr = json_decode($cities, true);
 
@@ -124,8 +126,7 @@ function crawl($tname, $year, $period, $month) {
         $dealArr = json_decode($deals, true);
 
         foreach ($monthArr as $month) {
-          echo("Working on $year/$month ($period) on $state " .
-                $city['NAME'] . " " . $county['NAME'] . "\n");
+         // echo("Working on $year/$month ($period) on $state " . $city['NAME'] . " " . $county['NAME'] . "\n");
 
           $infoArr = ['year'=>$year, 'month'=>$month,
                       'state'=>$state, 'city'=>$city['NAME'],
