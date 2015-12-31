@@ -105,7 +105,7 @@ function arr2SQL($db, $tname, $metaArr, $arr) {
 function getMonth ($metaArr, $dealArr) {
   $res = [];
   foreach ($dealArr as $value) {
-    $dealInfo = array_merge ($metaArr, $value);
+    $dealInfo = array_merge ($value, $metaArr);
     $res[] = $dealInfo;
   }
 
