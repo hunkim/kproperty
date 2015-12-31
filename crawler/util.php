@@ -93,6 +93,7 @@ function arr2SQL($db, $tname, $metaArr, $arr) {
         $res .= $db->real_escape_string(str_replace(",", "", $value)) . "'";
       } else {
         $res .= (str_replace(",", "", $value)) . "'";
+      }
     } else {
       echo("Check $key=$value\n");
     }
