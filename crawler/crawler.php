@@ -100,15 +100,13 @@ function crawl($year, $period, $month) {
   // get deal type and table name
   foreach ($dealType as $tname => $args) {
     echo ("Getting $tname\n");
-    print_r($args);
 
     foreach ($stateArr as $state => $stateCode) {
       $cities = getCities($year, $period, $stateCode, $args);
       $cityArr = json_decode($cities, true);
 
       echo ($cities);
-      print_r($cityArr);
-
+      
       foreach ($cityArr['jsonList'] as $city) {
         $counties = getCounties($year, $period, $stateCode, $city['CODE'], $args);
         $countyArr = json_decode($counties, true);
