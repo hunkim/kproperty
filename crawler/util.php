@@ -16,7 +16,6 @@ function update($db, $tname, $metaArr, $json) {
     return;
   }
 
-  echo ("$tname\n");
   $delsql = getDelSQL($db, $tname, $metaArr);
 
   if ($db!=null) {

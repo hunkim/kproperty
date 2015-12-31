@@ -89,7 +89,7 @@ function crawl($tname, $year, $period, $month) {
     $period = intval(($month-1)/3)+1;
   }
 
-  echo ("Working on $year ($period)\n");
+  // echo ("Working on $year ($period)\n");
 
   $db = new mysqli("p:localhost", "trend", "only!trend!", "rtrend");
   // Check connection
@@ -107,15 +107,11 @@ function crawl($tname, $year, $period, $month) {
   $args = $dealType[$tname];
   
 
-  echo ("Getting $tname\n");
-
   foreach ($stateArr as $state => $stateCode) {
     echo("Working on $year/$month ($period) on $state \n");
 
     $cities = getCities($year, $period, $stateCode, $args);
     $cityArr = json_decode($cities, true);
-
-    echo ($cities);
 
     foreach ($cityArr['jsonList'] as $city) {
       $counties = getCounties($year, $period, $stateCode, $city['CODE'], $args);
@@ -217,8 +213,6 @@ function getCities($year, $period, $state, $args) {
     'srhPeriod'=>$period,
     'gubunCode'=>'LAND',
    'sidoCode'=>$state]);
-
-  print_r($args);
 
   return doPost('http://rt.molit.go.kr/srh/getGugunListAjax.do', $args);
 }
