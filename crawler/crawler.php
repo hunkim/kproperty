@@ -6,7 +6,9 @@ include_once 'util.php';
 include_once 'mkagg.php';
 
 
-$stateArr = ['서울특별시'=>"11",
+$stateArr = [
+    '제주특별자치도'=>"50",
+    '서울특별시'=>"11",
     '부산광역시'=>"26",
     '대구광역시'=>"27",
     '인천광역시'=>"28",
@@ -22,14 +24,14 @@ $stateArr = ['서울특별시'=>"11",
     '전라남도'=>"46",
     '경상북도'=>"47",
     '경상남도'=>"48",
-    '제주특별자치도'=>"50"];
+    ];
 
 $dealType= [
-           
+           'landsale'=>['menuGubun'=>'G', 'srhType'=>'LOC', 'houseType' => '1'],
             'officetelsale'=>['menuGubun'=>'E', 'srhType'=>'LOC', 'houseType' => '1'],
             'officetelrent'=>['menuGubun'=>'E', 'srhType'=>'LOC', 'houseType' => '2'],
             'aptlots'=>['menuGubun'=>'F', 'srhType'=>'LOC', 'houseType' => '1'],
-            'landsale'=>['menuGubun'=>'G', 'srhType'=>'LOC', 'houseType' => '1'],
+            
             'aptsale'=>['menuGubun'=>'A', 'srhType'=>'LOC', 'houseType' => '1'],
             'aptrent'=>['menuGubun'=>'A', 'srhType'=>'LOC', 'houseType' => '2'],
             'flatsale'=>['menuGubun'=>'B', 'srhType'=>'LOC', 'houseType' => '1'],
