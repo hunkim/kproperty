@@ -115,7 +115,7 @@ function mkonereg($db, $colname, $tname, $grouparr, $last) {
         }
     }
   } else {
-      echo "0 results";
+      echo "0 results ";
   }
 
   echo ($sql . "\n");
