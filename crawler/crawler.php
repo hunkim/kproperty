@@ -119,7 +119,7 @@ function crawl($year, $period, $month) {
 
           foreach ($monthArr as $month) {
             echo("Working on $year/$month ($period) on $state " .
-                  $city['NAME'] . " " . $cArr[0] . "$r \n");
+                  $city['NAME'] . " " . $county['NAME'] . "\n");
 
             $infoArr = ['year'=>$year, 'month'=>$month,
                         'state'=>$state, 'city'=>$city['NAME'],
