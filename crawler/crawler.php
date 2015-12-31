@@ -102,7 +102,7 @@ function crawl($tname, $year, $period, $month) {
 
   // get deal type and table name
   $args = $dealType[$tname];
-  if ($args==='undefined') {
+  if ($args===undefined) {
     die("No args for $tname");
   }
 
