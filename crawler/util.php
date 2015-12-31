@@ -107,7 +107,7 @@ function arr2SQL($db, $tname, $metaArr, $arr) {
         $res .= (str_replace(",", "", $value)) . "'";
       }
     } else {
-      echo("Check $key=$value\n");
+      // echo("Check $key=$value\n");
     }
   }
 
