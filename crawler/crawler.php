@@ -100,11 +100,12 @@ function crawl($tname, $year, $period, $month) {
   // Set utf8
   //$db->set_charset("utf8");
 
-  // get deal type and table name
-  $args = $dealType[$tname];
-  if ($args===undefined) {
+  if (!isset($dealType[$tname])) {
     die("No args for $tname");
   }
+  // get deal type and table name
+  $args = $dealType[$tname];
+  
 
   echo ("Getting $tname\n");
 
