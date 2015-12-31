@@ -20,7 +20,7 @@ CREATE TABLE `aptrent` (
   `city` varchar(99) DEFAULT NULL,
   `county` varchar(99) DEFAULT NULL,
   `region` varchar(99) DEFAULT NULL,
-  KEY `all_index` (`state`,`city`,`county`,`region`,`aptName`,`area`,`monthlyPay`,`year`,`month`)
+  KEY `all_index` (`state`,`city`,`county`,`region`,`aptName`,`area`,`monthlyPay`,`amount`,`year`,`month`, `day`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -43,7 +43,7 @@ CREATE TABLE `aptsale` (
   `city` varchar(99) DEFAULT NULL,
   `county` varchar(99) DEFAULT NULL,
   `region` varchar(99) DEFAULT NULL,
-  KEY `all_index` (`state`,`city`,`county`,`region`,`aptName`,`area`,`year`,`month`,`amount`)
+  KEY `all_index` (`state`,`city`,`county`,`region`,`aptName`,`area`,`amount`,`year`,`month`, `day`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
@@ -69,7 +69,7 @@ CREATE TABLE `flatrent` (
   `city` varchar(99) DEFAULT NULL,
   `county` varchar(99) DEFAULT NULL,
   `region` varchar(99) DEFAULT NULL,
-  KEY `all_index` (`state`,`city`,`county`,`region`,`aptName`,`area`, `monthlyPay`,`year`,`month`)
+  KEY `all_index` (`state`,`city`,`county`,`region`,`aptName`,`area`, `amount`,`monthlyPay`,`year`,`month`, `day`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
@@ -95,7 +95,7 @@ CREATE TABLE `flatsale` (
   `city` varchar(99) DEFAULT NULL,
   `county` varchar(99) DEFAULT NULL,
   `region` varchar(99) DEFAULT NULL,
-  KEY `all_index` (`state`,`city`,`county`,`region`,`aptName`,`area`,`year`,`month`,`amount`)
+  KEY `all_index` (`state`,`city`,`county`,`region`,`aptName`,`area`,`amount`,`year`,`month`,`day`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -120,7 +120,7 @@ CREATE TABLE `houserent` (
   `city` varchar(99) DEFAULT NULL,
   `county` varchar(99) DEFAULT NULL,
   `region` varchar(99) DEFAULT NULL,
-  KEY `all_index` (`state`,`city`,`county`,`region`,`monthlyPay`,`year`,`month`)
+  KEY `all_index` (`state`,`city`,`county`,`region`,`monthlyPay`,`amount`,`year`,`month`, `day`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -147,7 +147,7 @@ CREATE TABLE `housesale` (
   `city` varchar(99) DEFAULT NULL,
   `county` varchar(99) DEFAULT NULL,
   `region` varchar(99) DEFAULT NULL,
-  KEY `all_index` (`state`,`city`,`county`,`region`,`year`,`month`,`amount`)
+  KEY `all_index` (`state`,`city`,`county`,`region`,`amount`,`year`,`month`,`day`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -171,7 +171,7 @@ CREATE TABLE `officetelrent` (
   `city` varchar(99) DEFAULT NULL,
   `county` varchar(99) DEFAULT NULL,
   `region` varchar(99) DEFAULT NULL,
-  KEY `all_index` (`state`,`city`,`county`,`region`,`aptName`,`area`, `monthlyPay`, `year`,`month`)
+  KEY `all_index` (`state`,`city`,`county`,`region`,`aptName`,`area`, `monthlyPay`, `amount`,`year`,`month`, `day`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
@@ -190,7 +190,7 @@ CREATE TABLE `officetelsale` (
   `city` varchar(99) DEFAULT NULL,
   `county` varchar(99) DEFAULT NULL,
   `region` varchar(99) DEFAULT NULL,
-  KEY `all_index` (`state`,`city`,`county`,`region`,`aptName`,`area`,`year`,`month`,`amount`)
+  KEY `all_index` (`state`,`city`,`county`,`region`,`aptName`,`area`,`year`,`month`,`amount`, `day`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
@@ -210,7 +210,7 @@ CREATE TABLE `aptlots` (
   `city` varchar(99) DEFAULT NULL,
   `county` varchar(99) DEFAULT NULL,
   `region` varchar(99) DEFAULT NULL,
-  KEY `all_index` (`state`,`city`,`county`,`region`,`aptName`,`area`,`year`,`month`,`amount`)
+  KEY `all_index` (`state`,`city`,`county`,`region`,`aptName`,`area`,`year`,`month`,`amount`, `day`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
@@ -230,5 +230,5 @@ CREATE TABLE `landsale` (
   `city` varchar(99) DEFAULT NULL,
   `county` varchar(99) DEFAULT NULL,
   `region` varchar(99) DEFAULT NULL,
-  KEY `all_index` (`state`,`city`,`county`,`region`, `type`, `usedType`, `year`,`month`,`amount`)
+  KEY `all_index` (`state`,`city`,`county`,`region`, `type`, `usedType`, `year`,`month`,`amount`,`day`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;

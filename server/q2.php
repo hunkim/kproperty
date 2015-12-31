@@ -16,7 +16,7 @@ if (!$tname) {
 
 // Basic information SQL
 $sale_sql = "SELECT * FROM $tname where year >= ? AND year <= ? ";
-$sale_sql_append = " order by year desc, month desc limit 500";
+$sale_sql_append = " order by year desc, month, day desc limit 500";
 
 // process and print
 processQuery($sale_sql, $sale_sql_append);
