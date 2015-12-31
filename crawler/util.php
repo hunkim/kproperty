@@ -12,7 +12,7 @@ function update($db, $tname, $metaArr, $json) {
   }
 
   if ($dealCount == 0) {
-    echo ("Nothing to add\n");
+    echo ("[N]");
     return;
   }
 
