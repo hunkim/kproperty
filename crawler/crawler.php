@@ -40,7 +40,7 @@ $dealType= [
              'houserent'=>['menuGubun'=>'C', 'srhType'=>'LOC', 'houseType' => '2'],
 ];
 
-crawlNow();
+crawlAll();
 
 /**
 * crawl this month and last months for updates
