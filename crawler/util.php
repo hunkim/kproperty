@@ -24,7 +24,7 @@ function update($db, $tname, $metaArr, $json) {
         die ("Error: $delsql\n $db->error");
     }
   }
-  print($delsql);
+  //print($delsql);
 
   foreach ($arr as $deal) {
     // check the month and push only one month
@@ -38,7 +38,7 @@ function update($db, $tname, $metaArr, $json) {
           die ("Error: $sql\n $db->error");
       }
     }
-    print($sql);
+    print($tname);
   }
 }
 
