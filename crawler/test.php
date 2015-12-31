@@ -18,6 +18,7 @@ $fileList = ["aptsale.json", "aptrent.json", "flatsale.json", "flatrent.json", "
 	,"officetelsale.json", "officetelrent.json", "aptlots.json", "landsale.json"];
 
 
+$fileList = ["landsale.json"];
 
 foreach ($fileList as $value) {
   $json = file_get_contents($value);

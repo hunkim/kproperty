@@ -115,19 +115,13 @@ function crawl($year, $period, $month) {
           $deals = getDeals($year, $period, $stateCode, $city['CODE'], $county['CODE'], $args);
           $dealArr = json_decode($deals, true);
 
-          $r = "";
-          $cArr = explode(" ", $county['NAME'], 2);
-          if (count($cArr)==2) {
-            $r = $cArr[1];
-          }
-
           foreach ($monthArr as $month) {
             echo("Working on $year/$month ($period) on $state " .
                   $city['NAME'] . " " . $cArr[0] . "$r \n");
 
             $infoArr = ['year'=>$year, 'month'=>$month,
                         'state'=>$state, 'city'=>$city['NAME'],
-                        'county'=>$cArr[0], 'region'=>$r];
+                        'county'=>$county['NAME']];
 
             // update
             // function update($db, $tname, $metaArr, $json) {

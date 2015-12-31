@@ -69,7 +69,8 @@ function arr2SQL($db, $tname, $metaArr, $arr) {
     'JIMOK_NM' => 'type',
     'USE_REGN_NM' => 'usedType',
     'OBJ_AMT' => 'amount',
-    'PRIV_AREA'=>'area'
+    'PRIV_AREA'=>'area',
+    'UMD_NM'=> 'region'
   ];
 
 
@@ -81,6 +82,11 @@ function arr2SQL($db, $tname, $metaArr, $arr) {
   }
 
   foreach ($arr as $key => $value) {
+    // if county and UMD_MM are the same, skip
+    if ($key=='UMD_NM' && $value==$metaArr['county']) {
+      continue;
+    }
+
     if (isset($tmap[$key])) {
       $res .= ",\n\t" . $tmap[$key] . " = '" .
       $db->real_escape_string(str_replace(",", "", $value)) .
