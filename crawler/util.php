@@ -84,7 +84,7 @@ function arr2SQL($db, $tname, $metaArr, $arr) {
   foreach ($arr as $key => $value) {
     // if county and UMD_MM are the same, skip
     if ($key=='UMD_NM' && $value==$metaArr['county']) {
-      continue;
+      $value="";
     }
 
     if (isset($tmap[$key])) {
