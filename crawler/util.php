@@ -74,7 +74,7 @@ function arr2SQL($db, $tname, $metaArr, $arr) {
   ];
 
 
-  $res = "insert into $tname set year='" . $metaArr['year'] . "'";
+  $res = "insert DELAYED into $tname set year='" . $metaArr['year'] . "'";
   foreach ($metaArr as $key => $value) {
     if ($key!== 'year') {
       $res .= ",\n\t$key='" . $value . "'";
