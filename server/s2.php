@@ -19,6 +19,9 @@ $stat_simple = "select year, month, count, ";
 
 switch($tname) {
 	case 'aptsale':
+	case 'officetelsale':
+	case 'landsale':
+	case 'aptlots':
 			$stat_sql .= " REPLACE(format(avg(amount/area),2), ',', '') as avgAmtArea ";
 			$stat_sql .=	" from $tname where amount > 0 and year >= ? AND year <= ?";
 
@@ -27,6 +30,7 @@ switch($tname) {
 
 	case 'housesale':
 	case 'flatsale':
+
 			$stat_sql .= " REPLACE(format(avg(amount/area),2), ',', '') as avgAmtArea ";
 			$stat_sql .= ", REPLACE(format(avg(amount/landArea),2), ',', '') as avgAmtLand ";
 			$stat_sql .=	" from $tname where amount > 0 and year >= ? AND year <= ?";
