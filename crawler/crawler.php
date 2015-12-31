@@ -5,6 +5,9 @@ error_reporting(E_ALL);
 include_once 'util.php';
 include_once 'mkagg.php';
 
+if ($argc!=2) {
+  die ($argv[0] . " <tname>\n");
+}
 
 $stateArr = [
     '제주특별자치도'=>"50",
@@ -40,33 +43,33 @@ $dealType= [
              'houserent'=>['menuGubun'=>'C', 'srhType'=>'LOC', 'houseType' => '2'],
 ];
 
-crawlAll();
+crawlAll($argv[1]);
 
 /**
 * crawl this month and last months for updates
 */
-function crawlNow() {
+function crawlNow($tname) {
   date_default_timezone_set("Asia/Seoul");
   $date = date_create();
 
   // current month
-  crawl($date->format('Y'), null, $date->format('m'));
+  crawl($tname, $date->format('Y'), null, $date->format('m'));
 
   // last month
   $date->modify('-1 month');
-  crawl($date->format('Y'), null, $date->format('m'));
+  crawl($tname, $date->format('Y'), null, $date->format('m'));
 }
 
 // Crawl all upto date
-function crawlAll() {
+function crawlAll($tname) {
   for ($year = 2006; $year <= 2015; $year++) {
     for ($period=1;$period<=4; $period++) {
-      crawl($year, $period, null);
+      crawl($tname, $year, $period, null);
     }
   }
 }
 
-function crawl($year, $period, $month) {
+function crawl($tname, $year, $period, $month) {
    $dealType = $GLOBALS['dealType'];
    $stateArr = $GLOBALS['stateArr'];
 
@@ -98,45 +101,49 @@ function crawl($year, $period, $month) {
   //$db->set_charset("utf8");
 
   // get deal type and table name
-  foreach ($dealType as $tname => $args) {
-    echo ("Getting $tname\n");
+  $args = $dealType[$tname];
+  if ($args==='undefined') {
+    die("No args for $tname");
+  }
 
-    foreach ($stateArr as $state => $stateCode) {
-      $cities = getCities($year, $period, $stateCode, $args);
-      $cityArr = json_decode($cities, true);
+  echo ("Getting $tname\n");
 
-      echo ($cities);
-      
-      foreach ($cityArr['jsonList'] as $city) {
-        $counties = getCounties($year, $period, $stateCode, $city['CODE'], $args);
-        $countyArr = json_decode($counties, true);
+  foreach ($stateArr as $state => $stateCode) {
+    $cities = getCities($year, $period, $stateCode, $args);
+    $cityArr = json_decode($cities, true);
 
-        foreach($countyArr['jsonList'] as $county) {
-          $deals = getDeals($year, $period, $stateCode, $city['CODE'], $county['CODE'], $args);
-          $dealArr = json_decode($deals, true);
+    echo ($cities);
 
-          foreach ($monthArr as $month) {
-            echo("Working on $year/$month ($period) on $state " .
-                  $city['NAME'] . " " . $county['NAME'] . "\n");
+    foreach ($cityArr['jsonList'] as $city) {
+      $counties = getCounties($year, $period, $stateCode, $city['CODE'], $args);
+      $countyArr = json_decode($counties, true);
 
-            $infoArr = ['year'=>$year, 'month'=>$month,
-                        'state'=>$state, 'city'=>$city['NAME'],
-                        'county'=>$county['NAME']];
+      foreach($countyArr['jsonList'] as $county) {
+        $deals = getDeals($year, $period, $stateCode, $city['CODE'], $county['CODE'], $args);
+        $dealArr = json_decode($deals, true);
 
-            // update
-            // function update($db, $tname, $metaArr, $json) {
-            update($db, $tname, $infoArr, $deals);
-          }
+        foreach ($monthArr as $month) {
+          echo("Working on $year/$month ($period) on $state " .
+                $city['NAME'] . " " . $county['NAME'] . "\n");
+
+          $infoArr = ['year'=>$year, 'month'=>$month,
+                      'state'=>$state, 'city'=>$city['NAME'],
+                      'county'=>$county['NAME']];
+
+          // update
+          // function update($db, $tname, $metaArr, $json) {
+          update($db, $tname, $infoArr, $deals);
         }
       }
     }
-
-    // make aggregation
-    foreach ($monthArr as $month) {
-      echo ("Make agg $tname on $year/$month");
-      mkagg($db, $tname, $year, $month);
-    }
   }
+
+  // make aggregation
+  foreach ($monthArr as $month) {
+    echo ("Make agg $tname on $year/$month");
+    mkagg($db, $tname, $year, $month);
+  }
+
 
   $db->close();
 }
