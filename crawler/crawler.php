@@ -61,8 +61,8 @@ function crawlNow($tname) {
 }
 
 // Crawl all upto date
-function crawlAll($tname) {
-  for ($year = 2006; $year <= 2015; $year++) {
+function crawlAll($tname, $styear) {
+  for ($year = $styear; $year <= 2015; $year++) {
     for ($period=1;$period<=4; $period++) {
       crawl($tname, $year, $period, null);
     }

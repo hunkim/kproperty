@@ -89,7 +89,7 @@ function arr2SQL($db, $tname, $metaArr, $arr) {
     // if county and UMD_MM are the same, skip
     if ($key=='UMD_NM') {
       if($value==$metaArr['county']) {
-        $value=="";
+        $value="";
       } else if (startsWith($value, $metaArr['county'] + " ")) {
         $value =  substr($value, strlen($metaArr['county'])+1);
       }
