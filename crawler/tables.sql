@@ -11,6 +11,7 @@ CREATE TABLE `aptrent` (
   `day` int(11) DEFAULT NULL,
   `amount` int(11) DEFAULT NULL,
   `monthlyPay` int(11) DEFAULT NULL,
+  `monthlyType` varchar(10) DEFAULT NULL,
   `floor` int(11) DEFAULT NULL,
   `builtYear` int(11) DEFAULT NULL,
   `avenue` int(11) DEFAULT 0,
@@ -20,7 +21,7 @@ CREATE TABLE `aptrent` (
   `city` varchar(99) DEFAULT NULL,
   `county` varchar(99) DEFAULT NULL,
   `region` varchar(99) DEFAULT "",
-  KEY `all_index` (`state`,`city`,`county`,`region`,`aptName`,`area`,`monthlyPay`,`amount`,`year`,`month`, `day`)
+  KEY `all_index` (`state`,`city`,`county`,`region`,`aptName`,`area`,`monthlyType`,`amount`,`year`,`month`, `day`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -60,6 +61,7 @@ CREATE TABLE `flatrent` (
   `day` int(11) DEFAULT NULL,
   `amount` int(11) DEFAULT NULL,
   `monthlyPay` int(11) DEFAULT NULL,
+  `monthlyType` varchar(10) DEFAULT NULL,
   `floor` int(11) DEFAULT NULL,
   `builtYear` int(11) DEFAULT NULL,
   `avenue` int(11) DEFAULT 0,
@@ -69,7 +71,7 @@ CREATE TABLE `flatrent` (
   `city` varchar(99) DEFAULT NULL,
   `county` varchar(99) DEFAULT NULL,
   `region` varchar(99) DEFAULT "",
-  KEY `all_index` (`state`,`city`,`county`,`region`,`aptName`,`area`, `amount`,`monthlyPay`,`year`,`month`, `day`)
+  KEY `all_index` (`state`,`city`,`county`,`region`,`aptName`,`area`, `amount`,`monthlyType`,`year`,`month`, `day`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 
@@ -112,6 +114,7 @@ CREATE TABLE `houserent` (
   `day` int(11) DEFAULT NULL,
   `amount` int(11) DEFAULT NULL,
   `monthlyPay` int(11) DEFAULT NULL,
+  `monthlyType` varchar(10) DEFAULT NULL,
   `builtYear` int(11) DEFAULT NULL,
   `avenue` int(11) DEFAULT 0,
   `year` int(11) DEFAULT NULL,
@@ -120,7 +123,7 @@ CREATE TABLE `houserent` (
   `city` varchar(99) DEFAULT NULL,
   `county` varchar(99) DEFAULT NULL,
   `region` varchar(99) DEFAULT "",
-  KEY `all_index` (`state`,`city`,`county`,`region`,`monthlyPay`,`amount`,`year`,`month`, `day`)
+  KEY `all_index` (`state`,`city`,`county`,`region`,`monthlyType`,`amount`,`year`,`month`, `day`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -162,6 +165,7 @@ CREATE TABLE `officetelrent` (
   `day` int(11) DEFAULT NULL,
   `amount` int(11) DEFAULT NULL,
   `monthlyPay` int(11) DEFAULT NULL,
+  `monthlyType` varchar(10) DEFAULT NULL,
   `floor` int(11) DEFAULT NULL,
   `builtYear` int(11) DEFAULT NULL,
   `avenue` int(11) DEFAULT 0,
@@ -171,7 +175,7 @@ CREATE TABLE `officetelrent` (
   `city` varchar(99) DEFAULT NULL,
   `county` varchar(99) DEFAULT NULL,
   `region` varchar(99) DEFAULT "",
-  KEY `all_index` (`state`,`city`,`county`,`region`,`aptName`,`area`, `monthlyPay`, `amount`,`year`,`month`, `day`)
+  KEY `all_index` (`state`,`city`,`county`,`region`,`aptName`,`area`, `monthlyType`, `amount`,`year`,`month`, `day`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 

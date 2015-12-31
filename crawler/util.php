@@ -102,6 +102,14 @@ function arr2SQL($db, $tname, $metaArr, $arr) {
       } else {
         $res .= (str_replace(",", "", $value)) . "'";
       }
+
+      if ($key=='RENT_AMT') {
+        if ($value=='0') {
+          $res .= ", monthlyType='전세'"; 
+        } else {
+          $res .= ", monthlyType='월세'";
+        }
+      }
     } else {
       // echo("Check $key=$value\n");
     }
