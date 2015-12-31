@@ -90,10 +90,7 @@ function arr2SQL($db, $tname, $metaArr, $arr) {
     if ($key=='UMD_NM') {
       if($value==$metaArr['county']) {
         $value=="";
-      }
-
-      //Skip starting part
-      if (startsWith($value, $metaArr['county'] + " ")) {
+      } else if (startsWith($value, $metaArr['county'] + " ")) {
         $value =  substr($value, strlen($metaArr['county'])+1);
       }
     }

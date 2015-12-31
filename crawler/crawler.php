@@ -6,7 +6,7 @@ include_once 'util.php';
 include_once 'mkagg.php';
 
 if ($argc!=2) {
-  die ($argv[0] . " <tname>\n");
+  die ($argv[0] . " <tname> <st_year>\n");
 }
 
 $stateArr = [
@@ -43,7 +43,7 @@ $dealType= [
              'houserent'=>['menuGubun'=>'C', 'srhType'=>'LOC', 'houseType' => '2'],
 ];
 
-crawlAll($argv[1]);
+crawlAll($argv[1], intval($argv[2]);
 
 /**
 * crawl this month and last months for updates
