@@ -42,7 +42,7 @@ switch($tname) {
 
  // all others
 	default:
-			$stat_sql .= " REPLACE(format(avg(deposit/area),2), ',', '') as avgDeposit ";
+			$stat_sql .= " REPLACE(format(avg(amount/area),2), ',', '') as avgDeposit ";
 			$stat_sql .= ", REPLACE(format(avg(monthlyPay/area),2), ',', '') as avgRent ";
 			$stat_sql .=	" from $tname where year >= ? AND year <= ?";
 

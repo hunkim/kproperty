@@ -86,7 +86,7 @@ function mkoneagg($db, $tname, $tnameagg, $year, $month, $arr) {
 
   default:
     $sql = "insert DELAYED into $tnameagg select $concat as k, year, month, count(*) as count, ".
-      " avg(deposit/area) as avgDeposit ";
+      " avg(amount/area) as avgDeposit ";
     $sql .= ", avg(monthlyPay/area) as avgRent ";
     $sql .=	" from $tname where year = $year AND month = $month";
   }
