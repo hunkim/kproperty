@@ -5,7 +5,7 @@ error_reporting(E_ALL);
 include_once 'util.php';
 include_once 'mkagg.php';
 
-if ($argc!=2) {
+if ($argc!=3) {
   die ($argv[0] . " <tname> <st_year>\n");
 }
 
