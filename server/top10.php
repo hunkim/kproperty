@@ -7,6 +7,8 @@ header("Content-Type: application/json; charset=UTF-8");
 
 $tname = substr($_SERVER['PATH_INFO'], 1);
 
+$conn = DBconn();
+
 $debug = false;
 
 $delta = false;
@@ -41,10 +43,9 @@ foreach ($_GET as $key=>$val) {
 			continue;
 		}
 
-		$q.=" and $key='" . urldecode($val) . "'";
+		$q.=" and $key='" . $conn->real_escape_string(urldecode($val)) . "'";
 }
 
-$conn = DBconn();
 
 if ($delta) {
   if($tname=='aptrent' || $tname=='flatrent' || $tname=='officetelrent') {
