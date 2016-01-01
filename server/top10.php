@@ -115,11 +115,17 @@ foreach ($rows as $key => $val) {
 	if ($val['value'] < 0) {
 		$color = 'blue';
 	}
-	$arr = ['c'=>[['v'=>$val['label']], ['v'=>$val['value']], ['v'=>$color]]];
+	$arr = ['c'=>[['v'=>$val['label']], ['v'=>$val['value']], ['v'=>rand_color()]]];
 	$result [] = $arr;
 }
 
 // JSON_PRETTY_PRINT|
 print json_encode($result, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
 $conn->close();
+
+
+
+function rand_color() {
+    return '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
+}
 ?>
