@@ -50,6 +50,12 @@ function mkagg($db, $tname, $year, $month) {
   //  die("Error creating table: $sql\n $db->error");
   }
 
+  // remove this month if already exist
+  $delSQL = "delete from $tnameagg where year=$year and month=$month";
+  if ($db->query($delSQL) !== TRUE) {
+     die("Error deleting: $delSQL\n $db->error");
+  }
+
   $groupkey = ['', 'state','city','county'];
   foreach ($groupkey as $key => $value) {
       $arr[] = $value;
