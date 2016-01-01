@@ -111,11 +111,16 @@ if ($result->num_rows > 0) {
 
 $result = [];
 foreach ($rows as $key => $val) {
-	$color = 'red';
-	if ($val['value'] < 0) {
-		$color = 'blue';
+	if ($delta) {
+		$color = 'red';
+		if ($val['value'] < 0) {
+			$color = 'blue';
+		}
+	} else {
+		$color = rand_color();
 	}
-	$arr = ['c'=>[['v'=>$val['label']], ['v'=>$val['value']], ['v'=>rand_color()]]];
+	
+	$arr = ['c'=>[['v'=>$val['label']], ['v'=>$val['value']], ['v'=>$color]]];
 	$result [] = $arr;
 }
 
@@ -124,7 +129,7 @@ print json_encode($result, JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
 $conn->close();
 
 
-
+// http://stackoverflow.com/questions/5614530/generating-a-random-hex-color-code-with-php
 function rand_color() {
     return '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
 }
