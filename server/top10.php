@@ -111,7 +111,7 @@ if ($result->num_rows > 0) {
 
 $result = [];
 foreach ($rows as $key => $val) {
-	$arr = ['c'=>[['v'=>$val['label']], ['v'=>$val['value']]]];
+	$arr = ['c'=>[['v'=>$val['label']], ['v'=>$val['value'], ['v'=>'gold']]]];
 	$result [] = $arr;
 }
 
