@@ -117,9 +117,10 @@ if ($result->num_rows > 0) {
 $result = [];
 foreach ($rows as $key => $val) {
 	if ($delta) {
-		$color = 'red';
+		// http://bootstrapbay.com/blog/wp-content/uploads/2014/05/bootflat_sample_r8sbud.png
+		$color = '#ED5565';
 		if ($val['value'] < 0) {
-			$color = 'blue';
+			$color = '#5D9CEC';
 		}
 	} else {
 		$color = rand_color();
@@ -136,6 +137,10 @@ $conn->close();
 
 // http://stackoverflow.com/questions/5614530/generating-a-random-hex-color-code-with-php
 function rand_color() {
-    return '#' . str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
+	$color = ['#5D(CEC', '#4FC11E9', '#4A89DC', '#3BAFDA', '#48CFAD', '#37BC9B', '#A0D468', 
+		'#8CC152', '#ED5565', '#DA4453', '#AC92EC', '#967ADC', '#EC87C0', '#D770AD', 
+		'#FFCE54', '#F6BB42', '#FC6E51', '#E9573F', '#E6E9ED', '#CCD1D9', '#AAB2BD', '#656d78')];
+
+    return $color[rand(0, count($color)-1)];
 }
 ?>
