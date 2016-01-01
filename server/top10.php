@@ -1,4 +1,7 @@
 <?php
+
+include_once 'dbconn.php';
+
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
@@ -41,18 +44,10 @@ foreach ($_GET as $key=>$val) {
 		$q.=" and $key='" . urldecode($val) . "'";
 }
 
-
-// Persistent Connections
-// http://stackoverflow.com/questions/3332074/what-are-the-disadvantages-of-using-persistent-connection-in-pdo
-// http://www.php.net/manual/en/mysqli.persistconns.php
-$conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
-// Check connection
-if ($conn->connect_error) {
-		die("Connection failed: " . $conn->connect_error);
-}
+$conn = DBconn();
 
 if ($delta) {
-  if($tname=='aptrent' || $tname=='flatrent') {
+  if($tname=='aptrent' || $tname=='flatrent' || $tname=='officetelrent') {
 		$sql = "select CONCAT_WS(' ', v1.state, v1.city, v1.county) as label,";
 		//$sql .= "v1.year as year1, v1.a as avg1, v2.year as year2, v2.a as avg2, ";
 		$sql .= " replace(format((v2.a-v1.a),2),',', '') as value from ";
@@ -68,7 +63,7 @@ if ($delta) {
 		$sql .= "where v1.state=v2.state and v1.city=v2.city and v1.county=v2.county and v1.aptName=v2.aptName order by (v2.a-v1.a) desc;";
 	}
 } else {
-	if($tname=='aptrent' || $tname=='flatrent') {
+	if($tname=='aptrent' || $tname=='flatrent' || $tname=='officetelrent') {
 		$sql =  "select CONCAT_WS(' ', state, city, county, aptName) as label, replace(format(avg(deposit/area),2),',', '') as value, avg(deposit/area) as x from $tname";
 	  $sql .= " where deposit>0 and year = $year $q ";
 		$sql .= " group by state, city, county, aptName ";
