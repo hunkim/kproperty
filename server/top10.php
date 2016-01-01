@@ -99,6 +99,11 @@ if (!$result) {
 	 exit(0);
 }
 
+
+if($debug) {
+	echo "got " . $result->num_rows . "results!";
+}
+
 if ($result->num_rows > 0) {
 	// output data of each row
 	$i = 0;
@@ -119,7 +124,7 @@ foreach ($rows as $key => $val) {
 	} else {
 		$color = rand_color();
 	}
-	
+
 	$arr = ['c'=>[['v'=>$val['label']], ['v'=>$val['value']], ['v'=>$color]]];
 	$result [] = $arr;
 }
