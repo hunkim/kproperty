@@ -111,7 +111,11 @@ if ($result->num_rows > 0) {
 
 $result = [];
 foreach ($rows as $key => $val) {
-	$arr = ['c'=>[['v'=>$val['label']], ['v'=>$val['value']], ['v'=>'gold']]];
+	$color = 'red';
+	if ($value<0) {
+		$color = 'blue';
+	}
+	$arr = ['c'=>[['v'=>$val['label']], ['v'=>$val['value']], ['v'=>$color]]];
 	$result [] = $arr;
 }
 
