@@ -95,7 +95,8 @@ if($debug) {
 
 $result = $conn->query($sql);
 if (!$result) {
-	 die ("Quwey $sql failed: ($conn->errno)  $conn->error");
+	 echo ("Quwey $sql failed: ($conn->errno)  $conn->error");
+	 exit(0);
 }
 
 if ($result->num_rows > 0) {
