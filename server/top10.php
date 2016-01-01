@@ -139,7 +139,7 @@ $conn->close();
 function rand_color() {
 	$color = ['#5D(CEC', '#4FC11E9', '#4A89DC', '#3BAFDA', '#48CFAD', '#37BC9B', '#A0D468', 
 		'#8CC152', '#ED5565', '#DA4453', '#AC92EC', '#967ADC', '#EC87C0', '#D770AD', 
-		'#FFCE54', '#F6BB42', '#FC6E51', '#E9573F', '#E6E9ED', '#CCD1D9', '#AAB2BD', '#656d78')];
+		'#FFCE54', '#F6BB42', '#FC6E51', '#E9573F', '#E6E9ED', '#CCD1D9', '#AAB2BD', '#656d78'];
 
     return $color[rand(0, count($color)-1)];
 }
