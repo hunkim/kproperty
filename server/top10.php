@@ -76,7 +76,7 @@ if ($delta) {
 		$sql .= " group by state, city, county, aptName ";
 		$sql .= " order by x desc limit 20;";
 	} else if($tname=='landsale' || $tname=='housesale') {
-		$sql =  "select CONCAT_WS(' ', state, city, county) as label, replace(format(avg(amount/area),2)*3.30579,',', '') as value, avg(amount/area)*3.30579 as x from $tname";
+		$sql =  "select CONCAT_WS(' ', state, city, county) as label, replace(format(avg(amount/area)*3.30579,2),',', '') as value, avg(amount/area)*3.30579 as x from $tname";
 	    $sql .= " where amount>0 and year = $year $q ";
 		$sql .= " group by state, city, county";
 		$sql .= " order by x desc limit 20;";
