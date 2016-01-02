@@ -21,38 +21,53 @@
     ================================================== -->
   <ul class="nav nav-tabs">
   <li ng-class="amIActive('aptsale')"><a ng-click="setAppType('aptsale')">아파트 매매</a></li>
-  <li ng-class="amIActive('flatsale')"><a ng-click="setAppType('flatsale')">연립-다세대 매매</a></li>
-  <li ng-class="amIActive('housesale')"><a ng-click="setAppType('housesale')">단독-다가구 매매</a></li>
-  <li ng-class="amIActive('aptrent')"><a ng-click="setAppType('aptrent')">아파트 전/월세</a></li>
-  <li ng-class="amIActive('flatrent')"><a ng-click="setAppType('flatrent')">연립-다세대 전/월세</a></li>
-  <li ng-class="amIActive('houserent')"><a ng-click="setAppType('houserent')">단독-다가구 전/월세</a></li>
+  <li ng-class="amIActive('aptlots')"><a ng-click="setAppType('aptlots')">아파트 분양권</a></li>
+  <li ng-class="amIActive('officetelsale')"><a ng-click="setAppType('officetelsale')">오피스텔 매매</a></li>
+  <li ng-class="amIActive('flatsale')"><a ng-click="setAppType('flatsale')">빌라 매매</a></li>
+  <li ng-class="amIActive('housesale')"><a ng-click="setAppType('housesale')">단독 매매</a></li>
+  <li ng-class="amIActive('landsale')"><a ng-click="setAppType('landsale')">토지 매매</a></li>
+  <li ng-class="amIActive('aptrent')"><a ng-click="setAppType('aptrent')">아파트 전월세</a></li>
+  <li ng-class="amIActive('officetelrent')"><a ng-click="setAppType('officetelrent')">오피스텔 전월세</a></li>
+  <li ng-class="amIActive('flatrent')"><a ng-click="setAppType('flatrent')">빌라 전월세</a></li>
+  <li ng-class="amIActive('houserent')"><a ng-click="setAppType('houserent')">단독 전월세</a></li>
+  <li ><a href="top.html" class="text-danger"><strong><span class="glyphicon glyphicon-signal"></span> 통계보기</strong></a></li>
+
   </ul>
 
   <h2>  <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
     전국 실거래가 {{appNameList[appType]}} 정보
-    <small>(시험운영중: <a href="mailto:hunkim+kp@gmail.com?Subject=Bug" target="_top">버그 알려주세요!</a>)</small>
+    <small>(시험운영중: <a href="mailto:hunkim+kp@gmail.com?Subject=Bug" target="_top">의견주기</a>)</small>
   </h2>
 <form>
   <div class="alert alert-success" role="alert">
     <span class="glyphicon glyphicon-search" aria-hidden="true"></span>지역: 
-   시도 <select name="state" ng-model="loc.state" ng-change="getCity();">
+   시도 <select name="state" ng-model="loc.state" ng-change="getCity(true);">
     <option ng-repeat="state in stateArr" value="{{state}}">{{state}}</option>
   </select>
 
-  시군구 <select name="city" ng-model="loc.city" ng-change="getCounty();">
+  시군구 <select name="city" ng-model="loc.city" ng-change="getCounty(true);">
     <option ng-repeat="city in cityArr | orderBy" value="{{city}}">{{city}}</option>
   </select>
 
-  읍면동 <select name="county" ng-model="loc.county" ng-change="getRegion();getAptName();">
+  읍면동 <select name="county" ng-model="loc.county" ng-change="getRegion(false);getAptName(true);getLandType(true);">
     <option ng-repeat="county in countyArr | orderBy" value="{{county}}">{{county}}</option>
   </select>
 
-  <span ng-show="regionArr.length>2">기타 <select name="region" ng-model="loc.region" ng-change="upAll();getAptName();">
+  <span ng-show="regionArr.length>2">기타 <select name="region" ng-model="loc.region" ng-change="getAptName(true);getLandType(true);">
     <option ng-repeat="region in regionArr | orderBy" value="{{region}}">{{region}}</option>
   </select></span>
 
   <!-- apt related selection -->
-   <span ng-show="isAptkind">단지명 <select name="aptName" ng-model="loc.aptName" ng-change="getAptArea();">
+   <span ng-show="appType=='landsale'">지목<select name="type" ng-model="loc.landType" ng-change="getLandUsedType(true);;">
+    <option ng-repeat="type in landTypeArr | orderBy" value="{{type}}">{{type}}</option>
+  </select></span>
+
+   <span ng-show="appType=='landsale'">용도지역<select name="usedType" ng-model="loc.landUsedType" ng-change="upAll();">
+    <option ng-repeat="usedType in landUsedTypeArr | orderBy" value="{{usedType}}">{{usedType}}</option>
+  </select></span>
+
+   <!-- apt related selection -->
+   <span ng-show="isAptkind">단지명 <select name="aptName" ng-model="loc.aptName" ng-change="getAptArea(true);">
     <option ng-repeat="aptName in aptNameArr | orderBy" value="{{aptName}}">{{aptName}}</option>
   </select></span>
 
@@ -143,33 +158,35 @@
 <table class="table" ng-show="appType=='houserent' ">
     <tr>
       <th>#</th>
-      <th>년월</th>
+      <th>계약일</th>
       <th>지역명</th>
       <th class="text-right">계약면적(㎡)</th>
       <th>구분</th>
       <th class="text-right">보증금(만원)</th>
       <th class="text-right">월세(만원)</th>
-      <th>도로명 (지도링크)</th>
+      <th>지도</th>
     </tr>
     <tr ng-repeat="sale in saleArr">
       <td>{{$index+1}}</td>
-      <td>{{sale.year}}/{{sale.month}}</td>
-      <td>{{sale.fullLoc}}</td>
+      <td>{{sale.year}}/{{sale.month}}/{{sale.day}}</td>
+      <td><a href='#' ng-click="selectLoc(sale);">{{fullLoc(sale)}}</a></td>
       <td class="text-right">{{sale.area}}</td>
       <td>{{sale.monthlyType}}</td>
-      <td class="text-right">{{sale.deposit | currency:"":0 }}</td>
+      <td class="text-right">{{sale.amount | currency:"":0 }}</td>
       <td class="text-right">{{sale.monthlyPay | currency:"":0 }}</td>
-      <td><A target="_blank" href="{{mapEncode(sale)}}">{{sale.avenue}}</a></td>
+      <td><A target="_blank" href="{{mapEncode(sale)}}">
+         <center><span class="glyphicon glyphicon-map-marker"></span></center>
+       </a></td>
     </tr>
   </table>
 
   <!-- 연립 전/월세: 시군구  본번  부번  단지명 전월세구분 전용면적(㎡) 계약일 보증금(만원) 월세(만원)  층 건축년도
     도로명 -->
   <!-- APT 전월세: 시군구 본번  부번  단지명 전월세구분 전용면적(㎡) 계약일 보증금(만원) 월세(만원)  층 건축년도  도로명 -->
-  <table class="table" ng-show="appType=='flatrent' || appType=='aptrent' ">
+  <table class="table" ng-show="appType=='flatrent' || appType=='aptrent' || appType=='officetelrent' ">
     <tr>
       <th>#</th>
-      <th>년월</th>
+      <th>계약일</th>
       <th>지역명</th>
       <th>단지명</th>
       <th class="text-right">전용면적(㎡)</th>
@@ -181,15 +198,42 @@
     </tr>
     <tr ng-repeat="sale in saleArr">
       <td>{{$index+1}}</td>
-      <td>{{sale.year}}/{{sale.month}}</td>
-      <td>{{sale.fullLoc}}</td>
-      <td>{{sale.aptName}}</td>
+      <td>{{sale.year}}/{{sale.month}}/{{sale.day}}</td>
+      <td><a href='#' ng-click="selectLoc(sale);">{{fullLoc(sale)}}</a></td>
+      <td><a href='#' ng-click="selectApt(sale);">{{sale.aptName}}</a></td>
       <td class="text-right">{{sale.area}}</td>
       <td>{{sale.monthlyType}}</td>
-      <td class="text-right">{{sale.deposit | currency:"":0 }}</td>
+      <td class="text-right">{{sale.amount | currency:"":0 }}</td>
       <td ng-hide="loc.monthlyType=='전세'" class="text-right">{{sale.monthlyPay | currency:"":0 }}</td>
       <td class="text-right">{{sale.floor}}</td>
-      <td><A target="_blank" href="{{mapEncode(sale)}}">{{sale.avenue}}</a></td>
+      <td><A target="_blank" href="{{mapEncode(sale)}}">
+         <center><span class="glyphicon glyphicon-map-marker"></span></center>
+       </a></td>
+    </tr>
+  </table>
+
+ <!-- 토지 매매 -->
+  <table class="table" ng-show="appType=='landsale' ">
+    <tr>
+      <th>#</th><th>계약일</th>
+      <th>지역명</th>
+      <th class="text-right">거래금액(만원)</th>
+      <th class="text-right">대지면적(㎡)</th>
+      <th>지목</th>
+      <th>용도지역</th>
+      <th>지도</th>
+    </tr>
+    <tr ng-repeat="sale in saleArr">
+      <td>{{$index+1}}</td>
+      <td>{{sale.year}}/{{sale.month}}/{{sale.day}}</td>
+      <td><a href='#' ng-click="selectLoc(sale);">{{fullLoc(sale)}}</a></td>
+      <td class="text-right">{{sale.amount | currency:"":0 }}</td>
+      <td class="text-right">{{sale.area | currency:"":0 }}</td>
+      <td>{{sale.type}}</td>
+      <td>{{sale.usedType}}</td>
+      <td><A target="_blank" href="{{mapEncode(sale)}}">
+        <center><span class="glyphicon glyphicon-map-marker"></span></center>
+      </a></td>
     </tr>
   </table>
 
@@ -207,42 +251,48 @@
     </tr>
     <tr ng-repeat="sale in saleArr">
       <td>{{$index+1}}</td>
-      <td>{{sale.year}}/{{sale.month}}</td>
-      <td>{{sale.fullLoc}}</td>
+      <td>{{sale.year}}/{{sale.month}}/{{sale.day}}</td>
+      <td><a href='#' ng-click="selectLoc(sale);">{{fullLoc(sale)}}</a></td>
       <td class="text-right">{{sale.amount | currency:"":0 }}</td>
       <td class="text-right">{{sale.area}}/{{sale.builtYear}}</td>
       <td class="text-right">{{sale.landArea}}</td>
       <td>{{sale.type}}</td>
-      <td><A target="_blank" href="{{mapEncode(sale)}}">{{sale.avenue}}</a></td>
+      <td><A target="_blank" href="{{mapEncode(sale)}}">
+        <center><span class="glyphicon glyphicon-map-marker"></span></center>
+      </a></td>
     </tr>
   </table>
 
   <!-- APT 매매: 시군구  본번  부번  단지명 전용면적(㎡) 계약일 거래금액(만원)  층 건축년도  도로명 -->
   <!-- 연립 매매: 시군구 본번  부번  단지명 전용면적(㎡) 대지권면적(㎡)  계약일 거래금액(만원)  층 건축년도  도로명 -->
-  <table class="table" ng-show="appType=='aptsale' || appType=='flatsale' ">
+  <table class="table" ng-show="appType=='aptsale' || appType=='flatsale' || appType=='officetelsale' || appType=='aptlots' ">
     <tr>
       <th>#</th>
-      <th>년월</th>
+      <th>계약일</th>
       <th>지역명</th>
       <th>단지명</th>
       <th class="text-right">거래금액(만원)</th>
+      <th class="text-right" ng-show="appType=='aptlots'">권리금액(만원)</th>
       <th class="text-right">전용면적(㎡)</th>
       <th class="text-right" ng-show="appType=='flatsale'">대지권면적(㎡)</th>
       <th class="text-right">층</th>
-      <th>건축연도</th>
-      <th>도로명 (지도링크)</th>
+      <th ng-hide="appType=='aptlots'">건축연도</th>
+      <th>지도</th>
     </tr>
     <tr ng-repeat="sale in saleArr">
       <td>{{$index+1}}</td>
-      <td>{{sale.year}}/{{sale.month}}</td>
-      <td>{{sale.fullLoc}}</td>
-      <td>{{sale.aptName}}</td>
+      <td>{{sale.year}}/{{sale.month}}/{{sale.day}}</td>
+      <td><a href='#' ng-click="selectLoc(sale);">{{fullLoc(sale)}}</a></td>
+      <td><a href='#' ng-click="selectApt(sale);">{{sale.aptName}}</a></td>
       <td class="text-right">{{sale.amount | currency:"":0 }}</td>
+      <td class="text-right" ng-show="appType=='aptlots'">{{sale.rightAmount | currency:"":0 }}</td>
       <td class="text-right">{{sale.area}}</td>
       <td class="text-right" ng-show="appType=='flatsale'">{{sale.landArea}}</td>
       <td class="text-right">{{sale.floor}}</td>
-      <td>{{sale.builtYear}}</td>
-      <td><A target="_blank" href="{{mapEncode(sale)}}">{{sale.avenue}}</a></td>
+      <td ng-hide="appType=='aptlots'">{{sale.builtYear}}</td>
+      <td><A target="_blank" href="{{mapEncode(sale)}}">
+        <center><span class="glyphicon glyphicon-map-marker"></span></center>
+      </a></td>
     </tr>
   </tr>
 </table>
