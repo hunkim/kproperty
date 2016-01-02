@@ -76,7 +76,7 @@ if ($delta) {
 		$sql .= "where v1.state=v2.state and v1.city=v2.city and v1.county=v2.county and v1.aptName=v2.aptName order by (v2.a-v1.a) desc;";
 	}
 } else if ($monthly) {
-	$sql = "select month as label, avg(amount/area)*3.30579 as x  from $tname where year = $year $q group by month order by month";
+	$sql = "select month as label, replace(format(avg(amount/area)*3.30579,2),',', '') as value from $tname where year = $year $q group by month order by month";
 } else { // query
 	if($tname=='aptrent' || $tname=='flatrent' || $tname=='officetelrent') {
 		$sql =  "select CONCAT_WS(' ', state, city, county, aptName) as label, replace(format(avg(amount/area)*3.30579,2),',', '') as value, avg(amount/area)*3.30579 as x from $tname";
