@@ -12,6 +12,7 @@ $conn = DBconn();
 $debug = false;
 
 $delta = false;
+$monthly = false;
 
 $preYear=2014;
 $year=2015;
@@ -21,6 +22,11 @@ $q = "";
 foreach ($_GET as $key=>$val) {
 		if ($key=='debug') {
 			$debug = true;
+			continue;
+		}
+
+		if ($key=='monthly') {
+			$monthly = true;
 			continue;
 		}
 
@@ -69,10 +75,12 @@ if ($delta) {
 		$sql .= "(select avg(amount/area)*3.30579 as a, state, city, county, aptName, year from $tname where amount>0 and year = $year $q group by state, city, county, aptName) v2 ";
 		$sql .= "where v1.state=v2.state and v1.city=v2.city and v1.county=v2.county and v1.aptName=v2.aptName order by (v2.a-v1.a) desc;";
 	}
+} else if ($monthly) {
+	$sql = "select month as label, avg(amount/area)*3.30579 as x where  year = $year $q groupby month order by month";
 } else { // query
 	if($tname=='aptrent' || $tname=='flatrent' || $tname=='officetelrent') {
 		$sql =  "select CONCAT_WS(' ', state, city, county, aptName) as label, replace(format(avg(amount/area)*3.30579,2),',', '') as value, avg(amount/area)*3.30579 as x from $tname";
-	  $sql .= " where amount>0 and year = $year $q ";
+	    $sql .= " where amount>0 and year = $year $q ";
 		$sql .= " group by state, city, county, aptName ";
 		$sql .= " order by x desc limit 20;";
 	} else if($tname=='landsale' || $tname=='housesale') {
