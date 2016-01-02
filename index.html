@@ -91,14 +91,12 @@
    <option ng-repeat="end in endYears" value="{{end}}">{{end}}</option>
  </select>
   까지
-  &nbsp;<span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
-  거래량 보기: <input type="checkbox" ng-model="showCount" ng-change="updateGraph();">
 </div>
 </form>
 <!-- info block -->
 <div cg-busy="{promise:statPromise,message:'통계 정보를 읽고 있습니다...'}"></div>
 <div ng-hide="errorFlag" class="alert alert-info" role="alert">
-  선택된 지역: {{loc.state + " " + loc.city + " " +
+  {{loc.state + " " + loc.city + " " +
   loc.county + " " + loc.region + " " +
   loc.aptName + " " + loc.area + " " +
   loc.monthlyType}}
@@ -106,6 +104,9 @@
 <!--  <A href=#list> -->
  &nbsp;<a class="btn btn-primary" role="button" href="#list">
   <span class="badge">{{saleListCount()}}</span> 건의 거래 정보</a> 가 있습니다.
+
+  &nbsp;<span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
+  <span class="text-danger">거래량 그래프 보기:</span> <input type="checkbox" ng-model="showCount" ng-change="updateGraph();">
 </div>
 
 <!-- error block -->
