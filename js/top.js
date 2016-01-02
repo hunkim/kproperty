@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('myApp', ['cgBusy', 'nvd3']);
+var app = angular.module('myApp', ['cgBusy', "googlechart"]);
 
 app.controller('customersCtrl',
   function($scope, $http, $location) {
@@ -8,10 +8,10 @@ app.controller('customersCtrl',
     $scope.ptom2 = 0.30259;
 
     // API Host
-    var $rhost = "http://k.kproperty.xyz";
+    var $rhost = "http://r.kproperty.xyz";
 
     // API URLs
-    var $regionUrl = $rhost + "/r.php";
+    var $regionUrl = $rhost + "/r2.php";
     var $top10Url = $rhost + "/top10.php";
 
     // app type
@@ -52,7 +52,11 @@ app.controller('customersCtrl',
       housesale: '단독-다가구 매매',
       aptrent: '아파트 전/월세',
       flatrent: '연립-다세대 전/월세',
-      houserent: '단독-다가구 전/월세'
+      houserent: '단독-다가구 전/월세',
+      officetelsale: '오피스텔 매매',
+      officetelrent: '오피스텔 전/월세',
+      landsale: '토지 매매',
+      aptlots: '분양권'
     };
 
     $scope.amIActive = function(name) {
@@ -202,107 +206,60 @@ app.controller('customersCtrl',
       return url;
     }
 
+    $scope.deltaObject = {};
+    $scope.deltaObject.type = "ColumnChart";
+    $scope.deltaObject.data = {
+      "cols": [{id: "t", label: "Topping", type: "string"}, 
+               {id: "s", label: "전년비교 평당 가격차(만원)", type: "number"},
+               {role: "style", type: "string"}],
+      "rows": []
+    };
+
+    $scope.deltaObject.options = {
+      'title': '가격차이 많은곳',
+     // "colors": ['#009900', '#0000FF', '#CC0000', '#DD9900']
+    };
+
 
     $scope.getDelta = function() {
       //  $scope.delta = [];
       $scope.errorFlag = false;
       $scope.deltaPromise = $http.get($scope.makeURL($top10Url, true))
         .success(function(response) {
-          $scope.delta = response;
-          //  $scope.deltaPromise = null;
+          $scope.deltaObject.data.rows = response;
         })
         .error(function(response) {
           $scope.errorFlag = true;
         });
-
-      $scope.deltaPromise.then(function(response) {
-        $scope.deltaApi.updateWithData($scope.delta);
-      });
     };
 
+
+    $scope.topObject = {};
+    $scope.topObject.type = "ColumnChart";
+    $scope.topObject.data = {
+      "cols": [{id: "t", label: "Topping", type: "string"}, 
+               {id: "s", label: "평당 가격(만원)", type: "number"},
+               {role: "style", type: "string"}],
+      "rows": []
+    };
+
+    $scope.topObject.options = {
+      'title': '높은 가격'
+    };
+
+    
     $scope.getTop = function() {
       //  $scope.top = [];
       $scope.errorFlag = false;
       $scope.topPromise = $http.get($scope.makeURL($top10Url, false))
         .success(function(response) {
-          $scope.top = response;
+          $scope.topObject.data.rows = response;
         })
         .error(function(response) {
           $scope.errorFlag = true;
         });
-
-      $scope.topPromise.then(function(response) {
-        $scope.topApi.updateWithData($scope.top);
-      });
     };
 
-
-    $scope.deltaOptions = {
-      chart: {
-        type: 'discreteBarChart',
-        height: 550,
-        //    forceY: [-1000, 1000],
-        margin: {
-          top: 50,
-          right: 50,
-          bottom: 150,
-          left: 100
-        },
-        x: function(d) {
-          return d.label;
-        },
-        y: function(d) {
-          return d.value;
-        },
-        showValues: true,
-        valueFormat: function(d) {
-          return d3.format(',.2f')(d);
-        },
-        duration: 100,
-        xAxis: {
-          axisLabel: '지역이름',
-          "rotateLabels": 20,
-        },
-        yAxis: {
-          axisLabel: 'm2당 가격차이(만원)',
-          //  axisLabelDistance: -5,
-          "showMaxMin": true
-        }
-      }
-    };
-
-    $scope.topOptions = {
-      chart: {
-        type: 'discreteBarChart',
-        height: 550,
-        margin: {
-          top: 50,
-          right: 50,
-          bottom: 150,
-          left: 100
-        },
-        x: function(d) {
-          return d.label;
-        },
-        y: function(d) {
-          return d.value;
-        },
-        showValues: true,
-        valueFormat: function(d) {
-          return d3.format(',.2f')(d);
-        },
-        duration: 100,
-        xAxis: {
-          axisLabel: '지역이름',
-          "rotateLabels": 20,
-        },
-        yAxis: {
-          axisLabel: 'm2당 가격(만원)',
-          //  axisLabelDistance: -5,
-          "showMaxMin": true
-        }
-      }
-    };
 
     // Show all for the initial screen
     $scope.upAll();

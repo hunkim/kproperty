@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang='ko' ng-app="myApp" ng-controller="customersCtrl">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <title>전국 실거래가 매매 Top 10 정보</title>
+    <link rel="shortcut icon" href="favicon.ico" type="image/png">
+    <script src="js/angular.1.4.8.min.js"></script>
+    <script src="js/jquery-2.1.4.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/angular-busy.min.js"></script>
+
+
+    <script src="js/ng-google-chart.js"></script>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/angular-busy.min.css">
+  </head>
+<body>
+
+   <!-- Navbar
+    ================================================== -->
+  <ul class="nav nav-tabs">
+  <li ng-class="amIActive('aptsale')"><a ng-click="setAppType('aptsale')">아파트 매매</a></li>
+  <li ng-class="amIActive('officetelsale')"><a ng-click="setAppType('officetelsale')">오피스텔 매매</a></li>
+  <li ng-class="amIActive('flatsale')"><a ng-click="setAppType('flatsale')">빌라 매매</a></li>
+  <li ng-class="amIActive('housesale')"><a ng-click="setAppType('housesale')">단독 매매</a></li>
+  <li ng-class="amIActive('landsale')"><a ng-click="setAppType('landsale')">토지 매매</a></li>
+  <li ng-class="amIActive('aptrent')"><a ng-click="setAppType('aptrent')">아파트 전세</a></li>
+  <li ng-class="amIActive('officetelrent')"><a ng-click="setAppType('officetelrent')">오피스텔 전세</a></li>
+  <li ng-class="amIActive('flatrent')"><a ng-click="setAppType('flatrent')">연립-다세대 전세</a></li>
+  <li><a href="index.html" class="text-danger"><strong><span class="glyphicon glyphicon-link"></span> 실거래보기</strong></a></li>
+
+  </ul>
+
+  <h3>  <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
+    전국 실거래가 {{appNameList[appType]}} 통계 정보
+    <small>(시험운영중! 더 보고 싶은 통계가 있으세요? <a href="mailto:hunkim+kp@gmail.com?Subject=Bug" target="_top">의견주기</a>)</small>
+  </h3>
+<form>
+  <div class="alert alert-success" role="alert">
+    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>지역 선택:
+   시도 <select name="state" ng-model="loc.state" ng-change="getCity();">
+    <option ng-repeat="state in stateArr" value="{{state}}">{{state}}</option>
+  </select>
+
+  시군구 <select name="city" ng-model="loc.city" ng-change="getCounty();">
+    <option ng-repeat="city in cityArr | orderBy" value="{{city}}">{{city}}</option>
+  </select>
+
+  <span ng-show="isAptkind">읍면동 <select name="county" ng-model="loc.county" ng-change="upAll();">
+    <option ng-repeat="county in countyArr | orderBy" value="{{county}}">{{county}}</option>
+  </select></span>
+
+  <span class="glyphicon glyphicon-calendar" aria-hidden="true"></span>기준 년도:
+  <select name="year" ng-model="loc.year" ng-change="upAll();">
+   <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
+ </select>
+</div>
+</form>
+
+<!-- error block -->
+<div ng-show="errorFlag" class="alert alert-danger text-center" role="error">
+  <span class="glyphicon glyphicon-globe" aria-hidden="true"></span>
+  인터넷 연결이 불안정 합니다.
+  <a class="btn btn-primary" role="button" ng-click="reconnect();"> 다시 연결 시도하기</a>
+</div>
+
+
+
+<div cg-busy="{promise:topPromise, message:'높은가격 정보를 읽고 있습니다...'}"></div>
+<div ng-hide="errorFlag" class="alert alert-info" role="alert">
+  {{loc.state + " " + loc.city + " " +loc.county}} {{loc.year}} 가격 높은곳.
+</div>
+<div google-chart chart="topObject" style="height:600px; width:100%;"></div>
+
+<!-- info block -->
+<div ng-hide="errorFlag" class="alert alert-info" role="alert">
+  {{loc.state + " " + loc.city + " " +loc.county}}
+  {{loc.year-1}} 사이 {{loc.year}} 가격차이 큰곳.
+</div>
+
+<div cg-busy="{promise:deltaPromise,message:'가격차이 정보를 읽고 있습니다...'}"></div>
+<div google-chart chart="deltaObject" style="height:600px; width:100%;"></div>
+
+
+<div class="alert alert-danger" role="alert">
+  <a href="http://rt.molit.go.kr/" class="alert-link text-center"><span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+    이 사이트가 보여주는 자료는 프로그램의 버그등으로 인해 오류가 있을수 있습니다. 정확한 자료는 국토부 홈페이지에서 한번더 확인하세요.</a>
+</div>
+
+<p class="text-center">
+  <button class="btn btn-primary" type="button">
+  만든이: <span class="badge">hunkim+kp@gmail.com</span>
+</button>
+
+<button class="btn btn-sucess" type="button">
+자료: <span class="badge">국토교통부 실거래 파일</span>
+</button>
+
+<a href="http://aws.amazon.com">
+<img src="aws.png"></a>
+</body>
+<!-- app.js added -->
+<script src="js/top.js"></script>
+
+<!-- Google analytics -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-70425257-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+</html>

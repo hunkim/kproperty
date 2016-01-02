@@ -8,7 +8,7 @@ app.controller('customersCtrl',
     $scope.ptom2 = 0.30259;
 
     // API Host
-    var $rhost = "http://r.kproperty.xyz";
+    var $rhost = "http://ec2-54-249-5-57.ap-northeast-1.compute.amazonaws.com";
 
     // API URLs
     var $regionUrl = $rhost + "/r2.php";
@@ -19,7 +19,7 @@ app.controller('customersCtrl',
     $scope.appType = 'aptsale';
 
     // show count option in the graph
-    $scope.showCount = false;
+    $scope.showCount = true;
 
     // http error flag
     $scope.errorFlag = false;
@@ -47,8 +47,6 @@ app.controller('customersCtrl',
       region: "",
       aptName: "",
       area: "",
-      landType: "",
-      landUsedType: "",
       monthlyType: "",
       startYear: $scope.minYear,
       endYear: $scope.maxYear
@@ -58,45 +56,6 @@ app.controller('customersCtrl',
     $scope.fullLoc = function(sale) {
       return sale.state + " " + sale.city + " " + sale.county + " " + sale.region;
     };
-
-    // select current location
-    $scope.selectLoc = function(sale) {
-      $scope.loc.state = sale.state;
-      
-      $scope.getCity(false);
-      $scope.loc.city = sale.city;
-      
-      $scope.getCounty(false);
-      $scope.loc.county = sale.county;
-      
-      $scope.getRegion(false);
-      $scope.loc.region = sale.region;
-
-      $scope.getAptName(false);
-
-      $scope.upAll();
-    };    
-
-    // select current location
-    $scope.selectApt = function(sale) {
-      $scope.loc.state = sale.state;
-      
-      $scope.getCity(false);
-      $scope.loc.city = sale.city;
-      
-      $scope.getCounty(false);
-      $scope.loc.county = sale.county;
-      
-      $scope.getRegion(false);
-      $scope.loc.region = sale.region;
-
-      $scope.getAptName(false);
-      $scope.loc.aptName = sale.aptName;
-
-      $scope.getAptArea(false);
-
-      $scope.upAll();
-    };    
 
     // Chart Data
     $scope.series = ['건물총면적 평당 가격', '대지면적 평당 가격', '거래량'];
@@ -127,7 +86,7 @@ app.controller('customersCtrl',
       }
 
       return '';
-    }
+    };
 
     $scope.appNameList = {
       aptsale: '아파트 매매',
@@ -135,18 +94,17 @@ app.controller('customersCtrl',
       housesale: '단독-다가구 매매',
       aptrent: '아파트 전/월세',
       flatrent: '연립-다세대 전/월세',
-      houserent: '단독-다가구 전/월세',
-      officetelsale: '오피스텔 매매',
-      officetelrent: '오피스텔 전/월세',
-      landsale: '토지 매매',
-      aptlots: '분양권'
+      houserent: '단독-다가구 전/월세'
     };
 
     $scope.setAppType = function(type) {
       $scope.appType = type;
 
-      if ($scope.loc.county != "" && $scope.getAptKind()) {
-        $scope.getAptName();
+      $scope.getCounty(true);
+
+      if ($scope.getAptKind()) {
+        $scope.getAptName(true);
+        $scope.getAptArea(true);
       }
 
       $scope.upAll();
@@ -154,7 +112,7 @@ app.controller('customersCtrl',
 
     // APT?
     $scope.getAptKind = function() {
-      if ($scope.appType == 'housesale' || $scope.appType == 'houserent' || $scope.appType == 'landsale') {
+      if ($scope.appType == 'housesale' || $scope.appType == 'houserent') {
         return false;
       }
 
@@ -163,7 +121,7 @@ app.controller('customersCtrl',
 
     $scope.getRentKind = function() {
       if ($scope.appType == 'aptrent' || $scope.appType == 'flatrent' ||
-        $scope.appType == 'houserent' || $scope.appType == 'officetelrent') {
+        $scope.appType == 'houserent') {
         return true;
       }
 
@@ -209,15 +167,8 @@ app.controller('customersCtrl',
       if ($sale == null) {
         return "";
       }
-      
-      var mapStr = "http://map.daum.net/?q='" + $scope.fullLoc($sale);
-      if ($sale.avenue!= 0) {
-        mapStr +=  " " + parseInt($sale.avenue);
-      }
-      
-      mapStr += "'";
-
-      return mapStr;
+      return "http://map.daum.net/?q='" + $scope.fullLoc($sale) + " " + $sale.avenue +
+        "'";
     };
 
     // based on the startYear selection, we adjust the endYear list
@@ -248,9 +199,6 @@ app.controller('customersCtrl',
       switch ($scope.appType) {
         case 'aptsale':
         case 'flatsale':
-        case 'officetelsale':
-        case 'landsale':
-        case 'aptlots':
           $scope.updateAptSaleGraph();
           break;
 
@@ -260,7 +208,6 @@ app.controller('customersCtrl',
 
         case 'aptrent':
         case 'flatrent':
-        case 'officetelrent':
           if ($scope.loc.monthlyType == "") {
             $scope.updateAptRentAllGraph();
           } else {
@@ -276,12 +223,6 @@ app.controller('customersCtrl',
           }
           break;
       }
-    }
-
-    $scope.emptyGraph = function() {
-        $scope.series = ['거래 정보가 없습니다.'];
-        $scope.label = [0];
-        $scope.data[0] = [0];
     }
 
     // update the graph (based on watch statArr)
@@ -302,14 +243,9 @@ app.controller('customersCtrl',
         $scope.series = ['건물총면적 평당 가격 (만원)', '대지면적 평당 가격 (만원)', '거래량'];
       } else {
         $scope.series = ['건물총면적 평당 가격 (만원)', '대지면적 평당 가격 (만원)'];
-      } 
-
-      var statLen = $scope.statArr.length;
-      if (statLen==0) {
-        $scope.emptyGraph();
-        return;
       }
 
+      var statLen = $scope.statArr.length;
       for (var i = 0; i < statLen; i++) {
         $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[i]
           .month;
@@ -333,24 +269,14 @@ app.controller('customersCtrl',
         $scope.data[1] = [];
       }
 
-      var $legend = '전용면적 평당 가격 (만원)';
-      if ($scope.appType=="landsale") {
-        $legend = '토지 평당 가격 (만원)';
-      }
       // show count? Then, three series. Otherwise, two
       if ($scope.showCount) {
-        $scope.series = [$legend, '거래량'];
+        $scope.series = ['전용면적 평당 가격 (만원)', '거래량'];
       } else {
-        $scope.series = [$legend];
+        $scope.series = ['전용면적 평당 가격 (만원)'];
       }
 
       var statLen = $scope.statArr.length;
-
-      if (statLen==0) {
-        $scope.emptyGraph();
-        return;
-      }
-
       for (var i = 0; i < statLen; i++) {
         $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[
             i]
@@ -384,15 +310,10 @@ app.controller('customersCtrl',
       }
 
       var statLen = $scope.statArr.length;
-
-      if (statLen==0) {
-        $scope.emptyGraph();
-        return;
-      }
-
       for (var i = 0; i < statLen; i++) {
-        $scope.labels[i] = $scope.statArr[i].year + "/" + 
-         $scope.statArr[i].month;
+        $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[
+            i]
+          .month;
         $scope.data[0][i] = m2pFormat($scope.statArr[i].avgDeposit); // 평당가격
         $scope.data[1][i] = m2pFormat($scope.statArr[i].avgRent); // 평당가격
 
@@ -423,12 +344,6 @@ app.controller('customersCtrl',
       }
 
       var statLen = $scope.statArr.length;
-
-      if (statLen==0) {
-        $scope.emptyGraph();
-        return;
-      }
-
       for (var i = 0; i < statLen; i++) {
         $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[i]
           .month;
@@ -468,12 +383,6 @@ app.controller('customersCtrl',
       }
 
       var statLen = $scope.statArr.length;
-
-      if (statLen==0) {
-        $scope.emptyGraph();
-        return;
-      }
-
       for (var i = 0; i < statLen; i++) {
         $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[
             i]
@@ -516,12 +425,6 @@ app.controller('customersCtrl',
       }
 
       var statLen = $scope.statArr.length;
-
-      if (statLen==0) {
-        $scope.emptyGraph();
-        return;
-      }
-
       for (var i = 0; i < statLen; i++) {
         $scope.labels[i] = $scope.statArr[i].year + "/" + $scope.statArr[i]
           .month;
@@ -541,7 +444,7 @@ app.controller('customersCtrl',
       //console.log(points, evt);
     };
 
-    $scope.clearSelection = function(level) {
+    var clearSelection = function(level) {
       // clear region
       switch (level) {
         case 'city':
@@ -553,24 +456,19 @@ app.controller('customersCtrl',
         case 'region':
           $scope.regionArr = [];
           $scope.loc.region = "";
-
+        case 'aptName':
           $scope.loc.aptName = "";
-          $scope.loc.area = "";
           $scope.aptNameArr = [];
+        case 'aptArea':
+          $scope.loc.area = "";
           $scope.aptAreaArr = [];
-
-          $scope.landTypeArr = [];
-          $scope.landUsedTypeArr = [];
-
-          $scope.loc.landType = "";
-          $scope.loc.landUsedType = "";
       }
     };
 
     // get county array
-    $scope.getCity = function(update) {
+    $scope.getCity = function() {
       // clear region
-      $scope.clearSelection('city');
+      clearSelection('city');
 
       $scope.errorFlag = false;
       $scope.countyPromise = $http.get($regionUrl + "/" +
@@ -586,14 +484,29 @@ app.controller('customersCtrl',
         });
 
       // update sales information
-      if (update) {
-        $scope.upAll();
-      }
+      $scope.upAll();
     };
 
+    var containVal = function($arr, $key) {
+      if (typeof $key === 'undefined' || !$key || $key === '') {
+        return '';
+      }
+
+      for (var i = 0; i < $arr.length; i++) {
+        console.log("comp " + $key + " vs " + $arr[i]);
+        if ($key === $arr[i]) {
+          return $key;
+        }
+      }
+      return '';
+    }
+
     // get region array
-    $scope.getCounty = function(update) {
-      $scope.clearSelection('county');
+    $scope.getCounty = function($current) {
+      console.log("County with : " + $scope.loc.county);
+
+      if (!$current)
+        clearSelection('county');
 
       $scope.errorFlag = false;
       $scope.regionPromise = $http.get($regionUrl + "/" +
@@ -604,20 +517,23 @@ app.controller('customersCtrl',
         .success(function(response) {
           $scope.countyArr = response;
           $scope.countyArr.unshift("");
+
+          // Check if new array has this value
+          $scope.loc.county = containVal($scope.countyArr, $scope.loc.county);
+
         })
         .error(function(response) {
           $scope.errorFlag = true;
         });
 
       // update sales information
-      if (update) {
-        $scope.upAll();
-      }
+      $scope.upAll();
     };
 
     // get region array
-    $scope.getRegion = function(update) {
-      $scope.clearSelection('region');
+    $scope.getRegion = function($current) {
+      if (!$current)
+        clearSelection('region');
 
       $scope.errorFlag = false;
       $scope.regionPromise = $http.get($regionUrl + "/" +
@@ -629,29 +545,30 @@ app.controller('customersCtrl',
         .success(function(response) {
           $scope.regionArr = response;
           $scope.regionArr.unshift("");
+
+          // Check if new array has this value
+          $scope.loc.region = containVal($scope.regionArr, $scope.loc.region);
         })
         .error(function(response) {
           $scope.errorFlag = true;
         });
 
       // update sales information
-      if (update) {
-        $scope.upAll();
-      }
+      $scope.upAll();
     };
 
 
     // get region array
-    $scope.getAptName = function(update) {
-      $scope.aptNameArr = [];
-      $scope.aptAreaArr = [];
+    $scope.getAptName = function($current) {
+      console.log("AptName with : " + $scope.loc.aptName + "at: " + $scope.loc
+        .county);
 
-      $scope.loc.aptName = "";
-      $scope.loc.area = "";
-
+      if (!$current) {
+        clearSelection('aptName');
+      }
       $scope.errorFlag = false;
 
-      $scope.aptNamePromise = $http.get($regionUrl + "/" +
+      var $promise = $http.get($regionUrl + "/" +
           $scope.appType +
           "?state=" + koEncode($scope.loc.state) +
           "&city=" + koEncode($scope.loc.city) +
@@ -661,24 +578,34 @@ app.controller('customersCtrl',
         .success(function(response) {
           $scope.aptNameArr = response;
           $scope.aptNameArr.unshift("");
+
+          // Check if new array has this value
+          $scope.loc.aptName = containVal($scope.aptNameArr, $scope.loc.aptName);
+
+          console.log("Current apt name: " + $scope.loc.aptName);
+
+
         })
         .error(function(response) {
           $scope.errorFlag = true;
         });
 
-       if (update) {
-        $scope.upAll();
-      }
+      return $promise
     };
 
     // get region array
-    $scope.getAptArea = function(update) {
-      $scope.aptAreaArr = [];
-      $scope.loc.area = "";
+    $scope.getAptArea = function($current) {
+
+      console.log("Area with : " + $scope.loc.area + " at: " + $scope.loc
+        .aptName);
+
+      if (!$current) {
+        clearSelection('aprArea');
+      }
 
       $scope.errorFlag = false;
 
-      $scope.aptArearomise = $http.get($regionUrl + "/" +
+      var $promise = $http.get($regionUrl + "/" +
           $scope.appType +
           "?state=" + koEncode($scope.loc.state) +
           "&city=" + koEncode($scope.loc.city) +
@@ -688,76 +615,20 @@ app.controller('customersCtrl',
           "&query=area")
         .success(function(response) {
           $scope.aptAreaArr = response;
+
+          // Check if new array has this value
+          $scope.loc.area = containVal($scope.aptAreaArr, $scope.loc
+            .area);
+
           $scope.aptAreaArr.unshift("");
         })
         .error(function(response) {
           $scope.errorFlag = true;
         });
 
+      return $promise;
       // update sales information
-      if (update) {
-        $scope.upAll();
-      }
-    };
-
-
-    // get region array
-    $scope.getLandType = function(update) {
-      $scope.landTypeArr = [];
-      $scope.landUsedTypeArr = [];
-
-      $scope.loc.landType = "";
-      $scope.loc.landUsedType = "";
-
-      $scope.errorFlag = false;
-
-      $scope.getLandTypePromise = $http.get($regionUrl + "/" +
-          $scope.appType +
-          "?state=" + koEncode($scope.loc.state) +
-          "&city=" + koEncode($scope.loc.city) +
-          "&county=" + koEncode($scope.loc.county) +
-          "&region=" + koEncode($scope.loc.region) +
-          "&query=type")
-        .success(function(response) {
-          $scope.landTypeArr = response;
-          $scope.landTypeArr.unshift("");
-        })
-        .error(function(response) {
-          $scope.errorFlag = true;
-        });
-
-       if (update) {
-        $scope.upAll();
-      }
-    };
-
-    // get region array
-    $scope.getLandUsedType = function(update) {
-      $scope.landUsedTypeArr = [];
-      $scope.loc.landUsedType = "";
-
-      $scope.errorFlag = false;
-
-      $scope.landUsedTypePromise = $http.get($regionUrl + "/" +
-          $scope.appType +
-          "?state=" + koEncode($scope.loc.state) +
-          "&city=" + koEncode($scope.loc.city) +
-          "&county=" + koEncode($scope.loc.county) +
-          "&region=" + koEncode($scope.loc.region) +
-          "&type=" + koEncode($scope.loc.landType) +
-          "&query=usedType")
-        .success(function(response) {
-          $scope.landUsedTypeArr = response;
-          $scope.landUsedTypeArr.unshift("");
-        })
-        .error(function(response) {
-          $scope.errorFlag = true;
-        });
-
-      // update sales information
-      if (update) {
-        $scope.upAll();
-      }
+      $scope.upAll();
     };
 
 
@@ -796,11 +667,6 @@ app.controller('customersCtrl',
       if ($scope.getAptKind()) {
         url += "&aptName=" + koEncode($scope.loc.aptName) +
           "&area=" + koEncode($scope.loc.area);
-      }
-
-      if ($scope.appType=='landsale') {
-       url += "&type=" + koEncode($scope.loc.landType) +
-          "&usedType=" + koEncode($scope.loc.landUsedType); 
       }
 
       if ($scope.getRentKind()) {
