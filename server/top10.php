@@ -114,11 +114,17 @@ if($debug) {
 
 if ($result->num_rows > 0) {
 	// output data of each row
-	$i = 0;
-	while($row = $result->fetch_assoc()) {
-		// select first 10 and last 10
-		if ($i++ < 10) {$rows[] = $row;}
-		if ($i> ($result->num_rows-10)) {$rows[] = $row;}
+	if ($delta) {
+		$i = 0;
+		while($row = $result->fetch_assoc()) {
+			// select first 10 and last 10
+			if ($i++ < 10) {$rows[] = $row;}
+			if ($i> ($result->num_rows-10)) {$rows[] = $row;}
+		}
+	} else {
+		while($row = $result->fetch_assoc()) {
+			$rows[] = $row;
+		}
 	}
 }
 
