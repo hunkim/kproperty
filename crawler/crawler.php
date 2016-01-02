@@ -53,12 +53,21 @@ function crawlNow($tname) {
   date_default_timezone_set("Asia/Seoul");
   $date = date_create();
 
-  // current month
-  crawl($tname, $date->format('Y'), null, $date->format('m'));
+  $thisMonth = $date->format('m');
+  $thisYear = $date->format('m');
+    
+  if ($thisMonth==1 || $thisMonth==4 || $thisMonth==7 || $thisMonth==10) {
+    // current month
+    crawl($tname, $date->format('Y'), [$date->format('m')]);
 
-  // last month
-  $date->modify('-1 month');
-  crawl($tname, $date->format('Y'), null, $date->format('m'));
+    // last month
+    $date->modify('-1 month');
+    crawl($tname, $date->format('Y'), [$date->format('m')]);
+  } else {
+    // current month
+    crawl($tname, $date->format('Y'), [$thisMonth-1, $thisMonth]);    
+  }
+  
 }
 
 // Crawl all upto date
@@ -70,27 +79,16 @@ function crawlAll($tname, $styear) {
   }
 }
 
-function crawl($tname, $year, $period, $month) {
+function crawl($tname, $year, $monthArr) {
    $dealType = $GLOBALS['dealType'];
    $stateArr = $GLOBALS['stateArr'];
 
-  if ($month==null && $period==null) {
-    die("monthArr or period must be set!");
+  if ($monthArr==null) {
+    die("monthArr must be set!");
   }
 
-  // no month? Then all three in the period
-  if ($month==null) {
-    $monthArr = [($period*3)-2, ($period*3)-1, ($period*3)];
-  } else { // use only one month
-    $monthArr = [$month];
-  }
-
-  // No period, let's guess from the month
-  if ($period==null) {
-    $period = intval(($month-1)/3)+1;
-  }
-
-  // echo ("Working on $year ($period)\n");
+  $period = intval(($monthArr[0]-1)/3)+1;
+  echo ("Working on $year ($period) " . implode(" ", $monthArr) . "\n");
 
   $db = new mysqli("p:localhost", "trend", "only!trend!", "rtrend");
   // Check connection
