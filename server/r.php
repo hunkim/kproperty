@@ -58,12 +58,12 @@ if ($result->num_rows > 0) {
 // JSON_PRETTY_PRINT|
 print json_encode($rows,JSON_UNESCAPED_UNICODE);
 
-logAccess($conn, $tname, $escapedK);
+logAccess($conn, $appname, $escapedK);
 
 $conn->close();
 
-function logAccess($db, $tname, $k) {
-	$sql = "insert into log set type='" . $tname . "', loc='" . $k ."'";
+function logAccess($db, $type, $k) {
+	$sql = "insert into log set type='" . $type . "', loc='" . $k ."'";
 	$db->query($sql);
 }
 
