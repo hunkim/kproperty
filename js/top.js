@@ -187,17 +187,20 @@ app.controller('customersCtrl',
     };
 
     $scope.upAll = function() {
+      $scope.getMonthly();
       $scope.getTop();
       $scope.getDelta();
 
       $scope.isAptkind = $scope.getAptKind();
     };
 
-    $scope.makeURL = function($baseUrl, $delta) {
+    $scope.makeURL = function($baseUrl, $type) {
       var url = $baseUrl + "/" + $scope.appType + "?";
-      if ($delta) {
-        url += "delta=true&";
+      
+      if ($type!=null) {
+        url += $type + "=true&";
       }
+
       url += "state=" + koEncode($scope.loc.state) +
         "&city=" + koEncode($scope.loc.city) +
         "&county=" + koEncode($scope.loc.county) +
@@ -205,6 +208,28 @@ app.controller('customersCtrl',
 
       return url;
     }
+
+    $scope.monthlyObject = 
+      {type:"ColumnChart",
+       data: {
+        "cols": [{id: "t", label: "Topping", type: "string"}, 
+               {id: "s", label: "평당 가격차(만원)", type: "number"},
+               {role: "style", type: "string"}],
+        "rows": []}, 
+        options: {'title': '월별 평당거래 가격'}
+      }
+
+    $scope.getMonthly = function() {
+      $scope.errorFlag = false;
+      $scope.monthlyPromise = $http.get($scope.makeURL($top10Url, 'monthly'))
+        .success(function(response) {
+          $scope.monthlyObject.data.rows = response;
+        })
+        .error(function(response) {
+          $scope.errorFlag = true;
+        });
+    };
+
 
     $scope.deltaObject = {};
     $scope.deltaObject.type = "ColumnChart";
@@ -224,7 +249,7 @@ app.controller('customersCtrl',
     $scope.getDelta = function() {
       //  $scope.delta = [];
       $scope.errorFlag = false;
-      $scope.deltaPromise = $http.get($scope.makeURL($top10Url, true))
+      $scope.deltaPromise = $http.get($scope.makeURL($top10Url, 'delta'))
         .success(function(response) {
           $scope.deltaObject.data.rows = response;
         })
@@ -251,7 +276,7 @@ app.controller('customersCtrl',
     $scope.getTop = function() {
       //  $scope.top = [];
       $scope.errorFlag = false;
-      $scope.topPromise = $http.get($scope.makeURL($top10Url, false))
+      $scope.topPromise = $http.get($scope.makeURL($top10Url, null))
         .success(function(response) {
           $scope.topObject.data.rows = response;
         })

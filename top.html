@@ -56,6 +56,14 @@
   <select name="year" ng-model="loc.year" ng-change="upAll();">
    <option ng-repeat="year in years" value="{{year}}">{{year}}</option>
  </select>
+
+<!-- 
+<div class="pull-right">
+ <a class="btn btn-primary" role="button" href="#monthly"><small>월별가격</small></a>
+ <a class="btn btn-primary" role="button" href="#top"><small>가격높은곳</small></a> 
+ <a class="btn btn-primary" role="button" href="#delta"><small>가격차이큰곳</small></a>
+</div>
+-->
 </div>
 </form>
 
@@ -66,8 +74,16 @@
   <a class="btn btn-primary" role="button" ng-click="reconnect();"> 다시 연결 시도하기</a>
 </div>
 
+<!-- info block -->
+<div ng-hide="errorFlag" class="alert alert-info" role="alert">
+  {{loc.state + " " + loc.city + " " +loc.county}}
+  {{loc.year}} 월별 평당 가격 (부동산을 구입할 좋은 월은 언제일까요?)
+</div>
 
+<div cg-busy="{promise:monthlyPromise,message:'월별 평당가격 정보를 읽고 있습니다...'}"></div>
+<div google-chart chart="monthlyObject" style="height:600px; width:100%;"></div>
 
+<!-- info block -->
 <div cg-busy="{promise:topPromise, message:'높은가격 정보를 읽고 있습니다...'}"></div>
 <div ng-hide="errorFlag" class="alert alert-info" role="alert">
   {{loc.state + " " + loc.city + " " +loc.county}} {{loc.year}} 가격 높은곳.
@@ -82,6 +98,7 @@
 
 <div cg-busy="{promise:deltaPromise,message:'가격차이 정보를 읽고 있습니다...'}"></div>
 <div google-chart chart="deltaObject" style="height:600px; width:100%;"></div>
+
 
 
 <div class="alert alert-danger" role="alert">
