@@ -236,3 +236,9 @@ CREATE TABLE `landsale` (
   `region` varchar(99) DEFAULT "",
   KEY `all_index` (`state`,`city`,`county`,`region`, `type`, `usedType`, `year`,`month`,`amount`,`day`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
+CREATE TABLE `log` {
+  `type` varchar(40) DEFAULT NULL,
+  `loc` varchar(255) DEFAULT NULL,
+   'accessed' datetime NOT NULL DEFAULT NOW()
+) ENGINE=MyISAM;

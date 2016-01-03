@@ -2,7 +2,10 @@
 header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
+include_once 'dbconn.php';
+
 $tname = substr($_SERVER['PATH_INFO'], 1) . "_reg";
+
 
 if (!$tname) {
   exit(0);
@@ -33,17 +36,10 @@ if($debug) {
 	echo ("Query: $k");
 }
 
-// Persistent Connections
-// http://stackoverflow.com/questions/3332074/what-are-the-disadvantages-of-using-persistent-connection-in-pdo
-// http://www.php.net/manual/en/mysqli.persistconns.php
-$conn = new mysqli("p:localhost", "trend", "only!trend!", "trend");
-// Check connection
-if ($conn->connect_error) {
-		if ($debug) {echo("Connection failed: " . $conn->connect_error);}
-		exit(0);
-}
+$conn = DBConn();
 
-$sql = "select v from $tname where k='" . $conn->real_escape_string($k) . "'";
+$escapedK =  $conn->real_escape_string($k);
+$sql = "select v from $tname where k='" . $escapedK . "'";
 
 if($debug) {
 	echo $sql;
@@ -61,5 +57,14 @@ if ($result->num_rows > 0) {
 
 // JSON_PRETTY_PRINT|
 print json_encode($rows,JSON_UNESCAPED_UNICODE);
+
+logAccess($conn, $tname, $escapedK);
+
 $conn->close();
+
+function logAccess($db, $tname, $k) {
+	$sql = "insert into log set type='" . $tname . "', loc='" . $k ."'";
+	$db->query($sql);
+}
+
 ?>
