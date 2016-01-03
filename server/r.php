@@ -4,7 +4,7 @@ header("Content-Type: application/json; charset=UTF-8");
 
 include_once 'dbconn.php';
 
-$appname = substr($_SERVER['PATH_INFO'], 1) . "_reg";
+$appname = substr($_SERVER['PATH_INFO'], 1);
 $tname = $appname . "_reg";
 
 if (!$tname) {
