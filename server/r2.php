@@ -4,8 +4,8 @@ header("Content-Type: application/json; charset=UTF-8");
 
 include_once 'dbconn.php';
 
-$tname = substr($_SERVER['PATH_INFO'], 1) . "_reg";
-
+$appname = substr($_SERVER['PATH_INFO'], 1);
+$tname = $appname . "_reg";
 
 if (!$tname) {
   exit(0);
@@ -38,7 +38,8 @@ if($debug) {
 
 $conn = DBConn();
 
-$sql = "select v from $tname where k='" . $conn->real_escape_string($k) . "'";
+$escapedK =  $conn->real_escape_string($k);
+$sql = "select v from $tname where k='" . $escapedK . "'";
 
 if($debug) {
 	echo $sql;
@@ -56,5 +57,14 @@ if ($result->num_rows > 0) {
 
 // JSON_PRETTY_PRINT|
 print json_encode($rows,JSON_UNESCAPED_UNICODE);
+
+logAccess($conn, $appname, $escapedK);
+
 $conn->close();
+
+function logAccess($db, $type, $k) {
+	$sql = "insert into log set type='" . $type . "', loc='" . $k ."'";
+	$db->query($sql);
+}
+
 ?>
