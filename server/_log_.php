@@ -7,7 +7,13 @@ include_once 'dbconn.php';
 
 $conn = DBConn();
 
-$sql = "select type, loc, count(*) as c from log group by type, loc order by c desc";
+$limit = "";
+
+if (isset($_GET('limit'))) {
+	$limit = "limit " . $_GET('limit'); 
+}
+
+$sql = "select type, loc, count(*) as c from log group by type, loc order by c desc $limit";
 
 $result = $conn->query($sql);
 
