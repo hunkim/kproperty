@@ -19,8 +19,8 @@ if ($result->num_rows > 0) {
 	}
 }
 
-// JSON_PRETTY_PRINT|
-print json_encode($rows,JSON_UNESCAPED_UNICODE);
+// 
+print json_encode($rows,JSON_PRETTY_PRINT|JSON_UNESCAPED_UNICODE);
 
 $conn->close();
 
