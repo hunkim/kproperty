@@ -7,7 +7,7 @@ include_once 'dbconn.php';
 
 $conn = DBConn();
 
-$sql = "select type, loc, count(*) as c from log group by type, loc";
+$sql = "select type, loc, count(*) as c from log group by type, loc order by c desc";
 
 $result = $conn->query($sql);
 
