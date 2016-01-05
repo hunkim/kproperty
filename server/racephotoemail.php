@@ -23,7 +23,7 @@ if (!isset($_POST['photos'])) {
 
 $to = $_POST['to'];
 
-$subject = "Your " . count($_POST['photos']) ." Photos from RacePhoto.org.";
+$subject = "Your " . count($_POST['photos']) ." photos from RacePhotos.org.";
 
 $body = "Thanks for using RacePhoto.org!\n\n";
 $body .= "Please download these photos in 24 hours:\n";
