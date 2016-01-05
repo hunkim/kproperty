@@ -23,9 +23,16 @@ if (!isset($_POST['photos'])) {
 
 $to = $_POST['to'];
 
+$subject = "Your " . count($_POST['photos']) ." Photos from RacePhoto.org.";
+
+$body = "Thanks for using RacePhoto.org\n";
+$body .= "Please download these photos in 24 hours:\n";
+
 foreach ($_POST['photos'] as $key => $value) {
-	echo("$key: $value");
+	$body .= "\t $value\n";
 }
+
+$body .= "\nAll the best,\nRace Photo\n";
 
 return;
 
@@ -36,9 +43,9 @@ $domain = "racephotos.org";
 # Make the call to the client.
 $result = $mgClient->sendMessage($domain, array(
     'from'    => 'Race Photos <mailgun@racephoto.org>',
-    'to'      => '<hunkim@gmail.com>',
-    'subject' => 'Hello',
-    'text'    => 'Testing some Mailgun awesomness!'
+    'to'      => $to,
+    'subject' => $subject,
+    'text'    => $body
 ));
 
 print_r($result);
