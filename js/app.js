@@ -36,8 +36,8 @@ app.controller('customersCtrl',
     $scope.rentArr = ["", "월세", "전세"];
 
     // year min and max
-    $scope.minYear = 2006;
-    $scope.maxYear = 2016;
+    $scope.minYear = 2006; // rent should be 2010
+    $scope.maxYear = new Date().getFullYear();
 
     // loc selection
     $scope.loc = {
