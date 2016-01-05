@@ -10,6 +10,9 @@ set_include_path('/home/ubuntu');
 require 'vendor/autoload.php';
 use Mailgun\Mailgun;
 
+$rest_json = file_get_contents("php://input");
+$_POST = json_decode($rest_json, true);
+
 print_r($_POST);
 foreach ($_POST as $key => $value) {
 	echo("$key: $value");
