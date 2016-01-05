@@ -25,7 +25,7 @@ $to = $_POST['to'];
 
 $subject = "Your " . count($_POST['photos']) ." Photos from RacePhoto.org.";
 
-$body = "Thanks for using RacePhoto.org\n";
+$body = "Thanks for using RacePhoto.org!\n\n";
 $body .= "Please download these photos in 24 hours:\n";
 
 foreach ($_POST['photos'] as $key => $value) {
@@ -33,8 +33,6 @@ foreach ($_POST['photos'] as $key => $value) {
 }
 
 $body .= "\nAll the best,\nRace Photo\n";
-
-echo ($body);
 
 # Instantiate the client.
 $mgClient = new Mailgun('key-5feb0245349a1e6a92bf539c2a069733');
@@ -48,6 +46,8 @@ $result = $mgClient->sendMessage($domain, array(
     'text'    => $body
 ));
 
-print_r($result);
+print (json_encode($result,JSON_UNESCAPED_UNICODE));
+
+//print_r($result);
 
 ?>
