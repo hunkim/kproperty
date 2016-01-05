@@ -40,7 +40,7 @@ $domain = "racephotos.org";
 
 # Make the call to the client.
 $result = $mgClient->sendMessage($domain, array(
-    'from'    => 'Race Photo <mailgun@racephotos.org>',
+    'from'    => 'Race Photos <mailgun@racephotos.org>',
     'to'      => $to,
     'subject' => $subject,
     'text'    => $body
