@@ -9,6 +9,8 @@ First refresh your package index...
 $ sudo apt-get update
 ... and then install the LAMP stack:
 sudo apt-get install php5-mysqlnd
+sudo apt-get install php5-curl
+
 $ sudo apt-get install lamp-server^
 
 2. MongoDBo
