@@ -17,5 +17,6 @@ $result = $mgClient->sendMessage($domain, array(
     'text'    => 'Testing some Mailgun awesomness!'
 ));
 
+echo ($result);
 
 ?>
