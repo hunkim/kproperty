@@ -1,4 +1,9 @@
 <?php
+header("Access-Control-Allow-Origin: *");
+//header("Accept-Encoding: gzip,deflate");
+//header("Content-Encoding: gzip");
+header("Content-Type: application/json; charset=UTF-8");
+
 
 # Include the Autoloader (see "Libraries" for install instructions)
 set_include_path('/home/ubuntu');
@@ -17,6 +22,6 @@ $result = $mgClient->sendMessage($domain, array(
     'text'    => 'Testing some Mailgun awesomness!'
 ));
 
-echo ($result);
+print_r($result);
 
 ?>
