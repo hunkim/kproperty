@@ -10,6 +10,12 @@ set_include_path('/home/ubuntu');
 require 'vendor/autoload.php';
 use Mailgun\Mailgun;
 
+foreach ($_POST as $key => $value) {
+	echo("$key: $value");
+}
+
+return;
+
 # Instantiate the client.
 $mgClient = new Mailgun('key-5feb0245349a1e6a92bf539c2a069733');
 $domain = "racephotos.org";
