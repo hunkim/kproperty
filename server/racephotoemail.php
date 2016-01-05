@@ -34,7 +34,7 @@ foreach ($_POST['photos'] as $key => $value) {
 
 $body .= "\nAll the best,\nRace Photo\n";
 
-return;
+echo ($body);
 
 # Instantiate the client.
 $mgClient = new Mailgun('key-5feb0245349a1e6a92bf539c2a069733');
