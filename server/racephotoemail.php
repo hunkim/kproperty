@@ -13,12 +13,20 @@ use Mailgun\Mailgun;
 $rest_json = file_get_contents("php://input");
 $_POST = json_decode($rest_json, true);
 
-print_r($_POST);
-foreach ($_POST as $key => $value) {
+if (!isset($_POST['to'])) {
+	return;
+}
+
+if (!isset($_POST['photos'])) {
+	return;
+}
+
+$to = $_POST['to'];
+
+foreach ($_POST['photos'] as $key => $value) {
 	echo("$key: $value");
 }
 
-echo("Done!");
 return;
 
 # Instantiate the client.
