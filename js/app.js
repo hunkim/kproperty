@@ -37,7 +37,7 @@ app.controller('customersCtrl',
 
     // year min and max
     $scope.minYear = 2006;
-    $scope.maxYear = 2015;
+    $scope.maxYear = 2016;
 
     // loc selection
     $scope.loc = {
