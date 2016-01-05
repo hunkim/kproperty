@@ -32,7 +32,7 @@ foreach ($_POST['photos'] as $key => $value) {
 	$body .= "\t $value\n";
 }
 
-$body .= "\nYours,\nRace Photo, http://racephoto.org\n";
+$body .= "\nYours,\nRace Photo, http://racephotos.org\n";
 
 # Instantiate the client.
 $mgClient = new Mailgun('key-5feb0245349a1e6a92bf539c2a069733');
@@ -40,7 +40,7 @@ $domain = "racephotos.org";
 
 # Make the call to the client.
 $result = $mgClient->sendMessage($domain, array(
-    'from'    => 'Race Photo <mailgun@racephoto.org>',
+    'from'    => 'Race Photo <mailgun@racephotos.org>',
     'to'      => $to,
     'subject' => $subject,
     'text'    => $body
