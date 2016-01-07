@@ -1,4 +1,5 @@
 #!/bin/sh
+cd /home/ubuntu/kp/crawler/
 php /home/ubuntu/kp/crawler/crawler.php housesale &
 php /home/ubuntu/kp/crawler/crawler.php flatsale &
 php /home/ubuntu/kp/crawler/crawler.php officetelsale &

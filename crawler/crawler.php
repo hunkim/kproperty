@@ -107,7 +107,7 @@ function crawl($tname, $year, $monthArr) {
   
 
   foreach ($stateArr as $state => $stateCode) {
-    echo("Working on $year/$month ($period) on $state for $tname\n");
+    echo("Working on $year ($period) on $state for $tname\n");
 
     $cities = getCities($year, $period, $stateCode, $args);
     $cityArr = json_decode($cities, true);
