@@ -9,8 +9,8 @@ $conn = DBConn();
 
 $limit = "";
 
-if (isset($_GET('limit'))) {
-	$limit = "limit " . $_GET('limit'); 
+if (isset($_GET['limit'])) {
+	$limit = "limit " . $_GET['limit']; 
 }
 
 $sql = "select type, loc, count(*) as c from log group by type, loc order by c desc $limit";
