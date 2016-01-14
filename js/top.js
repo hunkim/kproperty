@@ -151,7 +151,7 @@ app.controller('customersCtrl',
       $scope.countyPromise = $http.get($regionUrl + "/" +
           $scope.appType + "?state=" +
           koEncode($scope.loc.state) +
-          "&query=city")
+          "&query=city", {cache:true})
         .success(function(response) {
           $scope.cityArr = response;
           $scope.cityArr.unshift("");
@@ -173,7 +173,7 @@ app.controller('customersCtrl',
           $scope.appType + "?state=" +
           koEncode($scope.loc.state) +
           "&city=" + koEncode($scope.loc.city) +
-          "&query=county")
+          "&query=county", {cache:true})
         .success(function(response) {
           $scope.countyArr = response;
           $scope.countyArr.unshift("");
