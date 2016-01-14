@@ -221,7 +221,7 @@ app.controller('customersCtrl',
 
     $scope.getMonthly = function() {
       $scope.errorFlag = false;
-      $scope.monthlyPromise = $http.get($scope.makeURL($top10Url, 'monthly'))
+      $scope.monthlyPromise = $http.get($scope.makeURL($top10Url, 'monthly'), {cache:true})
         .success(function(response) {
           $scope.monthlyObject.data.rows = response;
         })
@@ -249,7 +249,7 @@ app.controller('customersCtrl',
     $scope.getDelta = function() {
       //  $scope.delta = [];
       $scope.errorFlag = false;
-      $scope.deltaPromise = $http.get($scope.makeURL($top10Url, 'delta'))
+      $scope.deltaPromise = $http.get($scope.makeURL($top10Url, 'delta'), {cache:true})
         .success(function(response) {
           $scope.deltaObject.data.rows = response;
         })
@@ -276,7 +276,7 @@ app.controller('customersCtrl',
     $scope.getTop = function() {
       //  $scope.top = [];
       $scope.errorFlag = false;
-      $scope.topPromise = $http.get($scope.makeURL($top10Url, null))
+      $scope.topPromise = $http.get($scope.makeURL($top10Url, null), {cache:true})
         .success(function(response) {
           $scope.topObject.data.rows = response;
         })
@@ -284,7 +284,6 @@ app.controller('customersCtrl',
           $scope.errorFlag = true;
         });
     };
-
 
     // Show all for the initial screen
     $scope.upAll();
