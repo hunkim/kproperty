@@ -122,7 +122,7 @@ function processQuery($sql, $sql_append, $simple) {
 		echo ($type);
 	}
 
-  $conn = DBConn();
+  $conn = DBConn($debug);
 
   $stmt = $conn->prepare($sql);
 	if (!$stmt) {

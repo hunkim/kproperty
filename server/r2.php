@@ -36,7 +36,7 @@ if($debug) {
 	echo ("Query: $k");
 }
 
-$conn = DBConn();
+$conn = DBConn($debug);
 
 $escapedK =  $conn->real_escape_string($k);
 $sql = "select v from $tname where k='" . $escapedK . "'";
