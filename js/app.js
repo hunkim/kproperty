@@ -576,7 +576,7 @@ app.controller('customersCtrl',
       $scope.countyPromise = $http.get($regionUrl + "/" +
           $scope.appType + "?state=" +
           koEncode($scope.loc.state) +
-          "&query=city", {cache:true})
+          "&query=city", {cache:false})
         .success(function(response) {
           $scope.cityArr = response;
           $scope.cityArr.unshift("");
@@ -600,7 +600,7 @@ app.controller('customersCtrl',
           $scope.appType + "?state=" +
           koEncode($scope.loc.state) +
           "&city=" + koEncode($scope.loc.city) +
-          "&query=county", {cache:true})
+          "&query=county", {cache:false})
         .success(function(response) {
           $scope.countyArr = response;
           $scope.countyArr.unshift("");
@@ -625,7 +625,7 @@ app.controller('customersCtrl',
           "?state=" + koEncode($scope.loc.state) +
           "&city=" + koEncode($scope.loc.city) +
           "&county=" + koEncode($scope.loc.county) +
-          "&query=region", {cache:true})
+          "&query=region", {cache:false})
         .success(function(response) {
           $scope.regionArr = response;
           $scope.regionArr.unshift("");
@@ -657,7 +657,7 @@ app.controller('customersCtrl',
           "&city=" + koEncode($scope.loc.city) +
           "&county=" + koEncode($scope.loc.county) +
           "&region=" + koEncode($scope.loc.region) +
-          "&query=aptName", {cache:true})
+          "&query=aptName", {cache:false})
         .success(function(response) {
           $scope.aptNameArr = response;
           $scope.aptNameArr.unshift("");
@@ -685,7 +685,7 @@ app.controller('customersCtrl',
           "&county=" + koEncode($scope.loc.county) +
           "&region=" + koEncode($scope.loc.region) +
           "&aptName=" + koEncode($scope.loc.aptName) +
-          "&query=area", {cache:true})
+          "&query=area", {cache:false})
         .success(function(response) {
           $scope.aptAreaArr = response;
           $scope.aptAreaArr.unshift("");
@@ -818,7 +818,7 @@ app.controller('customersCtrl',
 
       $scope.errorFlag = false;
 
-      $scope.statPromise = $http.get($scope.makeURL($statUrl), {cache:true})
+      $scope.statPromise = $http.get($scope.makeURL($statUrl), {cache:false})
         .success(function(response) {
           $scope.statArr = response;
           $scope.updateGraph();
@@ -831,7 +831,7 @@ app.controller('customersCtrl',
     $scope.getSales = function() {
       $scope.saleArr = [];
       $scope.errorFlag = false;
-      $scope.salePromise = $http.get($scope.makeURL($saleUrl), {cache:true})
+      $scope.salePromise = $http.get($scope.makeURL($saleUrl), {cache:false})
         .success(function(response) {
           $scope.saleArr = response;
         })
