@@ -1,0 +1,6 @@
+<?php
+
+const SKEY="YRfubEzmIT3Nzb7Ibt5kTfWVnAkWz%2FFimQvGR038ISxLDxu5NjV%2FUaKKC%2B3LG372z%2BaVo1DLLe0i8MG70XhUSw%3D%3D";
+
+
+?>

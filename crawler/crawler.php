@@ -2,6 +2,7 @@
 
 error_reporting(E_ALL);
 
+include_once 'const.php';
 include_once 'util.php';
 include_once 'mkagg.php';
 
