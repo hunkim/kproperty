@@ -7,7 +7,7 @@ header("Content-Type: application/json; charset=UTF-8");
 
 $tname = substr($_SERVER['PATH_INFO'], 1);
 
-$conn = DBconn();
+$conn = DBconn(false);
 
 $debug = false;
 

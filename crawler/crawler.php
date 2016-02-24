@@ -9,6 +9,23 @@ if ($argc!=2) {
   die ($argv[0] . " <tname>\n");
 }
 
+test();
+
+function test() {
+
+  $url = "http://openapi.molit.go.kr:8081/OpenAPI_ToolInstallPackage/service/rest/RTMSOBJSvc/getRTMSDataSvcAptTrade".
+          "?type=json&LAWD_CD=" . $regionCode . "&DEAL_YMD=" . $year . $month . "&serviceKey=" . SKEY;
+
+  $resp =  file_get_contents($url);
+  if ($resp === FALSE) {
+      echo($http_response_header[0]);
+      return;
+  }
+  //$obj = json_decode($json);  
+  //$xml = simplexml_load_string($resp);
+  exit();
+}
+
 $stateArr = [
     '제주특별자치도'=>"50",
     '서울특별시'=>"11",
