@@ -283,7 +283,9 @@
       <th class="text-right">전용면적(㎡)</th>
       <th class="text-right" ng-show="appType=='flatsale'">대지권면적(㎡)</th>
       <th class="text-right">층</th>
+      <!--
       <th ng-hide="appType=='aptlots'">건축연도</th>
+    -->
       <th>지도</th>
     </tr>
     <tr ng-repeat="sale in saleArr">
@@ -296,7 +298,9 @@
       <td class="text-right">{{sale.area}}</td>
       <td class="text-right" ng-show="appType=='flatsale'">{{sale.landArea}}</td>
       <td class="text-right">{{sale.floor}}</td>
+      <!--
       <td ng-hide="appType=='aptlots'">{{sale.builtYear}}</td>
+    -->
       <td><A target="_blank" href="{{mapEncode(sale)}}">
         <center><span class="glyphicon glyphicon-map-marker"></span></center>
       </a></td>
